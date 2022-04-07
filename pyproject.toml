@@ -6,6 +6,8 @@ authors = ["JVerissimo <j.verissimo@runtime-revolution.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+Django = "^4.0.3"
+strawberry-graphql = "^0.105.0"
 
 [tool.poetry.dev-dependencies]
 

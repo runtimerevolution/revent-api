@@ -40,7 +40,7 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
           You just need to follow the steps above, add the export to your shell file and restart your shell.
 
     2. Poetry
-        - To install poetry, do it by running: 
+        - To install poetry, do it by running:
 
           ```bash
           curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
@@ -66,7 +66,7 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 
 ### Configuration - Setting your python version
 
-- Now that you have pyenv, install the version you want to use: 
+- Now that you have pyenv, install the version you want to use:
 
     ```bash
     pyenv install -v 3.10.4
@@ -102,7 +102,7 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
     poetry install
     ```
 
-    This is great! Right now, we have our packages installed! 
+    This is great! Right now, we have our packages installed!
 
 - One last thing! We still need to tell our IDE to use this new interpreter!
 - Alright, and how do we do this? Its easy, really. (This next steps will be for vscode)

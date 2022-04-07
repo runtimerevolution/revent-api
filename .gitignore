@@ -50,3 +50,4 @@ Thumbs.db
 
 .envrc
 .direnv
+.env.dev

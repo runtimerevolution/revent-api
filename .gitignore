@@ -48,6 +48,9 @@ Thumbs.db
 *.mov
 *.wmv
 
+# env files
 .envrc
 .direnv
-.env.dev
+.env
+
+db.sqlite3

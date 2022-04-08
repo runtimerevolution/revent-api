@@ -1,0 +1,7 @@
+*.md
+.direnv
+.envrc
+.gitignore
+.env
+
+db.sqlite3

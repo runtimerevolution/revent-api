@@ -1,4 +1,4 @@
-# PHOTO CONTEST API 📸 
+# PHOTO CONTEST API 📸
 
 **This README will get you started and guide you through the project**
 
@@ -9,6 +9,8 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 ## Setup time
 
 ### Prerequisites - Install [pyenv](https://github.com/pyenv/pyenv) and [poetry](https://python-poetry.org/docs/#installation)
+
+If you have this one already, you can jump to the next section (Configuration - Setting your python version).
 
 - Example:
     1. Pyenv
@@ -86,7 +88,7 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 
 ### Configuration - Using poetry for package and dependency management
 
-  *To use poetry, we will need to have ***python 3.5+***
+  *To use poetry, we will need to have ***python 3.5+***.*
 
 - Now lets start by always activating a virtual environment to work on when we open the project:  
     If you need to get out of this virtual environment just type **deactivate**
@@ -104,8 +106,8 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 
     This is great! Right now, we have our packages installed!
 
-- One last thing! We still need to tell our IDE to use this new interpreter!
-- Alright, and how do we do this? Its easy, really. (This next steps will be for vscode)
+- One last thing! We still need to tell our IDE to use this new interpreter!  
+Alright, and how do we do this? Its easy, really. (This next steps will be for vscode)
 
     1. Copy the path from the command below:
 
@@ -148,3 +150,61 @@ I know i know, it looks almost like magic. Let me tell you about direnv
 
     5. Reload your shell and you'r set! Now you can leave your folder and come back inside to test if .direnv will show up (thats your new venv).  
     Everytime you go into or out of your project folder .direnv will activate or deactivate!
+
+## How to run
+
+To run, you can start by putting on some comfortable shoes and then... im just kidding, im just kidding!
+Lets start with the prerequisites and then move onto the action.
+
+### Prerequisites - Install [docker](https://docs.docker.com/get-docker/)
+
+If you have this one already, you can jump to the next section (Running the project)
+
+### Running the project
+
+*Now, how can we run the app?*
+
+- Now that u have docker installed we just need to build our image out of  
+Dockerfile. Its a little file you have on your project folder that will tell docker  
+everything he needs to run and make a new environment just like yours! isnt that awesome?  
+I wish we had something like that and didn't had to go through this README 🤔
+
+  ```bash
+    docker-compose build
+  ```
+
+- Hopefully everything went smooth and we are ready to see how the project is going!  
+For us to take a look lets run:
+
+  ```bash
+    docker-compose up
+  ```
+
+Perfect! You are now running the project locally and you can now start coding!
+
+## Running tests
+
+*Coming with implementation on pytest*
+
+## Guidelines
+
+### Branch Naming
+
+Everytime we need to work on a new feature, bug or any type of task, we need to create a new branch.
+Below will be a step by step guide on how we can create and start to work on a task:
+
+The nomenclature for someone named "João Gomes" that need to fix a new "Bug" on a ticket with the ID "1234" and name "Update salary" goes like this:
+
+`jg/bug/1234/Update-salary`
+
+- jg - First and last name initials
+
+- bug - Type of task to be performed
+
+- 1234 - Ticket ID
+
+- Update-salary - Ticket name
+
+## Who do I talk to?
+
+- You can always talk to your Team Leader or the repo owner for any question regarding this project.

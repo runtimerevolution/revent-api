@@ -88,7 +88,7 @@ If you have this one already, you can jump to the next section (Configuration - 
 
 ### Configuration - Using poetry for package and dependency management
 
-  *To use poetry, we will need to have ***python 3.5+***.*
+  *To use poetry, we will need to have ***python 3.5 or greater***.*
 
 - Now lets start by always activating a virtual environment to work on when we open the project:  
     If you need to get out of this virtual environment just type **deactivate**
@@ -150,6 +150,8 @@ I know i know, it looks almost like magic. Let me tell you about direnv
 
     5. Reload your shell and you'r set! Now you can leave your folder and come back inside to test if .direnv will show up (thats your new venv).  
     Everytime you go into or out of your project folder .direnv will activate or deactivate!
+
+***Important: Now that you changed for direnv replicate the python interpreter change that you did in poetry section***
 
 ## How to run
 

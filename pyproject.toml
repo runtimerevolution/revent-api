@@ -8,6 +8,8 @@ authors = ["JVerissimo <j.verissimo@runtime-revolution.com>"]
 python = "^3.10"
 Django = "^4.0.3"
 strawberry-graphql = "^0.105.0"
+django-environ = "^0.8.1"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 

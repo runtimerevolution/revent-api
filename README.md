@@ -6,14 +6,44 @@
 
 Photo contest API is an API for the Runtime Revolution photo contest that takes place every month and aims to allow a fair and easy voting for all participants.
 
-## Setup time
+## Table of Contents
+
+  1. [Setup](#setup-time)
+
+     - [Prerequisites](#prerequisites---install-pyenv-and-poetry)
+
+     - [Pyenv](#configuration---setting-your-python-version)
+
+     - [Poetry](#configuration---using-poetry-for-package-and-dependency-management)
+
+     - [Nice-to-Have](#nice-to-have)
+
+        - [Direnv](#direnv)
+
+  2. [How-to-Run](#how-to-run)
+
+     - [Prerequisites](#prerequisites---install-docker)
+
+     - [Run-Docker](#running-the-project)
+
+  3. [Tests](#running-tests)
+
+  4. [Guidelines](#guidelines)
+
+     - [Branch-naming](#branch-naming)
+
+  5. [Who-do-I-talk-to](#who-do-i-talk-to)
+
+## Setup Time
 
 ### Prerequisites - Install [pyenv](https://github.com/pyenv/pyenv) and [poetry](https://python-poetry.org/docs/#installation)
 
-If you have this one already, you can jump to the next section (Configuration - Setting your python version).
+If you have this one already, you can jump to the next section [(Configuration - Setting your python version)](#configuration---setting-your-python-version).
 
 - Example:
+
     1. Pyenv
+
         - We will need to install some dependencies that will also depend on the OS being used.  
           For macOS users:
 
@@ -42,6 +72,7 @@ If you have this one already, you can jump to the next section (Configuration - 
           You just need to follow the steps above, add the export to your shell file and restart your shell.
 
     2. Poetry
+
         - To install poetry, do it by running:
 
           ```bash
@@ -90,7 +121,7 @@ If you have this one already, you can jump to the next section (Configuration - 
 
   *To use poetry, we will need to have ***python 3.5 or greater***.*
 
-- Now lets start by always activating a virtual environment to work on when we open the project:  
+- Now let's start by always activating a virtual environment to work on when we open the project:  
     If you need to get out of this virtual environment just type **deactivate**
 
     ```bash
@@ -98,7 +129,7 @@ If you have this one already, you can jump to the next section (Configuration - 
     ```
 
 - You should have a file called pyproject.toml, with it we can install everything that is needed!  
-  Just a second, make sure you are on your project folder! Lets go and install everything now:
+  Just a second, make sure you are on your project folder! Let's go and install everything now:
 
     ```bash
     poetry install
@@ -118,51 +149,52 @@ Alright, and how do we do this? Its easy, really. (This next steps will be for v
     2. In your vscode, go to settings and search for python interpreter
 
     3. Now select to use a specific path and use the one you just copied  
-    Press Enter and you'r done! Now vscode will use this version.
+    Press Enter and you'r done! Now vscode will use this one.
 
 - You can now start using the project, but wait! don't go! Now we have our virtual environment  
   ready, but do you really want to keep activating it everytime you join the project?  
-  Lets take a look on how we can automate this and make sure that we use the correct versions each time we are in a new project.
+  Let's take a look on how we can automate this and make sure that we use the correct versions each time we are in a new project.
   Let me introduce you to a new section.
 
-### Nice to have  
+### Nice to Have  
 
 Well, hello there! If you are looking for automation, you have come to the right place!
 
-#### direnv
+#### Direnv
 
 Looking for a way to start your venv by doing... nothing!?  
 I know i know, it looks almost like magic. Let me tell you about direnv
 
 - direnv will load and unload a virtual environment everytime we enter or leave the folder  
-  How do we install it? Lets take a look.
+  How do we install it? Let's take a look.
 
-    1. Lets start by creating an empty file called .envrc
+    1. Let's start by creating an empty file called .envrc
 
     2. Now we can download direnv [here](https://direnv.net/docs/installation.html)
 
     3. Hook it into your shell like [this](https://direnv.net/docs/hook.html)
 
     4. Alright and finally add the following to your .envrc:  
-    `layout pyenv 3.10.4`  
-    Note: Everytime you edit your .envrc file direnv will ask you to give permission by typing:  
-    `direnv allow`
 
-    5. Reload your shell and you'r set! Now you can leave your folder and come back inside to test if .direnv will show up (thats your new venv).  
+        `layout pyenv 3.10.4`  
+        Note: Everytime you edit your .envrc file direnv will ask you to give permission by typing:  
+        `direnv allow`
+
+    5. ***Important: Now that you changed for direnv replicate the python interpreter change that you did in poetry section***
+
+    6. Reload your shell and you'r set! Now you can leave your folder and come back inside to test if .direnv will show up (thats your new venv).  
     Everytime you go into or out of your project folder .direnv will activate or deactivate!
 
-***Important: Now that you changed for direnv replicate the python interpreter change that you did in poetry section***
-
-## How to run
+## How to Run
 
 To run, you can start by putting on some comfortable shoes and then... im just kidding, im just kidding!
-Lets start with the prerequisites and then move onto the action.
+Let's start with the prerequisites and then move onto the action.
 
 ### Prerequisites - Install [docker](https://docs.docker.com/get-docker/)
 
 If you have this one already, you can jump to the next section (Running the project)
 
-### Running the project
+### Running the Project
 
 *Now, how can we run the app?*
 
@@ -172,11 +204,11 @@ everything he needs to run and make a new environment just like yours! isnt that
 I wish we had something like that and didn't had to go through this README 🤔
 
   ```bash
-    docker-compose build
+    docker build -t revent:latest .
   ```
 
 - Hopefully everything went smooth and we are ready to see how the project is going!  
-For us to take a look lets run:
+For us to take a look let's run:
 
   ```bash
     docker-compose up
@@ -184,7 +216,7 @@ For us to take a look lets run:
 
 Perfect! You are now running the project locally and you can now start coding!
 
-## Running tests
+## Running Tests
 
 *Coming with implementation on pytest*
 

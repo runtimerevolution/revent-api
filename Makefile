@@ -23,8 +23,10 @@ tests:
 	python manage.py test
 
 # Docker
-dk-build:
-	docker build
+dk-build-t:
+	docker build -t revent:latest .
+
+# -t to specify a tag
 
 dk-up:
 	docker-compose -f ./docker-compose.yml up -d
@@ -34,11 +36,6 @@ dk-down:
 
 # -f to specify the file location
 # -d to run the container in the background 
-
-dk-build-t:
-	docker build -t revent:latest .
-
-# -t to specify a tag
 
 dk-run:
 	docker run -d --name revent-heroku -e "PORT=8765" -p 8007:8765 revent:latest

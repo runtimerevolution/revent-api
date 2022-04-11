@@ -41,7 +41,9 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 If you have this one already, you can jump to the next section [(Configuration - Setting your python version)](#configuration---setting-your-python-version).
 
 - Example:
+
     1. Pyenv
+
         - We will need to install some dependencies that will also depend on the OS being used.  
           For macOS users:
 
@@ -70,6 +72,7 @@ If you have this one already, you can jump to the next section [(Configuration -
           You just need to follow the steps above, add the export to your shell file and restart your shell.
 
     2. Poetry
+
         - To install poetry, do it by running:
 
           ```bash
@@ -172,9 +175,10 @@ I know i know, it looks almost like magic. Let me tell you about direnv
     3. Hook it into your shell like [this](https://direnv.net/docs/hook.html)
 
     4. Alright and finally add the following to your .envrc:  
-    `layout pyenv 3.10.4`  
-    Note: Everytime you edit your .envrc file direnv will ask you to give permission by typing:  
-    `direnv allow`
+
+        `layout pyenv 3.10.4`  
+        Note: Everytime you edit your .envrc file direnv will ask you to give permission by typing:  
+        `direnv allow`
 
     5. ***Important: Now that you changed for direnv replicate the python interpreter change that you did in poetry section***
 
@@ -200,7 +204,7 @@ everything he needs to run and make a new environment just like yours! isnt that
 I wish we had something like that and didn't had to go through this README 🤔
 
   ```bash
-    docker-compose build
+    docker build -t revent:latest .
   ```
 
 - Hopefully everything went smooth and we are ready to see how the project is going!  

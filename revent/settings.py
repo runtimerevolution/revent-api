@@ -21,7 +21,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','0.0.0.0','enigmatic-cliffs-24791.herokuapp.com']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','0.0.0.0','runtime-revent-api.herokuapp.com']
 
 # Application definition
 

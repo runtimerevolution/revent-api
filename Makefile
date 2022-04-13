@@ -1,5 +1,5 @@
 run:
-	python ./revent/manage.py runserver
+	python manage.py runserver
 
 # Poetry
 install: pyproject.toml

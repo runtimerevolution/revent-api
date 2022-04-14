@@ -27,8 +27,8 @@ class Contest(UUIDModel):
 class Submission(UUIDModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     contest = models.ForeignKey(Contest, on_delete=models.CASCADE)
-    content = models.TextField()  # unique=True?
-    description = models.TextField(blank=True, null=True)  # max_length?
+    content = models.TextField()
+    description = models.TextField(blank=True, null=True)
 
 
 class Comment(UUIDModel):
@@ -37,7 +37,7 @@ class Comment(UUIDModel):
         Submission,
         on_delete=models.CASCADE,
     )
-    text = models.TextField()  # max_length?
+    text = models.TextField()
 
 
 class Vote(UUIDModel):

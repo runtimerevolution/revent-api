@@ -13,22 +13,22 @@ class UUIDModel(models.Model):
 class User(UUIDModel):
     email = models.EmailField(("email address"), unique=True)
     date_joined = models.DateTimeField(("date joined"), default=timezone.now)
-    first_name = models.TextField(("First Name"), blank=True, null=True)
-    last_name = models.TextField(("Last Name"), blank=True, null=True)
+    first_name = models.TextField(("First Name"))
+    last_name = models.TextField(("Last Name"))
 
 
 class Contest(UUIDModel):
     date_start = models.DateField(auto_now_add=True)
     date_end = models.DateField()
     name = models.TextField()
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField()
 
 
 class Submission(UUIDModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     contest = models.ForeignKey(Contest, on_delete=models.CASCADE)
     content = models.TextField()
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField()
 
 
 class Comment(UUIDModel):

@@ -18,8 +18,8 @@ class User(UUIDModel):
 
 
 class Contest(UUIDModel):
-    date_start = models.DateField(auto_now_add=True)
-    date_end = models.DateField()
+    date_start = models.DateTimeField(auto_now_add=True)
+    date_end = models.DateTimeField()
     name = models.TextField()
     description = models.TextField()
 

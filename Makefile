@@ -49,3 +49,6 @@ dk-stop:
 # Admin
 superuser:
 	python manage.py createsuperuser
+
+test:
+	pytest tests/ --disable-pytest-warnings -v

@@ -1,30 +1,30 @@
-from datetime import timezone
+import datetime
 from photo.models import User, Contest, Submission, Comment, Vote, Result
 import factory
 from dateutil.relativedelta import relativedelta
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(factory.Factory):
     class Meta:
         model = User
 
     email = "john.doe@test.com"
-    date_joined = timezone.now
+    date_joined = datetime.datetime.now()
     first_name = "John"
     last_name = "Doe"
 
 
-class ContestFactory(factory.DjangoModelFactory):
+class ContestFactory(factory.Factory):
     class Meta:
         model = Contest
 
-    date_start = timezone.now
-    date_end = timezone.now + relativedelta(months=1)
+    date_start = datetime.datetime.now()
+    date_end = datetime.datetime.now() + relativedelta(months=1)
     name = "May Madness Contest"
     description = "Time for a new monthly photo contest"
 
 
-class SubmissionFactory(factory.DjangoModelFactory):
+class SubmissionFactory(factory.Factory):
     class Meta:
         model = Submission
 
@@ -34,7 +34,7 @@ class SubmissionFactory(factory.DjangoModelFactory):
     description = ""
 
 
-class CommentFactory(factory.DjangoModelFactory):
+class CommentFactory(factory.Factory):
     class Meta:
         model = Comment
 
@@ -43,7 +43,7 @@ class CommentFactory(factory.DjangoModelFactory):
     text = "Great picture! Love it!"
 
 
-class VoteFactory(factory.DjangoModelFactory):
+class VoteFactory(factory.Factory):
     class Meta:
         model = Vote
 
@@ -52,7 +52,7 @@ class VoteFactory(factory.DjangoModelFactory):
     value = 1
 
 
-class ResultFactory(factory.DjangoModelFactory):
+class ResultFactory(factory.Factory):
     class Meta:
         model = Result
 

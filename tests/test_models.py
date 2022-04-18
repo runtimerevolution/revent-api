@@ -29,7 +29,6 @@ def test_contest_model():
 def test_submission_model():
     submission = SubmissionFactory()
 
-    assert submission.contest == ""
     assert submission.description == ""
 
 

@@ -1,3 +1,4 @@
+from re import sub
 import pytest
 from .factories import (
     UserFactory,
@@ -27,27 +28,41 @@ def test_contest_model():
 
 @pytest.mark.django_db
 def test_submission_model():
-    submission = SubmissionFactory()
+    contest = ContestFactory()
+    submission = SubmissionFactory(contest=contest)
 
+    assert submission.contest == contest
     assert submission.description == ""
 
 
 @pytest.mark.django_db
 def test_comment_model():
-    comment = CommentFactory()
+    user = UserFactory()
+    submission = SubmissionFactory()
+    comment = CommentFactory(user=user, submission=submission)
 
+    assert comment.user == user
+    assert comment.submission == submission
     assert comment.text == "Great picture! Love it!"
 
 
 @pytest.mark.django_db
 def test_vote_model():
-    vote = VoteFactory()
+    user = UserFactory()
+    submission = SubmissionFactory()
+    vote = VoteFactory(user=user, submission=submission)
 
+    assert vote.user == user
+    assert vote.submission == submission
     assert vote.value == 1
 
 
 @pytest.mark.django_db
 def test_result_model():
-    result = ResultFactory()
+    contest = ContestFactory()
+    submission = SubmissionFactory(contest=contest)
+    result = ResultFactory(submission=submission, contest=contest)
 
+    assert result.contest == contest
+    assert result.submission == submission
     assert result.position == 1

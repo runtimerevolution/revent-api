@@ -1,4 +1,3 @@
-from re import sub
 import pytest
 from .factories import (
     UserFactory,

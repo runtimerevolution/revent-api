@@ -1,12 +1,8 @@
-import datetime
-
 import strawberry
 from strawberry.django import auto
 
 from . import models
-import datetime
 import uuid
-from strawberry.django import auto
 
 
 @strawberry.django.type(models.Contest)
@@ -20,20 +16,20 @@ class Contest:
 
 @strawberry.django.type(models.User)
 class User:
-    id: uuid.UUID
-    email: str
-    date_joined: str
-    first_name: str
-    last_name: str
+    id: auto
+    email: auto
+    date_joined: auto
+    first_name: auto
+    last_name: auto
 
 
 @strawberry.django.type(models.Submission)
 class Submission:
-    id: uuid.UUID
-    user: "User"
-    contest: "Contest"
-    content: str
-    description: str
+    id: auto
+    user: auto
+    contest: auto
+    content: auto
+    description: auto
 
 
 @strawberry.django.type(models.Comment)
@@ -46,15 +42,15 @@ class Comment:
 
 @strawberry.django.type(models.Vote)
 class Vote:
-    id: uuid.UUID
+    id: auto
     user: "User"
     Submission: "Submission"
-    value: int
+    value: auto
 
 
 @strawberry.django.type(models.Result)
 class Result:
-    id: uuid.UUID
+    id: auto
     contest: "Contest"
     submission: "Submission"
-    position: int
+    position: auto

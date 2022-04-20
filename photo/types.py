@@ -1,14 +1,17 @@
-import strawberry
-from . import models
 import datetime
+
+import strawberry
+from strawberry.django import auto
+
+from . import models
 
 
 @strawberry.django.type(models.Contest)
 class Contest:
-    date_start: datetime.datetime
-    date_end: datetime.datetime
-    name: str
-    description: str
+    date_start: auto
+    date_end: auto
+    name: auto
+    description: auto
 
 
 @strawberry.django.type(models.User)

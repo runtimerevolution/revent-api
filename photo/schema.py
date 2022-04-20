@@ -1,12 +1,12 @@
 import datetime
 import strawberry
-from .types import Contest, Comment, Contest
-import typing
+from .types import Contest, Comment
+from typing import List
 
 
 @strawberry.type
 class Query:
-    contests: typing.List[Contest]
+    contests: List[Contest] = strawberry.django.field()
 
 
 @strawberry.type

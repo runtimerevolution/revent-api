@@ -1,4 +1,8 @@
+import datetime
+
 import strawberry
+from strawberry.django import auto
+
 from . import models
 import datetime
 import uuid

@@ -1,7 +1,7 @@
 import datetime
 import strawberry
 
-from .types import Contest, Comment, Submission
+from .types import Contest, Comment, Submission, Vote
 from typing import List
 
 
@@ -18,6 +18,11 @@ class Mutation:
     def add_comment(self, text: str, user: str, submission: str) -> Comment:
 
         return Comment(text=text, user=user, submission=submission)
+
+    @strawberry.mutation
+    def add_vote(self, value: str, user: str, submission: str) -> Vote:
+
+        return Vote(value=value, user=user, submission=submission)
 
     @strawberry.mutation
     def add_contest(

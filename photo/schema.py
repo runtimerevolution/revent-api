@@ -1,21 +1,33 @@
+import datetime
 import strawberry
-from typing import List
-
-from photo.models import Comment
-from .types import Contest, User, Submission
+from .types import Contest, Comment, Contest
+import typing
 
 
 @strawberry.type
 class Query:
-    contests: List[Contest] = strawberry.django.field()
+    contests: typing.List[Contest]
 
 
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    def add_comment(self, text: str, user: User, submission: Submission) -> Comment:
+    def add_comment(self, text: str, user: str, submission: str) -> Contest:
 
         return Comment(text=text, user=user, submission=submission)
+
+    @strawberry.mutation
+    def add_contest(
+        self,
+        name: str,
+        description: str,
+        date_start: datetime.datetime,
+        date_end: datetime.datetime,
+    ) -> Contest:
+
+        return Contest(
+            name=name, description=description, date_start=date_start, date_end=date_end
+        )
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)

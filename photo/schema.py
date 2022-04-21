@@ -74,15 +74,18 @@ class Mutation:
     def add_comment(
         self, text: str, user: UserInput, submission: SubmissionInput
     ) -> Comment:
+        comment = Comment(text=text, user=user, submission=submission)
+        comment.save()
 
-        return Comment(text=text, user=user, submission=submission)
+        return comment
 
     @strawberry.mutation
     def add_vote(
         self, value: str, user: UserInput, submission: SubmissionInput
     ) -> Vote:
-
-        return Vote(value=value, user=user, submission=submission)
+        vote = VoteModel(value=value, user=user, submission=submission)
+        vote.save()
+        return vote
 
     @strawberry.mutation
     def add_contest(
@@ -93,23 +96,24 @@ class Mutation:
         date_end: datetime.datetime,
     ) -> Contest:
 
-        c = Contest(
+        contest = ContestModel(
             name=name, description=description, date_start=date_start, date_end=date_end
         )
-        c.save()
-        return c
+        contest.save()
+        return contest
 
     @strawberry.mutation
     def add_submission(
         self, content: str, description: str, user: UserInput, contest: ContestInput
     ) -> Submission:
-
-        return Submission(
+        submission = Submission(
             content=content,
             description=description,
             user=user,
             contest=contest,
         )
+        submission.save()
+        return submission
 
     @strawberry.mutation
     def update_submission(

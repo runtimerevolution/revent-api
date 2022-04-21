@@ -1,7 +1,6 @@
 import datetime
 import strawberry
-
-from .types import Contest, Comment, Submission, Vote
+from .types import Contest, Comment, Submission, Vote, User
 from typing import List
 
 
@@ -16,15 +15,43 @@ class Query:
     votes: List[Vote] = strawberry.django.field()
 
 
+@strawberry.input
+class UserInput:
+    email: str
+    first_name: str
+    last_name: str
+    date_joined: datetime.datetime
+
+
+@strawberry.input
+class ContestInput:
+    name: str
+    description: str
+    date_start: datetime.datetime
+    date_end: datetime.datetime
+
+
+@strawberry.input
+class SubmissionInput:
+    user: User
+    contest: Contest
+    content: str
+    description: str
+
+
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    def add_comment(self, text: str, user: str, submission: str) -> Comment:
+    def add_comment(
+        self, text: str, user: UserInput, submission: SubmissionInput
+    ) -> Comment:
 
         return Comment(text=text, user=user, submission=submission)
 
     @strawberry.mutation
-    def add_vote(self, value: str, user: str, submission: str) -> Vote:
+    def add_vote(
+        self, value: str, user: UserInput, submission: SubmissionInput
+    ) -> Vote:
 
         return Vote(value=value, user=user, submission=submission)
 
@@ -43,7 +70,7 @@ class Mutation:
 
     @strawberry.mutation
     def add_submission(
-        self, content: str, description: str, user: str, contest: str
+        self, content: str, description: str, user: UserInput, contest: ContestInput
     ) -> Submission:
 
         return Submission(
@@ -53,13 +80,22 @@ class Mutation:
             contest=contest,
         )
 
+    @strawberry.mutation
+    def update_submission(self, id: int, content: str, description: str) -> Submission:
+        obj = Submission.objects.get(pk=id)
+        obj.content = content
+        obj.description = description
+        obj.save()
 
-@strawberry.type
-class User:
-    email: str
-    first_name: str
-    last_name: str
-    date_joined: datetime.datetime
+        return obj
+
+    @strawberry.mutation
+    def update_comment(self, id: int, text: str) -> Comment:
+        obj = Comment.objects.get(pk=id)
+        obj.text = text
+        obj.save()
+
+        return obj
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)

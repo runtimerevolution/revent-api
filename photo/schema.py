@@ -53,7 +53,7 @@ class Mutation:
     ) -> Comment:
         user = UserModel.objects.filter(pk=user_id).first()
         submission = SubmissionModel.objects.filter(pk=submission_id).first()
-        comment = Comment(text=text, user=user, submission=submission)
+        comment = CommentModel(text=text, user=user, submission=submission)
         comment.save()
 
         return comment
@@ -116,7 +116,9 @@ class Mutation:
         return obj
 
     @strawberry.mutation
-    def update_comment(self, id: strawberry.ID, text: str, user: UserInput) -> Comment:
+    def update_comment(
+        self, id: strawberry.ID, text: str, user_id: strawberry.ID
+    ) -> Comment:
         obj = CommentModel.objects.get(pk=id)
         obj.text = text
         obj.save()

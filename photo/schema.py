@@ -65,8 +65,10 @@ class SubmissionInput:
 class Mutation:
     @strawberry.mutation
     def add_comment(
-        self, text: str, user: UserInput, submission: SubmissionInput
+        self, text: str, user_id: strawberry.ID, submission_id: strawberry.ID
     ) -> Comment:
+        user = UserModel.objects.filter(pk=user_id).first()
+        submission = SubmissionModel.objects.filter(pk=submission_id).first()
         comment = Comment(text=text, user=user, submission=submission)
         comment.save()
 
@@ -74,8 +76,10 @@ class Mutation:
 
     @strawberry.mutation
     def add_vote(
-        self, value: str, user: UserInput, submission: SubmissionInput
+        self, value: str, user_id: strawberry.ID, submission_id: strawberry.ID
     ) -> Vote:
+        user = UserModel.objects.filter(pk=user_id).first()
+        submission = SubmissionModel.objects.filter(pk=submission_id).first()
         vote = VoteModel(value=value, user=user, submission=submission)
         vote.save()
         return vote

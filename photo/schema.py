@@ -45,22 +45,6 @@ class Query:
         )
 
 
-@strawberry.input
-class UserInput:
-    id: strawberry.ID
-
-
-@strawberry.input
-class ContestInput:
-    id: strawberry.ID
-
-
-@strawberry.input
-class SubmissionInput:
-    user_id: strawberry.ID
-    contest_id: strawberry.ID
-
-
 @strawberry.type
 class Mutation:
     @strawberry.mutation

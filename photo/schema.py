@@ -93,9 +93,11 @@ class Mutation:
         date_end: datetime.datetime,
     ) -> Contest:
 
-        return Contest(
+        c = Contest(
             name=name, description=description, date_start=date_start, date_end=date_end
         )
+        c.save()
+        return c
 
     @strawberry.mutation
     def add_submission(

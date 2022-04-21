@@ -33,8 +33,8 @@ class ContestInput:
 
 @strawberry.input
 class SubmissionInput:
-    user: User
-    contest: Contest
+    user: UserInput
+    contest: ContestInput
     content: str
     description: str
 

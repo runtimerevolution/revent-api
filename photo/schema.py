@@ -36,6 +36,13 @@ class Query:
     def get_votes_by_submission_id(self, id: strawberry.ID) -> List[Vote]:
         return VoteModel.objects.filter(submission=id)
 
+    @strawberry.field
+    def get_current_contests(self) -> List[Contest]:
+        return ContestModel.objects.filter(
+            date_start__lte=datetime.date.today(),
+            date_end__gte=datetime.date.today(),
+        )
+
 
 @strawberry.input
 class UserInput:

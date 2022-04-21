@@ -6,6 +6,7 @@ from .models import (
     Comment as CommentModel,
     Submission as SubmissionModel,
     Contest as ContestModel,
+    Vote as VoteModel,
 )
 
 
@@ -26,6 +27,14 @@ class Query:
     @strawberry.field
     def get_submissions_by_contest_id(self, id: strawberry.ID) -> List[Submission]:
         return SubmissionModel.objects.filter(contest=id)
+
+    @strawberry.field
+    def get_comments_by_submission_id(self, id: strawberry.ID) -> List[Comment]:
+        return CommentModel.objects.filter(submission=id)
+
+    @strawberry.field
+    def get_votes_by_submission_id(self, id: strawberry.ID) -> List[Vote]:
+        return VoteModel.objects.filter(submission=id)
 
 
 @strawberry.input

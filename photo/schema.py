@@ -11,6 +11,10 @@ class Query:
 
     submissions: List[Submission] = strawberry.django.field()
 
+    comments: List[Comment] = strawberry.django.field()
+
+    votes: List[Vote] = strawberry.django.field()
+
 
 @strawberry.type
 class Mutation:
@@ -48,6 +52,14 @@ class Mutation:
             user=user,
             contest=contest,
         )
+
+
+@strawberry.type
+class User:
+    email: str
+    first_name: str
+    last_name: str
+    date_joined: datetime.datetime
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)

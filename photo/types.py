@@ -1,3 +1,4 @@
+from xxlimited import Str
 import strawberry
 from strawberry.django import auto
 
@@ -7,7 +8,7 @@ import uuid
 
 @strawberry.django.type(models.Contest)
 class Contest:
-    id: auto
+    # id: auto
     date_start: auto
     date_end: auto
     name: auto
@@ -34,7 +35,7 @@ class Submission:
 
 @strawberry.django.type(models.Comment)
 class Comment:
-    id: uuid.UUID
+    id: auto
     user: "User"
     Submission: "Submission"
     text: str

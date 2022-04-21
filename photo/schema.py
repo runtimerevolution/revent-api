@@ -7,6 +7,7 @@ from .models import (
     Submission as SubmissionModel,
     Contest as ContestModel,
     Vote as VoteModel,
+    User as UserModel,
 )
 
 
@@ -46,26 +47,18 @@ class Query:
 
 @strawberry.input
 class UserInput:
-    email: str
-    first_name: str
-    last_name: str
-    date_joined: datetime.datetime
+    id: strawberry.ID
 
 
 @strawberry.input
 class ContestInput:
-    name: str
-    description: str
-    date_start: datetime.datetime
-    date_end: datetime.datetime
+    id: strawberry.ID
 
 
 @strawberry.input
 class SubmissionInput:
-    user: UserInput
-    contest: ContestInput
-    content: str
-    description: str
+    user_id: strawberry.ID
+    contest_id: strawberry.ID
 
 
 @strawberry.type
@@ -104,9 +97,17 @@ class Mutation:
 
     @strawberry.mutation
     def add_submission(
-        self, content: str, description: str, user: UserInput, contest: ContestInput
+        self,
+        content: str,
+        description: str,
+        user_id: strawberry.ID,
+        contest_id: strawberry.ID,
     ) -> Submission:
-        submission = Submission(
+
+        user = UserModel.objects.filter(pk=user_id).first()
+        contest = ContestModel.objects.filter(pk=contest_id).first()
+
+        submission = SubmissionModel(
             content=content,
             description=description,
             user=user,

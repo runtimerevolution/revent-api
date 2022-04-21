@@ -23,6 +23,10 @@ class Query:
     def get_contest_by_id(self, id: strawberry.ID) -> Contest:
         return ContestModel.objects.filter(pk=id).first()
 
+    @strawberry.field
+    def get_submissions_by_contest_id(self, id: strawberry.ID) -> List[Submission]:
+        return SubmissionModel.objects.filter(contest=id)
+
 
 @strawberry.input
 class UserInput:

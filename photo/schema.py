@@ -1,7 +1,6 @@
 import datetime
-import uuid
 import strawberry
-from .types import Contest, Comment, Submission, Vote, User
+from .types import Contest, Comment, Submission, Vote
 from typing import List
 from .models import Comment as CommentModel, Submission as SubmissionModel
 
@@ -94,9 +93,7 @@ class Mutation:
         return obj
 
     @strawberry.mutation
-    def update_comment(
-        self, id: strawberry.ID, text: str
-    ) -> Comment:  # add user to args
+    def update_comment(self, id: strawberry.ID, text: str, user: UserInput) -> Comment:
         obj = CommentModel.objects.get(pk=id)
         obj.text = text
         obj.save()

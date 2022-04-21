@@ -1,14 +1,12 @@
-from xxlimited import Str
 import strawberry
 from strawberry.django import auto
 
 from . import models
-import uuid
 
 
 @strawberry.django.type(models.Contest)
 class Contest:
-    # id: auto
+    id: strawberry.ID
     date_start: auto
     date_end: auto
     name: auto
@@ -17,7 +15,7 @@ class Contest:
 
 @strawberry.django.type(models.User)
 class User:
-    id: auto
+    id: strawberry.ID
     email: auto
     date_joined: auto
     first_name: auto
@@ -26,7 +24,7 @@ class User:
 
 @strawberry.django.type(models.Submission)
 class Submission:
-    id: auto
+    id: strawberry.ID
     user: auto
     contest: auto
     content: auto
@@ -35,7 +33,7 @@ class Submission:
 
 @strawberry.django.type(models.Comment)
 class Comment:
-    id: auto
+    id: strawberry.ID
     user: "User"
     Submission: "Submission"
     text: str
@@ -43,7 +41,7 @@ class Comment:
 
 @strawberry.django.type(models.Vote)
 class Vote:
-    id: auto
+    id: strawberry.ID
     user: "User"
     Submission: "Submission"
     value: auto
@@ -51,7 +49,7 @@ class Vote:
 
 @strawberry.django.type(models.Result)
 class Result:
-    id: auto
+    id: strawberry.ID
     contest: "Contest"
     submission: "Submission"
     position: auto

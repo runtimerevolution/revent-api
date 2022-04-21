@@ -1,14 +1,14 @@
 import datetime
-import strawberry
-from .types import Contest, Comment, Submission, Vote
 from typing import List
-from .models import (
-    Comment as CommentModel,
-    Submission as SubmissionModel,
-    Contest as ContestModel,
-    Vote as VoteModel,
-    User as UserModel,
-)
+
+import strawberry
+
+from .models import Comment as CommentModel
+from .models import Contest as ContestModel
+from .models import Submission as SubmissionModel
+from .models import User as UserModel
+from .models import Vote as VoteModel
+from .types import Comment, Contest, Submission, Vote
 
 
 @strawberry.type
@@ -53,7 +53,7 @@ class Mutation:
     ) -> Comment:
         user = UserModel.objects.filter(pk=user_id).first()
         submission = SubmissionModel.objects.filter(pk=submission_id).first()
-        comment = Comment(text=text, user=user, submission=submission)
+        comment = CommentModel(text=text, user=user, submission=submission)
         comment.save()
 
         return comment

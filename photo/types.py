@@ -6,7 +6,7 @@ from . import models
 
 @strawberry.django.type(models.Contest)
 class Contest:
-    # id: strawberry.ID
+    id: strawberry.ID
     date_start: auto
     date_end: auto
     name: auto

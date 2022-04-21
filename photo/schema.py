@@ -21,7 +21,7 @@ class Query:
 
     @strawberry.field
     def get_contest_by_id(self, id: strawberry.ID) -> Contest:
-        return ContestModel.objects.filter(pk=id)
+        return ContestModel.objects.filter(pk=id).first()
 
 
 @strawberry.input

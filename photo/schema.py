@@ -2,7 +2,11 @@ import datetime
 import strawberry
 from .types import Contest, Comment, Submission, Vote
 from typing import List
-from .models import Comment as CommentModel, Submission as SubmissionModel
+from .models import (
+    Comment as CommentModel,
+    Submission as SubmissionModel,
+    Contest as ContestModel,
+)
 
 
 @strawberry.type
@@ -14,6 +18,10 @@ class Query:
     comments: List[Comment] = strawberry.django.field()
 
     votes: List[Vote] = strawberry.django.field()
+
+    @strawberry.field
+    def get_contest_by_id(self, id: strawberry.ID) -> Contest:
+        return ContestModel.objects.filter(pk=id)
 
 
 @strawberry.input

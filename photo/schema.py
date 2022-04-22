@@ -11,10 +11,10 @@ from .models import Vote as VoteModel
 from .types import Comment, Contest, Submission, Vote
 
 from .serializers import (
-    UserSerializer,
     ContestSerializer,
     SubmissionSerializer,
     CommentSerializer,
+    VoteSerializer,
 )
 from photo import serializers
 
@@ -61,20 +61,34 @@ class Mutation:
     ) -> Comment:
         user = UserModel.objects.filter(pk=user_id).first()
         submission = SubmissionModel.objects.filter(pk=submission_id).first()
-        comment = CommentModel(text=text, user=user, submission=submission)
-        comment.save()
 
-        return comment
+        serializer = CommentSerializer(
+            data={"text": text, "user": user, "submission": submission}
+        )
+
+        if serializer.is_valid:
+
+            comment = CommentModel(text=text, user=user, submission=submission)
+            comment.save()
+
+            return comment
 
     @strawberry.mutation
     def add_vote(
-        self, value: str, user_id: strawberry.ID, submission_id: strawberry.ID
+        self, value: int, user_id: strawberry.ID, submission_id: strawberry.ID
     ) -> Vote:
         user = UserModel.objects.filter(pk=user_id).first()
         submission = SubmissionModel.objects.filter(pk=submission_id).first()
-        vote = VoteModel(value=value, user=user, submission=submission)
-        vote.save()
-        return vote
+
+        serializer = VoteSerializer(
+            data={"value": value, "user": user, "submission": submission}
+        )
+
+        if serializer.is_valid:
+
+            vote = VoteModel(value=value, user=user, submission=submission)
+            vote.save()
+            return vote
 
     @strawberry.mutation
     def add_contest(
@@ -85,11 +99,24 @@ class Mutation:
         date_end: datetime.datetime,
     ) -> Contest:
 
-        contest = ContestModel(
-            name=name, description=description, date_start=date_start, date_end=date_end
+        serializer = ContestSerializer(
+            data={
+                "name": name,
+                "description": description,
+                "date_start": date_start,
+                "date_end": date_end,
+            }
         )
-        contest.save()
-        return contest
+        if serializer.is_valid:
+
+            contest = ContestModel(
+                name=name,
+                description=description,
+                date_start=date_start,
+                date_end=date_end,
+            )
+            contest.save()
+            return contest
 
     @strawberry.mutation
     def add_submission(
@@ -120,28 +147,37 @@ class Mutation:
                 contest=contest,
             )
             submission.save()
-        return submission
+            return submission
 
     @strawberry.mutation
     def update_submission(
         self, id: strawberry.ID, content: str, description: str
     ) -> Submission:
-        obj = SubmissionModel.objects.get(pk=id)
-        obj.content = content
-        obj.description = description
-        obj.save()
 
-        return obj
+        serializer = SubmissionSerializer(
+            data={"content": content, "description": description}
+        )
+        if serializer.is_valid:
+            obj = SubmissionModel.objects.get(pk=id)
+            obj.content = content
+            obj.description = description
+            obj.save()
+
+            return obj
 
     @strawberry.mutation
     def update_comment(
         self, id: strawberry.ID, text: str, user_id: strawberry.ID
     ) -> Comment:
-        obj = CommentModel.objects.get(pk=id)
-        obj.text = text
-        obj.save()
 
-        return obj
+        user = UserModel.objects.filter(pk=user_id).first()
+        serializer = CommentSerializer(data={"id": id, "text": text, "user": user})
+        if serializer.is_valid:
+            obj = CommentModel.objects.get(pk=id)
+            obj.text = text
+            obj.save()
+
+            return obj
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from photo.models import Comment, Contest, Submission, User
+from photo.models import Comment, Contest, Submission, User, Vote
 
 
 class UserSerializer(serializers.Serializer):
@@ -17,7 +17,12 @@ class SubmissionSerializer(serializers.Serializer):
     class Meta:
         model = Submission
 
+
 class CommentSerializer(serializers.Serializer):
     class Meta:
         model = Comment
 
+
+class VoteSerializer(serializers.Serializer):
+    class Meta:
+        model = Vote

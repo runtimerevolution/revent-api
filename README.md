@@ -232,7 +232,7 @@ Perfect! You are now running the project locally and you can now start coding!
 
   1. Create user
 
-      ![Prerequisite 1](https://github.com/runtimerevolution/revent-api/blob/cv/task/11/graphql-initial-implementation/assets/Prerequisite1.gif)
+      ![Prerequisite 1](https://github.com/runtimerevolution/revent-api/tree/development/assets/Prerequisite1.gif)
 
   2. Import requests
 

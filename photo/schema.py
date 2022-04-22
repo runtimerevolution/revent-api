@@ -16,7 +16,6 @@ from .serializers import (
     CommentSerializer,
     VoteSerializer,
 )
-from photo import serializers
 
 
 @strawberry.type

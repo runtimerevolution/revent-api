@@ -28,11 +28,17 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 
   3. [Tests](#running-tests)
 
-  4. [Guidelines](#guidelines)
+  4. [Requests with hoppscotch](#making-api-requests-with-hoppscotch)
+
+      - [Prerequisites](#prerequisites---create-a-user-locally-and-import-requests-on-hoppscotch)
+
+      - [Test API Requests](#test-api-requests)
+
+  5. [Guidelines](#guidelines)
 
      - [Branch-naming](#branch-naming)
 
-  5. [Who-do-I-talk-to](#who-do-i-talk-to)
+  6. [Who-do-I-talk-to](#who-do-i-talk-to)
 
 ## Setup Time
 
@@ -219,6 +225,40 @@ Perfect! You are now running the project locally and you can now start coding!
 ## Running Tests
 
 *Coming with implementation on pytest*
+
+## Making API Requests With [Hoppscotch](https://hoppscotch.io/pt/graphql/)
+
+### Prerequisites - Create a User locally and import requests on Hoppscotch
+
+  1. Create user
+
+      ![Prerequisite 1](https://github.com/runtimerevolution/revent-api/tree/development/assets/Prerequisite1.gif)
+
+  2. Import requests
+
+      ![Prerequisite 2](https://github.com/runtimerevolution/revent-api/tree/development/assets/Prerequisite2.gif)
+
+### Test API Requests
+
+- Create contests:
+
+    ![Create Contest:](https://github.com/runtimerevolution/revent-api/tree/development/assets/CreateContest.gif)
+
+- Create Submissions:
+
+    ![Create Submission:](https://github.com/runtimerevolution/revent-api/tree/development/assets/CreateSubmission.gif)
+
+- Vote on a Submission:
+
+    ![Vote on Submission:](https://github.com/runtimerevolution/revent-api/tree/development/assets/VoteOnSubmission.gif)
+
+- Comment on a Submission:
+
+    ![Comment on Submission:](https://github.com/runtimerevolution/revent-api/tree/development/assets/CommentOnSubmission.gif)
+
+- Edit a Submission:
+
+    ![Edit Submission:](https://github.com/runtimerevolution/revent-api/tree/development/assets/EditASubmission.gif)
 
 ## Guidelines
 

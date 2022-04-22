@@ -16,15 +16,15 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 
      - [Poetry](#configuration---using-poetry-for-package-and-dependency-management)
 
-     - [Nice-to-Have](#nice-to-have)
+     - [Nice to Have](#nice-to-have)
 
         - [Direnv](#direnv)
 
-  2. [How-to-Run](#how-to-run)
+  2. [How to Run](#how-to-run)
 
      - [Prerequisites](#prerequisites---install-docker)
 
-     - [Run-Docker](#running-the-project)
+     - [Run Docker](#running-the-project)
 
   3. [Tests](#running-tests)
 
@@ -38,7 +38,7 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 
      - [Branch-naming](#branch-naming)
 
-  6. [Who-do-I-talk-to](#who-do-i-talk-to)
+  6. [Who do I talk to](#who-do-i-talk-to)
 
 ## Setup Time
 
@@ -226,13 +226,13 @@ Perfect! You are now running the project locally and you can now start coding!
 
 *Coming with implementation on pytest*
 
-## Making API Requests With [Hoppscotch](https://hoppscotch.io/pt/graphql/)
+## Making API Requests With Hoppscotch
 
-### Prerequisites - Create a User locally and import requests on Hoppscotch
+### Prerequisites - Create a User locally and import requests on [Hoppscotch](https://hoppscotch.io/pt/graphql/)
 
   1. Create user
 
-      ![Prerequisite 1](https://github.com/runtimerevolution/revent-api/tree/development/assets/Prerequisite1.gif)
+      ![Prerequisite 1](https://github.com/runtimerevolution/revent-api/blob/cv/task/11/graphql-initial-implementation/assets/Prerequisite1.gif)
 
   2. Import requests
 

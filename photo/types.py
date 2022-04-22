@@ -1,0 +1,55 @@
+import strawberry
+from strawberry.django import auto
+
+from . import models
+
+
+@strawberry.django.type(models.Contest)
+class Contest:
+    id: strawberry.ID
+    date_start: auto
+    date_end: auto
+    name: auto
+    description: auto
+
+
+@strawberry.django.type(models.User)
+class User:
+    id: strawberry.ID
+    email: auto
+    date_joined: auto
+    first_name: auto
+    last_name: auto
+
+
+@strawberry.django.type(models.Submission)
+class Submission:
+    id: strawberry.ID
+    user: auto
+    contest: auto
+    content: auto
+    description: auto
+
+
+@strawberry.django.type(models.Comment)
+class Comment:
+    id: strawberry.ID
+    user: "User"
+    Submission: "Submission"
+    text: str
+
+
+@strawberry.django.type(models.Vote)
+class Vote:
+    id: strawberry.ID
+    user: "User"
+    Submission: "Submission"
+    value: auto
+
+
+@strawberry.django.type(models.Result)
+class Result:
+    id: strawberry.ID
+    contest: "Contest"
+    submission: "Submission"
+    position: auto

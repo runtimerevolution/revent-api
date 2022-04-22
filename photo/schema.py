@@ -10,6 +10,14 @@ from .models import User as UserModel
 from .models import Vote as VoteModel
 from .types import Comment, Contest, Submission, Vote
 
+from .serializers import (
+    UserSerializer,
+    ContestSerializer,
+    SubmissionSerializer,
+    CommentSerializer,
+)
+from photo import serializers
+
 
 @strawberry.type
 class Query:
@@ -95,13 +103,23 @@ class Mutation:
         user = UserModel.objects.filter(pk=user_id).first()
         contest = ContestModel.objects.filter(pk=contest_id).first()
 
-        submission = SubmissionModel(
-            content=content,
-            description=description,
-            user=user,
-            contest=contest,
+        serializer = SubmissionSerializer(
+            data={
+                "content": content,
+                "description": description,
+                "user": user,
+                "contest": contest,
+            }
         )
-        submission.save()
+        if serializer.is_valid:
+
+            submission = SubmissionModel(
+                content=content,
+                description=description,
+                user=user,
+                contest=contest,
+            )
+            submission.save()
         return submission
 
     @strawberry.mutation

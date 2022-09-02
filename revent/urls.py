@@ -7,5 +7,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.hello, name="hello"),
     # In case we wanna have multiple url files for each app
-    path('photo/', include('photo.urls'))
+    path("photo/", include("photo.urls")),
 ]

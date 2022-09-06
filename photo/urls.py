@@ -7,4 +7,5 @@ urlpatterns = [
     path("users/", views.UserList.as_view()),
     path("users/<uuid:id>/", views.UserDetail.as_view()),
     path("contests/", views.ContestList.as_view()),
+    path("users/authenticated/", views.current_user),
 ]

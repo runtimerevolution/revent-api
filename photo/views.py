@@ -3,6 +3,9 @@ from rest_framework import generics
 from photo.models import Submission, User, Contest
 from photo.serializers import SubmissionSerializer, UserSerializer, ContestSerializer
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 # Create your views here.
 
 
@@ -33,3 +36,12 @@ class SubmissionDetail(generics.RetrieveUpdateDestroyAPIView):
 class ContestList(generics.ListCreateAPIView):
     queryset = Contest.objects.all()
     serializer_class = ContestSerializer
+
+
+@api_view(["GET"])
+def current_user(request):
+    if request.user.is_authenticated:
+        # && request.user.is_contest_manager:
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+    return Response("No authenticated user.")

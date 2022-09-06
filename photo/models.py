@@ -15,6 +15,7 @@ class User(UUIDModel):
     date_joined = models.DateTimeField(("date joined"), default=timezone.now)
     first_name = models.TextField(("First Name"))
     last_name = models.TextField(("Last Name"))
+    is_contest_manager = models.BooleanField(default=False)
 
 
 class Contest(UUIDModel):

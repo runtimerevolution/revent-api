@@ -15,6 +15,7 @@ def test_create_contest():
     contest = Contest.objects.create(name="TestContest", date_end="2022-09-28T15:11:16Z")
     assert Contest.objects.count() == 1
     assert contest.name == "TestContest"
+    assert contest.date_end == "2022-09-28T15:11:16Z"
 
 
 @pytest.mark.django_db

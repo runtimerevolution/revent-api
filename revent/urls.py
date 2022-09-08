@@ -12,5 +12,4 @@ api_router.register(r"contests", ContestViewSet, basename="contests")
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(api_router.urls)),
-    path("photo/", include("photo.urls")),
 ]

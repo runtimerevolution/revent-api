@@ -1,52 +1,56 @@
 import pytest
 from photo.models import User, Contest, Submission, Vote, Result
+from factories import (
+    UserFactory,
+    ContestFactory,
+    SubmissionFactory,
+    CommentFactory,
+    VoteFactory,
+    ResultFactory,
+)
 
 
 @pytest.mark.django_db
-def test_user_create():
-    user = User.objects.create(first_name="john", email="lennon@thebeatles.com")
-    assert User.objects.count() == 1
-    assert user.first_name == "john"
-    assert user.email == "lennon@thebeatles.com"
+def test_create_user():
+    user = UserFactory()
+    assert user.first_name == "John"
+    assert user.email == "john.doe@test.com"
 
 
 @pytest.mark.django_db
-def test_create_contest():
-    contest = Contest.objects.create(name="TestContest", date_end="2022-09-28T15:11:16Z")
-    assert Contest.objects.count() == 1
+def test_contest_model():
+    contest = ContestFactory()
     assert contest.name == "TestContest"
-    assert contest.date_end == "2022-09-28T15:11:16Z"
+    assert contest.description == "Time for a new monthly photo contest"
+    assert contest.date_start.month != contest.date_end.month
 
 
 @pytest.mark.django_db
-def test_submission_create():
-    user = User.objects.create(first_name="john", email="lennon@thebeatles.com")
-    contest = Contest.objects.create(name="TestContest", date_end="2022-09-28T15:11:16Z")
-    submission = Submission.objects.create(user=user, contest=contest)
-    assert Submission.objects.count() == 1
-    assert submission.user.first_name == "john"
+def test_create_submission():
+    user = UserFactory()
+    contest = ContestFactory()
+    submission = SubmissionFactory(user=user, contest=contest)
+    assert submission.user.first_name == "John"
     assert submission.contest.name == "TestContest"
 
 
 @pytest.mark.django_db
-def test_vote():
-    user = User.objects.create(first_name="john", email="lennon@thebeatles.com")
-    contest = Contest.objects.create(name="TestContest", date_end="2022-09-28T15:11:16Z")
-    submission = Submission.objects.create(user=user, contest=contest)
-    vote = Vote.objects.create(user=user, submission=submission, value=1)
-    assert Submission.objects.count() == 1
-    assert vote.user.first_name == "john"
+def test_create_vote():
+    user = UserFactory()
+    contest = ContestFactory()
+    submission = SubmissionFactory(user=user, contest=contest)
+    vote = VoteFactory(user=user, submission=submission, value=1)
+    assert vote.user.first_name == "John"
     assert vote.submission.user == user
     assert vote.value == 1
 
 
 @pytest.mark.django_db
-def test_result():
-    user = User.objects.create(first_name="john", email="lennon@thebeatles.com")
-    contest = Contest.objects.create(name="TestContest", date_end="2022-09-28T15:11:16Z")
-    submission = Submission.objects.create(user=user, contest=contest)
-    result = Result.objects.create(contest=contest, submission=submission, position=2)
-    assert Result.objects.count() == 1
+def test_create_result():
+    user = UserFactory()
+    contest = ContestFactory()
+    submission = SubmissionFactory(user=user, contest=contest)
+    result = ResultFactory(contest=contest, submission=submission, position=2)
     assert result.contest == contest
     assert result.submission.user == user
     assert result.position == 2

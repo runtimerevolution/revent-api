@@ -1,11 +1,16 @@
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework_nested import routers
 
-from photo import views
+from photo.views import UserViewSet, SubmissionViewSet, ContestViewSet
+
+api_router = routers.DefaultRouter()
+api_router.register(r"users", UserViewSet, basename="users")
+api_router.register(r"submissions", SubmissionViewSet, basename="submissions")
+api_router.register(r"contests", ContestViewSet, basename="contests")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.hello, name="hello"),
-    # In case we wanna have multiple url files for each app
-    path('photo/', include('photo.urls'))
+    path("api/", include(api_router.urls)),
+    path("photo/", include("photo.urls")),
 ]

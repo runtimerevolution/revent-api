@@ -51,7 +51,7 @@ class ResultSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Result
-        fields = ["id", "user", "submission", "position"]
+        fields = ["id", "contest", "submission", "position"]
 
 
 class ReventTokenObtainPairSerializer(TokenObtainPairSerializer):

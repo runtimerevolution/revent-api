@@ -1,5 +1,5 @@
 import pytest
-from photo.models import User, Contest, Submission, Vote, Result
+
 from factories import (
     UserFactory,
     ContestFactory,

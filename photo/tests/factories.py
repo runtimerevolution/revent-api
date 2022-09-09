@@ -4,7 +4,7 @@ import factory
 from dateutil.relativedelta import relativedelta
 
 
-class UserFactory(factory.Factory):
+class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
@@ -14,7 +14,7 @@ class UserFactory(factory.Factory):
     last_name = "Doe"
 
 
-class ContestFactory(factory.Factory):
+class ContestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Contest
 
@@ -30,8 +30,8 @@ class SubmissionFactory(factory.Factory):
 
     user = factory.SubFactory(UserFactory)
     contest = factory.SubFactory(ContestFactory)
-    content = ""
-    description = ""
+    content = "content"
+    description = "test"
 
 
 class CommentFactory(factory.Factory):

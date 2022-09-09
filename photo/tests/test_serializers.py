@@ -1,5 +1,6 @@
 import pytest
-
+import datetime
+from photo import models
 from factories import (
     UserFactory,
     ContestFactory,
@@ -19,7 +20,10 @@ from photo.serializers import (
 )
 
 
-class TestUserSerializer:
+class TestSerializers:
+    def setUp(self):
+        UserFactory(first_name="TestSetUp", email="setup123@email.com")
+
     @pytest.mark.unit
     def test_user_serializer(self):
         user = UserFactory.build()
@@ -61,3 +65,99 @@ class TestUserSerializer:
         serializer = ResultSerializer(result)
 
         assert serializer.data
+
+    @pytest.mark.django_db
+    def test_user_serialized_valid_data(self):
+        user = UserFactory()
+        valid_serialized_data = {
+            "email": user.email,
+            "date_joined": user.date_joined,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        }
+
+        serializer = UserSerializer(data=valid_serialized_data)
+
+        assert serializer.is_valid(raise_exception=True)
+        assert serializer.errors == {}
+
+    @pytest.mark.django_db
+    def test_user_serialized_invalid_data(self):
+        user = UserFactory()
+        invalid_serialized_data = {
+            "email": "user.email",
+            "date_joined": user.date_joined,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        }
+
+        serializer = UserSerializer(data=invalid_serialized_data)
+        assert not serializer.is_valid()
+
+    @pytest.mark.django_db
+    def test_contest_serialized_valid_data(self):
+        contest = ContestFactory()
+        valid_serialized_data = {
+            "date_start": contest.date_start,
+            "date_end": contest.date_end,
+            "name": contest.name,
+            "description": contest.description,
+        }
+
+        serializer = ContestSerializer(data=valid_serialized_data)
+
+        assert serializer.is_valid(raise_exception=True)
+        assert serializer.errors == {}
+
+    @pytest.mark.django_db
+    def test_contest_serialized_invalid_data(self):
+        contest = ContestFactory()
+        invalid_serialized_data = {
+            "date_start": 321,
+            "date_end": 123,
+            "name": contest.name,
+            "description": contest.description,
+        }
+
+        serializer = ContestSerializer(data=invalid_serialized_data)
+        assert not serializer.is_valid()
+
+    @pytest.mark.django_db
+    def test_submission_serialized_valid_data(self):
+        # user = UserFactory()
+        # user.save()
+        # contest = ContestFactory()
+        # user = models.User.objects.create(first_name="John", email="test@test.com")
+        user = UserFactory(first_name="TestSetUp", email="setup123@email.com")
+        # user = models.User.objects.get(email="setup@email.com")
+        contest = models.Contest.objects.create(date_end=datetime.datetime.now(), name="Test", description="test")
+        print("user", user)
+        print("contest", contest)
+        submission = SubmissionFactory(user=user, contest=contest)
+
+        valid_serialized_data = {
+            "user": submission.user.id,
+            "contest": submission.contest,
+            "content": submission.content,
+            "description": submission.description,
+        }
+
+        serializer = SubmissionSerializer(data=valid_serialized_data)
+
+        assert serializer.is_valid(raise_exception=True)
+        assert serializer.errors == {}
+
+    # @pytest.mark.django_db
+    # def test_submission_serialized_invalid_data(self):
+    #     user = UserFactory()
+    #     contest = ContestFactory()
+    #     submission = SubmissionFactory(user=user, contest=contest)
+    #     invalid_serialized_data = {
+    #         "user": "submission.user",
+    #         "contest": submission.contest,
+    #         "content": submission.content,
+    #         "description": submission.description,
+    #     }
+
+    #     serializer = ContestSerializer(data=invalid_serialized_data)
+    #     assert not serializer.is_valid()

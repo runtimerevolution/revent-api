@@ -70,7 +70,7 @@ class TestSerializers:
     def test_user_serialized_valid_data(self):
         user = UserFactory()
         valid_serialized_data = {
-            "email": user.email,
+            "email": "new@email.com",
             "date_joined": user.date_joined,
             "first_name": user.first_name,
             "last_name": user.last_name,
@@ -124,20 +124,14 @@ class TestSerializers:
 
     @pytest.mark.django_db
     def test_submission_serialized_valid_data(self):
-        # user = UserFactory()
-        # user.save()
-        # contest = ContestFactory()
-        # user = models.User.objects.create(first_name="John", email="test@test.com")
+
+        contest = ContestFactory()
         user = UserFactory(first_name="TestSetUp", email="setup123@email.com")
-        # user = models.User.objects.get(email="setup@email.com")
-        contest = models.Contest.objects.create(date_end=datetime.datetime.now(), name="Test", description="test")
-        print("user", user)
-        print("contest", contest)
         submission = SubmissionFactory(user=user, contest=contest)
 
         valid_serialized_data = {
             "user": submission.user.id,
-            "contest": submission.contest,
+            "contest": submission.contest.id,
             "content": submission.content,
             "description": submission.description,
         }
@@ -146,18 +140,3 @@ class TestSerializers:
 
         assert serializer.is_valid(raise_exception=True)
         assert serializer.errors == {}
-
-    # @pytest.mark.django_db
-    # def test_submission_serialized_invalid_data(self):
-    #     user = UserFactory()
-    #     contest = ContestFactory()
-    #     submission = SubmissionFactory(user=user, contest=contest)
-    #     invalid_serialized_data = {
-    #         "user": "submission.user",
-    #         "contest": submission.contest,
-    #         "content": submission.content,
-    #         "description": submission.description,
-    #     }
-
-    #     serializer = ContestSerializer(data=invalid_serialized_data)
-    #     assert not serializer.is_valid()

@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-
 def hello(request):
     return HttpResponse("Hello Runtime")
 
@@ -33,6 +32,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 class ContestViewSet(viewsets.ModelViewSet):
     queryset = Contest.objects.all()
     serializer_class = ContestSerializer
+
 
 @api_view(["GET"])
 def submissions_from_contest(request, id):

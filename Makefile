@@ -1,3 +1,6 @@
+include .env
+export
+
 run:
 	python manage.py runserver
 

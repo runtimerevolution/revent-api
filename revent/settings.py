@@ -87,11 +87,11 @@ WSGI_APPLICATION = "revent.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
+        "NAME": env("POSTGRES_DB", default=""),
+        "USER": env("POSTGRES_USER", default=""),
+        "PASSWORD": env("POSTGRES_PASSWORD", default=""),
         "HOST": "localhost",
-        "PORT": "5500",
+        "PORT": "5432",
     }
 }
 

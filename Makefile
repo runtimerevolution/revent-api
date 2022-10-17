@@ -1,3 +1,6 @@
+include .env
+export
+
 run:
 	python manage.py runserver
 
@@ -27,6 +30,12 @@ dk-build-t:
 	docker build -t revent:latest .
 
 # -t to specify a tag
+
+docker-up:
+	docker compose up -d
+
+docker-down:
+	docker compose down
 
 dk-up:
 	docker-compose -f ./docker-compose.yml up -d

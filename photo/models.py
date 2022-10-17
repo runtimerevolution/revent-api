@@ -22,11 +22,11 @@ class AuthorChangesMixin(models.Model):
     created_by = models.UUIDField(("created by"))
     updated_by = models.UUIDField(("updated by"))
 
-    def save(self, *args, user, **kwargs):
+    def save(self, *args, **kwargs):
         if self.created_by == None:
-            self.created_by = user
+            self.created_by = kwargs.get("user")
         else:
-            self.updated_by = user
+            self.updated_by = kwargs.get("user")
         super(AuthorChangesMixin, self).save(*args, **kwargs)
 
     class Meta:

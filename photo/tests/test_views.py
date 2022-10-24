@@ -128,6 +128,9 @@ class TestSubmissionsFromContestDelete(TestCase):
         self.submission = SubmissionFactory(user=self.user, contest=self.contest)
     
     def test_success(self):
+        
+        qs = Submission.objects.filter(id=self.submission.id)
+        
         response = self.client.delete(
             f"/api/submissions/{self.submission.id}/"
         )
@@ -136,8 +139,8 @@ class TestSubmissionsFromContestDelete(TestCase):
         
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(
-            json.dumps(SubmissionSerializer(qs).data, cls=DjangoJSONEncoder),
-            json.dumps(response.json()),
+            json.dumps(SubmissionSerializer(qs, many=True).data, cls=DjangoJSONEncoder),
+            '[]',
         )
 
 

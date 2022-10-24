@@ -21,6 +21,14 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
+# AWS Service
+AWS_S3_HOST = env("AWS_S3_HOST")
+AWS_DEFAULT_REGION = env("AWS_DEFAULT_REGION")
+AWS_S3_BUCKET = env("AWS_S3_BUCKET")
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+
+
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",

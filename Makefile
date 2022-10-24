@@ -31,6 +31,12 @@ dk-build-t:
 
 # -t to specify a tag
 
+docker-up:
+	docker compose up -d
+
+docker-down:
+	docker compose down
+
 dk-up:
 	docker-compose -f ./docker-compose.yml up -d
 

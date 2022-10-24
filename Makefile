@@ -52,3 +52,6 @@ dk-stop:
 # Admin
 superuser:
 	python manage.py createsuperuser
+
+shell:
+	poetry run python manage.py shell

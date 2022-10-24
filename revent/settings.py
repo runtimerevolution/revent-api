@@ -26,6 +26,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "0.0.0.0",
     "runtime-revent-api.herokuapp.com",
+    "testserver",
 ]
 
 # Application definition
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "photo",
     "rest_framework",
     "rest_framework.authtoken",

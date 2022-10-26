@@ -11,11 +11,20 @@ BINARY_CONTENT = b"\x00\x00\x00\x00\x00\x00\x00\x00\x01\x01\x01\x01\x01\x01"
 
 
 class AWSS3Tests(TestCase):
+    def test_empty_bucket(self):
+        s3_client = awsS3()
+        s3_client.create_bucket(f"{randint(0, 10000)}")
+        assert s3_client.list_objs().get("Contents") == None
+
     def test_upload_file_object(self):
         s3_client = awsS3()
         f = io.BytesIO(BINARY_CONTENT)
         _file = SimpleUploadedFile("text.txt", f.read())
-        len_before = len(s3_client.list_objs().get("Contents"))
+        contents = s3_client.list_objs().get("Contents")
+        if contents == None:
+            len_before = 0
+        else:
+            len_before = len(contents)
 
         s3_client.upload_file_obj(_file, f"test{randint(0, 10000)}.txt")
 

@@ -1,8 +1,8 @@
 import pytest
 import json
 from photo.models import User, Contest, Submission, Vote, Result
-from ..serializers import SubmissionSerializer, UserSerializer
-from .factories import (
+from photo.serializers import SubmissionSerializer, UserSerializer
+from photo.tests.factories import (
     UserFactory,
     ContestFactory,
     SubmissionFactory,

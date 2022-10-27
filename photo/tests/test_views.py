@@ -1,10 +1,10 @@
 from django.test import Client, TestCase
 from rest_framework import status
-from ..serializers import SubmissionSerializer, UserSerializer
+from photo.serializers import SubmissionSerializer, UserSerializer
 from photo.models import Submission, User
 from photo.tests.factories import UserFactory, ContestFactory, SubmissionFactory
 import uuid
-from .fixtures import (
+from photo.tests.fixtures import (
     CONTEST_DESCRIPTION,
     CONTEST_NAME,
     SUBMISSION_CONTENT,

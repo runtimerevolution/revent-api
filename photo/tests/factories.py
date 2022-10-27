@@ -1,5 +1,5 @@
 import datetime
-from ..models import User, Contest, Submission, Comment, Vote, Result
+from photo.models import User, Contest, Submission, Comment, Vote, Result
 import factory
 from dateutil.relativedelta import relativedelta
 

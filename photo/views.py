@@ -21,7 +21,6 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(methods=["GET"], url_path="authenticated", detail=False)
     def current_user(self, request):
         if request.user.is_authenticated:
-            # && request.user.is_contest_manager:
             serializer = UserSerializer(request.user)
             return Response(serializer.data)
         return Response("No authenticated user.")
@@ -32,23 +31,13 @@ class SubmissionViewSet(ListRetrieveUpdateCreateViewSet):
     serializer_class = SubmissionSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = SubmissionFilter
-    # lookup_field = "contest_id"
 
-    # def get_queryset(self):
-    #     return Submission.objects.filter(contest=self.id)
 
 
 class ContestViewSet(viewsets.ModelViewSet):
     queryset = Contest.objects.all()
     serializer_class = ContestSerializer
 
-# class ModelViewSet(mixins.CreateModelMixin,
-#                    mixins.RetrieveModelMixin,
-#                    mixins.UpdateModelMixin,
-#                    mixins.DestroyModelMixin,
-#                    mixins.ListModelMixin,
-#                    GenericViewSet):
-#     pass
 
 
 @api_view(["GET"])

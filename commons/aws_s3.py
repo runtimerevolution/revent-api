@@ -7,7 +7,7 @@ from django.conf import settings
 class awsS3:
     def __init__(self):
         self.s3 = boto3.resource("s3", endpoint_url=settings.AWS_S3_HOST)
-        self.bucket_name = settings.AWS_S3_BUCKET
+        self.bucket_name = settings.AWS_STORAGE_BUCKET_NAME
         self.create_bucket(self.bucket_name)
 
     def list_buckets(self):

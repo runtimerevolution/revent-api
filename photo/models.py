@@ -6,6 +6,8 @@ import boto3
 from botocore.exceptions import ClientError
 from storages.backends.s3boto3 import S3Boto3Storage
 from django.conf import settings
+from commons.aws_s3 import awsS3
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 class UUIDModel(models.Model):
@@ -38,15 +40,18 @@ class AuthorChangesMixin(models.Model):
         abstract = True
 
 
-class BrandMediaStorage(S3Boto3Storage):
-    location = "brands"
-    default_acl = "private"
-    querystring_auth = True
+class SubmissionContentStorage(S3Boto3Storage):
+    bucket_name = "submissionimages"
+    # location = "content"
+    # default_acl = "private"
+    # querystring_auth = True
+    # s3ForcePathStyle = True
+    # custom_domain = "http://s3.localhost.localstack.cloud:4566"
 
 
 def upload_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/<brand_id>/logo.png
-    return f"{instance.id}/{filename}.png"
+    return f"{instance.id}/{filename}"
 
 
 class User(UUIDModel, TimestampsMixin):
@@ -66,7 +71,7 @@ class Contest(UUIDModel, TimestampsMixin, AuthorChangesMixin):
 class Submission(UUIDModel, TimestampsMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     contest = models.ForeignKey(Contest, on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.ImageField(storage=SubmissionContentStorage, null=True, blank=True, upload_to=upload_path)
     description = models.TextField()
 
 

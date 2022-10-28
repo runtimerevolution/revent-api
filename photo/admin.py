@@ -17,7 +17,7 @@ class ContestAdmin(admin.ModelAdmin):
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ("user", "contest", "content", "description")
+    list_display = ("user", "contest", "url", "description")
 
 
 @admin.register(Comment)

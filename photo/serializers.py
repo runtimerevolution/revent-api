@@ -24,7 +24,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submission
-        fields = ["id", "user", "contest", "content", "description"]
+        fields = ["id", "user", "contest", "url", "description"]
 
 
 class CommentSerializer(serializers.ModelSerializer):

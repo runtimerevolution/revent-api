@@ -42,11 +42,6 @@ class AuthorChangesMixin(models.Model):
 
 class SubmissionContentStorage(S3Boto3Storage):
     bucket_name = "submissionimages"
-    # location = "content"
-    # default_acl = "private"
-    # querystring_auth = True
-    # s3ForcePathStyle = True
-    # custom_domain = "http://s3.localhost.localstack.cloud:4566"
 
 
 def upload_path(instance, filename):
@@ -71,7 +66,7 @@ class Contest(UUIDModel, TimestampsMixin, AuthorChangesMixin):
 class Submission(UUIDModel, TimestampsMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     contest = models.ForeignKey(Contest, on_delete=models.CASCADE)
-    content = models.ImageField(storage=SubmissionContentStorage, null=True, blank=True, upload_to=upload_path)
+    url = models.ImageField(storage=SubmissionContentStorage, null=True, blank=True, upload_to=upload_path)
     description = models.TextField()
 
 

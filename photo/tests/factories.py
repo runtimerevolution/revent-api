@@ -48,8 +48,8 @@ class SubmissionFactory(factory.django.DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory)
     contest = factory.SubFactory(ContestFactory)
-    content = factory.Faker("sentence", nb_words=3, variable_nb_words=True)
-    description = factory.Faker("sentence", nb_words=10, variable_nb_words=True)
+    url = "url"
+    description = "test"
 
 
 class CommentFactory(factory.Factory):

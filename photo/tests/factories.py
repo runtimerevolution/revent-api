@@ -7,31 +7,49 @@ from dateutil.relativedelta import relativedelta
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
+        django_get_or_create = (
+            "email",
+            "date_joined",
+            "first_name",
+            "last_name"
+        )
 
-    email = "john.doe@test.com"
+    email = factory.Faker("ascii_company_email")
     date_joined = datetime.datetime.now()
-    first_name = "John"
-    last_name = "Doe"
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
 
 
 class ContestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Contest
+        django_get_or_create = (
+            "date_start",
+            "date_end",
+            "name",
+            "description",
+        )
 
     date_start = datetime.datetime.now()
     date_end = datetime.datetime.now() + relativedelta(months=1)
-    name = "TestContest"
-    description = "Time for a new monthly photo contest"
+    name = factory.Faker("sentence", nb_words=3, variable_nb_words=True)
+    description = factory.Faker("sentence", nb_words=10, variable_nb_words=True)
 
 
-class SubmissionFactory(factory.Factory):
+class SubmissionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Submission
+        django_get_or_create = (
+            "user",
+            "contest",
+            "content",
+            "description",
+        )
 
     user = factory.SubFactory(UserFactory)
     contest = factory.SubFactory(ContestFactory)
-    content = "content"
-    description = "test"
+    content = factory.Faker("sentence", nb_words=3, variable_nb_words=True)
+    description = factory.Faker("sentence", nb_words=10, variable_nb_words=True)
 
 
 class CommentFactory(factory.Factory):
@@ -40,7 +58,7 @@ class CommentFactory(factory.Factory):
 
     user = factory.SubFactory(UserFactory)
     submission = factory.SubFactory(SubmissionFactory)
-    text = "Great picture! Love it!"
+    text = factory.Faker("sentence", nb_words=5, variable_nb_words=True)
 
 
 class VoteFactory(factory.Factory):

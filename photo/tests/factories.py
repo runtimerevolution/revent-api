@@ -49,7 +49,7 @@ class SubmissionFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     contest = factory.SubFactory(ContestFactory)
     url = factory.django.ImageField(color=factory.Faker("color"))
-    description = "test"
+    description = factory.Faker("sentence", nb_words=10, variable_nb_words=True)
 
 
 class CommentFactory(factory.Factory):

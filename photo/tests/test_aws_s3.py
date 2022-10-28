@@ -1,4 +1,3 @@
-import os
 from random import randint
 import io
 

@@ -13,33 +13,34 @@ class AWSS3Tests(TestCase):
     def test_empty_bucket(self):
         s3_client = awsS3()
         s3_client.create_bucket(f"{randint(0, 10000)}")
+
         assert s3_client.list_objs().get("Contents") == None
 
     def test_upload_file_object(self):
         s3_client = awsS3()
         f = io.BytesIO(BINARY_CONTENT)
-        _file = SimpleUploadedFile("text.txt", f.read())
+        file = SimpleUploadedFile("text.txt", f.read())
         contents = s3_client.list_objs().get("Contents")
-        if contents == None:
-            len_before = 0
+        if contents is None:
+            s3_list_size = 0
         else:
-            len_before = len(contents)
+            s3_list_size = len(contents)
 
-        s3_client.upload_file_obj(_file, f"test{randint(0, 10000)}.txt")
+        s3_client.upload_file_obj(file, f"test{randint(0, 10000)}.txt")
 
-        assert (len_before + 1) == len(s3_client.list_objs().get("Contents"))
+        assert (s3_list_size + 1) == len(s3_client.list_objs().get("Contents"))
 
     def test_get_file_object(self):
         s3_client = awsS3()
         f = io.BytesIO(BINARY_CONTENT)
         file_name = f"test{randint(0, 10000)}.txt"
-        _file = SimpleUploadedFile(file_name, f.read())
+        file = SimpleUploadedFile(file_name, f.read())
         f.seek(0)  # We need to reset the 'read pointer' after being read
 
-        len_before = len(s3_client.list_objs().get("Contents"))
+        s3_list_size = len(s3_client.list_objs().get("Contents"))
 
-        s3_client.upload_file_obj(_file, _file.name)
+        s3_client.upload_file_obj(file, file.name)
         obj = s3_client.get_file_obj(file_name)
 
-        assert (len_before + 1) == len(s3_client.list_objs().get("Contents"))
+        assert (s3_list_size + 1) == len(s3_client.list_objs().get("Contents"))
         assert obj.get("Body").read() == f.read()

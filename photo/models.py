@@ -2,12 +2,7 @@ from PIL import Image
 from django.utils import timezone
 from django.db import models
 import uuid
-import boto3
-from botocore.exceptions import ClientError
 from storages.backends.s3boto3 import S3Boto3Storage
-from django.conf import settings
-from commons.aws_s3 import awsS3
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 class UUIDModel(models.Model):

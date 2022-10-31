@@ -21,6 +21,7 @@ class ContestSerializer(serializers.ModelSerializer):
 class SubmissionSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     contest = serializers.PrimaryKeyRelatedField(queryset=Contest.objects.all())
+    url = serializers.ImageField(required=False, allow_empty_file=True)
 
     class Meta:
         model = Submission

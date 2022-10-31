@@ -37,7 +37,11 @@ class AWSS3Tests(TestCase):
         file = SimpleUploadedFile(file_name, f.read())
         f.seek(0)  # We need to reset the 'read pointer' after being read
 
-        s3_list_size = len(s3_client.list_objs().get("Contents"))
+        contents = s3_client.list_objs().get("Contents")
+        if contents is None:
+            s3_list_size = 0
+        else:
+            s3_list_size = len(contents)
 
         s3_client.upload_file_obj(file, file.name)
         obj = s3_client.get_file_obj(file_name)

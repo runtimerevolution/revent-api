@@ -12,6 +12,5 @@ api_router.register(r"contests", ContestViewSet, basename="contests")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path("api/contests/<uuid:id>/", views.submissions_from_contest, name="submissionsFromContest"),
     path("api/", include(api_router.urls)),
 ]

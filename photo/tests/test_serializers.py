@@ -122,14 +122,12 @@ class TestSerializers:
         serializer = ContestSerializer(data=invalid_serialized_data)
         assert not serializer.is_valid()
 
-    # @pytest.mark.django_db
-    # def test_submission_serialized_valid_data(self):
+    @pytest.mark.django_db
+    def test_submission_serialized_valid_data(self):
 
-    #     contest = ContestFactory()
-    #     user = UserFactory(first_name="TestSetUp", email="setup123@email.com")
-    #     submission = SubmissionFactory(user=user, contest=contest)
-    #     # TODO DEFAULT URL DOESNT EXIST IN LOCALSTACK
-    #     submission.url = "19907fb9-22ed-4ec6-ad48-e5ea59c59bc6/Screenshot_2022-10-19_at_15.05.19.png"
+        contest = ContestFactory()
+        user = UserFactory(first_name="TestSetUp", email="setup123@email.com")
+        submission = SubmissionFactory(user=user, contest=contest)
 
         valid_serialized_data = {
             "user": submission.user.id,
@@ -138,7 +136,7 @@ class TestSerializers:
             "description": submission.description,
         }
 
-    #     serializer = SubmissionSerializer(data=valid_serialized_data)
+        serializer = SubmissionSerializer(data=valid_serialized_data)
 
-    #     assert serializer.is_valid(raise_exception=True)
-    #     assert serializer.errors == {}
+        assert serializer.is_valid(raise_exception=True)
+        assert serializer.errors == {}

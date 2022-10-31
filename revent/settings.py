@@ -21,6 +21,15 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
+# AWS Service
+AWS_S3_HOST = env("AWS_S3_HOST")
+AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
+AWS_DEFAULT_REGION = env("AWS_DEFAULT_REGION")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+
+
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
@@ -41,16 +50,22 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
 ]
 
 ROOT_URLCONF = "revent.urls"
@@ -79,17 +94,14 @@ WSGI_APPLICATION = "revent.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-        # 'ENGINE':os.environ.get("SQL_ENGINE"),
-        # 'NAME': os.environ.get('SQL_DATABASE'),
-        # 'USER': os.environ.get('SQL_USER'),
-        # 'PASSWORD': os.environ.get('SQL_PASSWORD'),
-        # 'HOST': os.environ.get('SQL_HOST'),
-        # 'PORT': os.environ.get('SQL_PORT'),
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("POSTGRES_DB", default=""),
+        "USER": env("POSTGRES_USER", default=""),
+        "PASSWORD": env("POSTGRES_PASSWORD", default=""),
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

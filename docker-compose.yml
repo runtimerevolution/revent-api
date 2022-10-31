@@ -1,9 +1,18 @@
-version: '3.9'
-
+version: "3.9"
 services:
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
+  revent-db:
+    container_name: revent-db
+    image: postgres:latest
+    env_file:
+      - ".env"
     ports:
-      - 8000:8000
-    env_file: ./.env
+      - "5432:5432"
+
+  localstack:
+    container_name: revent-localstack_main
+    image: localstack/localstack
+    ports:
+      - "4566:4566" # LocalStack Gateway
+      - "4510-4559:4510-4559" # external services port range
+    environment:
+      - DEBUG=True

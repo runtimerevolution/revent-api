@@ -14,3 +14,4 @@ class ListRetrieveUpdateCreateViewSet(
     viewsets.GenericViewSet,
 ):
     ...
+    

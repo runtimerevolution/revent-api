@@ -40,12 +40,11 @@ class TestSubmissionsFromContestList(TestCase):
 
 class TestSubmissionsFromContestListFilter(TestCase):
     
-    def setUp(self):
+    def test_success(self):
         self.user = UserFactory()
         self.contest = ContestFactory()
         self.submission = SubmissionFactory(user=self.user, contest=self.contest)
-    
-    def test_success(self):
+        
         qs = Submission.objects.filter(contest__id=self.submission.contest.id)
         
         response = self.client.get(
@@ -59,11 +58,9 @@ class TestSubmissionsFromContestListFilter(TestCase):
         )
     
     def test_failure(self):
-        while True:
-            non_existing_uuid = str(uuid.uuid4())
-            qs = Submission.objects.filter(contest__id=non_existing_uuid)
-            if not qs:
-                break
+        non_existing_uuid = str(uuid.uuid4())
+        
+        qs = Submission.objects.filter(contest__id=str(uuid.uuid4()))
 
         response = self.client.get(
             f"/api/submissions/?contest={non_existing_uuid}"
@@ -90,7 +87,7 @@ class TestSubmissionsFromContestUpdate(TestCase):
             data={
                 "user": str(self.user2.id),
                 "contest": str(self.contest2.id),
-                "content": SUBMISSION_CONTENT,
+                "url": SUBMISSION_CONTENT,
                 "description": SUBMISSION_DESCRIPTION,
             },
             content_type="application/json",

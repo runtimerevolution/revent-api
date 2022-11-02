@@ -39,12 +39,3 @@ class ContestViewSet(viewsets.ModelViewSet):
     serializer_class = ContestSerializer
 
 
-
-# @api_view(["GET"])
-# def submissions_from_contest(request, id):
-#     contest = Contest.objects.filter(pk=id)
-#     if(len(contest) == 0):
-#         return Response([{"detail":"Not found."}])
-#     submissions = Submission.objects.filter(contest=id)
-#     serializer = SubmissionSerializer(submissions, many=True)
-#     return Response(serializer.data)

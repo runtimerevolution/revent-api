@@ -20,7 +20,7 @@ class TimestampsMixin(models.Model):
 
 class AuthorChangesMixin(models.Model):
     created_by = models.UUIDField(("created by"))
-    updated_by = models.UUIDField(("updated by"))
+    updated_by = models.UUIDField(("updated by"), blank=False, null=True)
 
     def save(self, *args, **kwargs):
         if self.created_by == None:

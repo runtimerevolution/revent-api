@@ -25,7 +25,8 @@ def test_create_user():
 
 @pytest.mark.django_db
 def test_contest_model():
-    contest = ContestFactory()
+    user = UserFactory()
+    contest = ContestFactory(creator_id=user.id)
     
     qs = Contest.objects.get(id=contest.id)
      
@@ -37,7 +38,7 @@ def test_contest_model():
 @pytest.mark.django_db
 def test_create_submission():
     user = UserFactory()
-    contest = ContestFactory()
+    contest = ContestFactory(creator_id=user.id)
     submission = SubmissionFactory(user=user, contest=contest)
     
     qs = Submission.objects.get(id=submission.id)
@@ -49,7 +50,7 @@ def test_create_submission():
 @pytest.mark.django_db
 def test_create_vote():
     user = UserFactory()
-    contest = ContestFactory()
+    contest = ContestFactory(creator_id=user.id)
     submission = SubmissionFactory(user=user, contest=contest)
     vote = VoteFactory(user=user, submission=submission, value=1)
     assert vote.user.first_name == user.first_name
@@ -60,7 +61,7 @@ def test_create_vote():
 @pytest.mark.django_db
 def test_create_result():
     user = UserFactory()
-    contest = ContestFactory()
+    contest = ContestFactory(creator_id=user.id)
     submission = SubmissionFactory(user=user, contest=contest)
     result = ResultFactory(contest=contest, submission=submission, position=2)
     assert result.contest == contest

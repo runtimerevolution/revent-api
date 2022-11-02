@@ -96,7 +96,8 @@ class TestSerializers:
 
     @pytest.mark.django_db
     def test_contest_serialized_valid_data(self):
-        contest = ContestFactory()
+        user = UserFactory()
+        contest = ContestFactory(creator_id=user.id)
         valid_serialized_data = {
             "date_start": contest.date_start,
             "date_end": contest.date_end,
@@ -111,7 +112,8 @@ class TestSerializers:
 
     @pytest.mark.django_db
     def test_contest_serialized_invalid_data(self):
-        contest = ContestFactory()
+        user = UserFactory()
+        contest = ContestFactory(creator_id=user.id)
         invalid_serialized_data = {
             "date_start": 321,
             "date_end": 123,
@@ -125,7 +127,8 @@ class TestSerializers:
     @pytest.mark.django_db
     def test_submission_serialized_valid_data(self):
 
-        contest = ContestFactory()
+        user = UserFactory()
+        contest = ContestFactory(creator_id=user.id)
         user = UserFactory(first_name="TestSetUp", email="setup123@email.com")
         submission = SubmissionFactory(user=user, contest=contest)
 

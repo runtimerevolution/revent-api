@@ -1,7 +1,7 @@
 import pytest
 import datetime
 from photo import models
-from factories import (
+from photo.tests.factories import (
     UserFactory,
     ContestFactory,
     SubmissionFactory,

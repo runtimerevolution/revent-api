@@ -1,6 +1,11 @@
+from PIL import Image
 from django.utils import timezone
 from django.db import models
 import uuid
+import boto3
+from botocore.exceptions import ClientError
+from storages.backends.s3boto3 import S3Boto3Storage
+from django.conf import settings
 
 
 class UUIDModel(models.Model):
@@ -20,7 +25,7 @@ class TimestampsMixin(models.Model):
 
 class AuthorChangesMixin(models.Model):
     created_by = models.UUIDField(("created by"))
-    updated_by = models.UUIDField(("updated by"), blank=False, null=True)
+    updated_by = models.UUIDField(("updated by"), null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.created_by == None:
@@ -31,6 +36,17 @@ class AuthorChangesMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class BrandMediaStorage(S3Boto3Storage):
+    location = "brands"
+    default_acl = "private"
+    querystring_auth = True
+
+
+def upload_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/<brand_id>/logo.png
+    return f"{instance.id}/{filename}.png"
 
 
 class User(UUIDModel, TimestampsMixin):

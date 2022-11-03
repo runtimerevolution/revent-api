@@ -53,6 +53,7 @@ def test_create_vote():
     contest = ContestFactory(creator_id=user.id)
     submission = SubmissionFactory(user=user, contest=contest)
     vote = VoteFactory(user=user, submission=submission, value=1)
+    
     assert vote.user.first_name == user.first_name
     assert vote.submission.user == user
     assert vote.value == 1

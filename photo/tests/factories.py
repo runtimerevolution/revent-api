@@ -32,14 +32,13 @@ class ContestFactory(factory.django.DjangoModelFactory):
         )
     class Params:
         creator_id = None # Or user uuid if provided
-        updator_id = None # Or user uuid if provided
 
     date_start = datetime.datetime.now()
     date_end = datetime.datetime.now() + relativedelta(months=1)
     name = factory.Faker("sentence", nb_words=3, variable_nb_words=True)
     description = factory.Faker("sentence", nb_words=10, variable_nb_words=True)
     created_by = factory.LazyAttribute(lambda o: o.creator_id)
-    updated_by = factory.LazyAttribute(lambda o: o.creator_id if o.updator_id == None else o.creator_id)
+    updated_by = factory.LazyAttribute(lambda o: o.creator_id)
 
 
 class SubmissionFactory(factory.django.DjangoModelFactory):

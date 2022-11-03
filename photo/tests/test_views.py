@@ -22,7 +22,8 @@ class TestSubmissionsFromContestList(TestCase):
 
     def setUp(self):
         self.user = UserFactory()
-        self.contest = ContestFactory()
+        self.creator = UserFactory()
+        self.contest = ContestFactory(creator_id=self.creator.id)
         self.submission = SubmissionFactory(user=self.user, contest=self.contest)
 
     def test_list(self):
@@ -42,7 +43,8 @@ class TestSubmissionsFromContestListFilter(TestCase):
     
     def test_success(self):
         self.user = UserFactory()
-        self.contest = ContestFactory()
+        self.creator = UserFactory()
+        self.contest = ContestFactory(creator_id=self.creator.id)
         self.submission = SubmissionFactory(user=self.user, contest=self.contest)
         
         qs = Submission.objects.filter(contest__id=self.submission.contest.id)
@@ -50,7 +52,7 @@ class TestSubmissionsFromContestListFilter(TestCase):
         response = self.client.get(
             f"/api/submissions/?contest={self.submission.contest.id}"
         )
-        
+        print(response)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             json.dumps(SubmissionSerializer(qs, many=True).data, cls=DjangoJSONEncoder),
@@ -77,8 +79,10 @@ class TestSubmissionsFromContestUpdate(TestCase):
     def setUp(self):
         self.user = UserFactory()
         self.user2 = UserFactory()
-        self.contest = ContestFactory()
-        self.contest2 = ContestFactory()
+        self.creator = UserFactory()
+        self.contest = ContestFactory(creator_id=self.creator.id)
+        self.creator2 = UserFactory()
+        self.contest2 = ContestFactory(creator_id=self.creator2.id)
         self.submission = SubmissionFactory(user=self.user, contest=self.contest)
         
     def test_update_put(self):
@@ -121,7 +125,8 @@ class TestSubmissionsFromContestDelete(TestCase):
     
     def setUp(self):
         self.user = UserFactory()
-        self.contest = ContestFactory()
+        self.creator = UserFactory()
+        self.contest = ContestFactory(creator_id=self.creator.id)
         self.submission = SubmissionFactory(user=self.user, contest=self.contest)
     
     def test_success(self):

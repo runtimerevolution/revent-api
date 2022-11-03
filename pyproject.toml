@@ -23,6 +23,10 @@ djangorestframework-simplejwt = "^5.2.1"
 Pillow = "^9.2.0"
 boto3 = "^1.25.2"
 django-storages = "^1.13.1"
+django-filter = "^22.1"
+django-cors-headers = "^3.13.0"
+psycopg2 = "^2.9.5"
+django-rest-framework-nested = "^0.0.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.8.0"

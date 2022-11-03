@@ -30,8 +30,8 @@ class AuthorChangesMixin(models.Model):
     def save(self, *args, **kwargs):
         if self.created_by == None:
             self.created_by = kwargs.get("user")
-        else:
-            self.updated_by = kwargs.get("user")
+        
+        self.updated_by = kwargs.get("user")
         super(AuthorChangesMixin, self).save(*args, **kwargs)
 
     class Meta:

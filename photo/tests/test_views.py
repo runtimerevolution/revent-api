@@ -52,7 +52,7 @@ class TestSubmissionsFromContestListFilter(TestCase):
         response = self.client.get(
             f"/api/submissions/?contest={self.submission.contest.id}"
         )
-        print(response)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             json.dumps(SubmissionSerializer(qs, many=True).data, cls=DjangoJSONEncoder),

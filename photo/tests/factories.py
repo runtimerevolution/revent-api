@@ -7,12 +7,7 @@ from dateutil.relativedelta import relativedelta
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
-        django_get_or_create = (
-            "email",
-            "date_joined",
-            "first_name",
-            "last_name"
-        )
+        django_get_or_create = ("email", "date_joined", "first_name", "last_name")
 
     email = factory.Faker("ascii_company_email")
     date_joined = datetime.datetime.now()
@@ -42,7 +37,7 @@ class SubmissionFactory(factory.django.DjangoModelFactory):
         django_get_or_create = (
             "user",
             "contest",
-            "content",
+            "url",
             "description",
         )
 

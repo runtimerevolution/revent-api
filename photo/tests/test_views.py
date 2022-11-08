@@ -12,14 +12,17 @@ from photo.tests.fixtures import (
     USER_EMAIL,
     USER_FIRST_NAME,
     USER_LAST_NAME,
-    DATE, 
+    DATE,
 )
 import json
 from django.core.serializers.json import DjangoJSONEncoder
- 
+from PIL import Image
+from django.core.files.uploadedfile import SimpleUploadedFile
+import urllib
+import base64
+
 
 class TestSubmissionsFromContestList(TestCase):
-
     def setUp(self):
         self.user = UserFactory()
         self.contest = ContestFactory()
@@ -27,7 +30,7 @@ class TestSubmissionsFromContestList(TestCase):
 
     def test_list(self):
         qs = Submission.objects.all()
-        
+
         response = self.client.get("/api/submissions/")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -36,70 +39,71 @@ class TestSubmissionsFromContestList(TestCase):
             json.dumps(response.json()),
         )
 
-    
 
 class TestSubmissionsFromContestListFilter(TestCase):
-    
     def test_success(self):
         self.user = UserFactory()
         self.contest = ContestFactory()
         self.submission = SubmissionFactory(user=self.user, contest=self.contest)
-        
+
         qs = Submission.objects.filter(contest__id=self.submission.contest.id)
-        
-        response = self.client.get(
-            f"/api/submissions/?contest={self.submission.contest.id}"
-        )
-        
+
+        response = self.client.get(f"/api/submissions/?contest={self.submission.contest.id}")
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             json.dumps(SubmissionSerializer(qs, many=True).data, cls=DjangoJSONEncoder),
             json.dumps(response.json()),
         )
-    
+
     def test_failure(self):
         non_existing_uuid = str(uuid.uuid4())
-        
+
         qs = Submission.objects.filter(contest__id=str(uuid.uuid4()))
 
-        response = self.client.get(
-            f"/api/submissions/?contest={non_existing_uuid}"
-        )
-        
+        response = self.client.get(f"/api/submissions/?contest={non_existing_uuid}")
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             json.dumps(SubmissionSerializer(qs, many=True).data, cls=DjangoJSONEncoder),
             json.dumps(response.json()),
         )
 
+
 class TestSubmissionsFromContestUpdate(TestCase):
-    
     def setUp(self):
         self.user = UserFactory()
         self.user2 = UserFactory()
         self.contest = ContestFactory()
         self.contest2 = ContestFactory()
         self.submission = SubmissionFactory(user=self.user, contest=self.contest)
-        
+        self.image = Image.new(mode="RGB", size=(20, 20))
+
     def test_update_put(self):
+        url_retrieve = urllib.request.urlretrieve(self.submission.url.url)
+        contents = open(url_retrieve[0], "rb").read()
+        f = open("image.jpg", "wb")
+        f.write(contents)
+
         response = self.client.put(
             f"/api/submissions/{self.submission.id}/",
             data={
                 "user": str(self.user2.id),
                 "contest": str(self.contest2.id),
-                "url": SUBMISSION_CONTENT,
+                "url": f,
                 "description": SUBMISSION_DESCRIPTION,
             },
-            content_type="application/json",
+            content_type="multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
         )
-        
+
+        f.close()
+
         qs = Submission.objects.get(id=self.submission.id)
-        
+
         self.assertEqual(
             json.dumps(SubmissionSerializer(qs).data, cls=DjangoJSONEncoder),
             json.dumps(response.json()),
         )
-
 
     def test_update_patch(self):
         response = self.client.patch(
@@ -109,35 +113,31 @@ class TestSubmissionsFromContestUpdate(TestCase):
             },
             content_type="application/json",
         )
-        
+
         qs = Submission.objects.get(id=self.submission.id)
-        
+
         self.assertEqual(
             json.dumps(SubmissionSerializer(qs).data, cls=DjangoJSONEncoder),
             json.dumps(response.json()),
         )
 
+
 class TestSubmissionsFromContestDelete(TestCase):
-    
     def setUp(self):
         self.user = UserFactory()
         self.contest = ContestFactory()
         self.submission = SubmissionFactory(user=self.user, contest=self.contest)
-    
+
     def test_success(self):
-        
+
         qs = Submission.objects.filter(id=self.submission.id)
-        
-        response = self.client.delete(
-            f"/api/submissions/{self.submission.id}/"
-        )
-        
+
+        response = self.client.delete(f"/api/submissions/{self.submission.id}/")
+
         qs = Submission.objects.filter(id=self.submission.id)
-        
+
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(
             json.dumps(SubmissionSerializer(qs, many=True).data, cls=DjangoJSONEncoder),
-            '[]',
+            "[]",
         )
-
-

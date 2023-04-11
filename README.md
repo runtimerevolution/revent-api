@@ -54,7 +54,7 @@ If you have this one already, you can jump to the next section [(Configuration -
         - To initialize the pyenv installer use:
 
           ```bash
-          curl https://pyenv.run | bash
+          brew install pyenv
           ```
 
         - Depending on the shell you'r using, you can see something at the end of this installation like:
@@ -76,13 +76,7 @@ If you have this one already, you can jump to the next section [(Configuration -
         - To install poetry, do it by running:
 
           ```bash
-          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-          ```
-
-        - Once this ends, run this to configure your current shell with the path to poetry:
-
-          ```bash
-          source $HOME/.poetry/env
+          brew install poetry
           ```
 
         - And finally we can confirm you got this installed by running:

@@ -44,7 +44,7 @@ If you have this one already, you can jump to the next section [(Configuration -
 
     1. Pyenv
 
-        - We will need to install some dependencies that will also depend on the OS being used.  
+        - We will need to install some dependencies that will also depend on the OS being used.
           For macOS users:
 
           ```bash
@@ -67,7 +67,7 @@ If you have this one already, you can jump to the next section [(Configuration -
           export PATH="$HOME/.pyenv/bin:$PATH"
           eval "$(pyenv init -)"
           eval "$(pyenv virtualenv-init -)"
-          ```  
+          ```
 
           You just need to follow the steps above, add the export to your shell file and restart your shell.
 
@@ -115,14 +115,14 @@ If you have this one already, you can jump to the next section [(Configuration -
 
   *To use poetry, we will need to have ***python 3.5 or greater***.*
 
-- Now let's start by always activating a virtual environment to work on when we open the project:  
+- Now let's start by always activating a virtual environment to work on when we open the project:
     If you need to get out of this virtual environment just type **deactivate**
 
     ```bash
     poetry shell
     ```
 
-- You should have a file called pyproject.toml, with it we can install everything that is needed!  
+- You should have a file called pyproject.toml, with it we can install everything that is needed!
   Just a second, make sure you are on your project folder! Let's go and install everything now:
 
     ```bash
@@ -131,7 +131,7 @@ If you have this one already, you can jump to the next section [(Configuration -
 
     This is great! Right now, we have our packages installed!
 
-- One last thing! We still need to tell our IDE to use this new interpreter!  
+- One last thing! We still need to tell our IDE to use this new interpreter!
 Alright, and how do we do this? Its easy, really. (This next steps will be for vscode)
 
     1. Copy the path from the command below:
@@ -142,24 +142,24 @@ Alright, and how do we do this? Its easy, really. (This next steps will be for v
 
     2. In your vscode, go to settings and search for python interpreter
 
-    3. Now select to use a specific path and use the one you just copied  
+    3. Now select to use a specific path and use the one you just copied
     Press Enter and you'r done! Now vscode will use this one.
 
-- You can now start using the project, but wait! don't go! Now we have our virtual environment  
-  ready, but do you really want to keep activating it everytime you join the project?  
+- You can now start using the project, but wait! don't go! Now we have our virtual environment
+  ready, but do you really want to keep activating it everytime you join the project?
   Let's take a look on how we can automate this and make sure that we use the correct versions each time we are in a new project.
   Let me introduce you to a new section.
 
-### Nice to Have  
+### Nice to Have
 
 Well, hello there! If you are looking for automation, you have come to the right place!
 
 #### Direnv
 
-Looking for a way to start your venv by doing... nothing!?  
+Looking for a way to start your venv by doing... nothing!?
 I know i know, it looks almost like magic. Let me tell you about direnv
 
-- direnv will load and unload a virtual environment everytime we enter or leave the folder  
+- direnv will load and unload a virtual environment everytime we enter or leave the folder
   How do we install it? Let's take a look.
 
     1. Let's start by creating an empty file called .envrc
@@ -168,15 +168,15 @@ I know i know, it looks almost like magic. Let me tell you about direnv
 
     3. Hook it into your shell like [this](https://direnv.net/docs/hook.html)
 
-    4. Alright and finally add the following to your .envrc:  
+    4. Alright and finally add the following to your .envrc:
 
-        `layout pyenv 3.10.4`  
-        Note: Everytime you edit your .envrc file direnv will ask you to give permission by typing:  
+        `layout pyenv 3.10.4`
+        Note: Everytime you edit your .envrc file direnv will ask you to give permission by typing:
         `direnv allow`
 
     5. ***Important: Now that you changed for direnv replicate the python interpreter change that you did in poetry section***
 
-    6. Reload your shell and you'r set! Now you can leave your folder and come back inside to test if .direnv will show up (thats your new venv).  
+    6. Reload your shell and you'r set! Now you can leave your folder and come back inside to test if .direnv will show up (thats your new venv).
     Everytime you go into or out of your project folder .direnv will activate or deactivate!
 
 ## How to Run
@@ -192,16 +192,16 @@ If you have this one already, you can jump to the next section (Running the proj
 
 *Now, how can we run the app?*
 
-- Now that u have docker installed we just need to build our image out of  
-Dockerfile. Its a little file you have on your project folder that will tell docker  
-everything he needs to run and make a new environment just like yours! isnt that awesome?  
+- Now that u have docker installed we just need to build our image out of
+Dockerfile. Its a little file you have on your project folder that will tell docker
+everything he needs to run and make a new environment just like yours! isnt that awesome?
 I wish we had something like that and didn't had to go through this README 🤔
 
   ```bash
     docker build -t revent:latest .
   ```
 
-- Hopefully everything went smooth and we are ready to see how the project is going!  
+- Hopefully everything went smooth and we are ready to see how the project is going!
 For us to take a look let's run:
 
   ```bash

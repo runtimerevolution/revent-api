@@ -3,4 +3,4 @@ build:
     web: Dockerfile
 run:
   web: gunicorn revent.wsgi:application --bind 0.0.0.0:$PORT
-  
+

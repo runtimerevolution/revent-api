@@ -57,7 +57,7 @@ dk-down:
 	docker-compose -f ./docker-compose.yml down
 
 # -f to specify the file location
-# -d to run the container in the background 
+# -d to run the container in the background
 
 dk-run:
 	docker run -d --name revent-heroku -e "PORT=8765" -p 8007:8765 revent:latest

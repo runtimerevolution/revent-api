@@ -1,8 +1,16 @@
-# version: '3.9'
+version: "3.9"
 
-# services:
-#   web:
-#     build: .
-#     command: python manage.py runserver 0.0.0.0:8000
-#     ports:
-#       - 8000:8000
+services:
+  db:
+    build:
+      context: ./docker/images/postgres
+    container_name: revent-db
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+      - ./dump:/dump
+    environment:
+      - POSTGRES_DB=revent
+      - POSTGRES_USER=revent
+      - POSTGRES_PASSWORD=revent
+    ports:
+      - "5432:5432"

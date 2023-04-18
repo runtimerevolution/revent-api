@@ -3,10 +3,10 @@
 help:
     @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-run: ## Run the django server with runserver_plus
-    python manage.py runserver_plus
+run: ## Run the django server
+    python manage.py runserver
 
-create: ## Create new django migrations
+migrations: ## Create new django migrations
     python manage.py makemigrations
 
 migrate: ## Migrate all new django migrations
@@ -44,26 +44,5 @@ uninstall: pyproject.toml
 superuser:
 	python manage.py createsuperuser
 
-# Docker
-dk-build-t:
-	docker build -t revent:latest .
-
-# -t to specify a tag
-
-dk-up:
-	docker-compose -f ./docker-compose.yml up -d
-
-dk-down:
-	docker-compose -f ./docker-compose.yml down
-
-# -f to specify the file location
-# -d to run the container in the background
-
-dk-run:
-	docker run -d --name revent-heroku -e "PORT=8765" -p 8007:8765 revent:latest
-
-# -e to specify environment variables
-# -p to specify the ports bind
-
-dk-stop:
-	docker stop revent-heroku
+# Setup
+setup: up install migrate

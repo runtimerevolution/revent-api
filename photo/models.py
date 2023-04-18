@@ -1,8 +1,6 @@
 from django.db import models
 from django.forms import ValidationError
 
-
-# Create your models here.
 class User(models.Model):
 
     email = models.TextField(primary_key=True)

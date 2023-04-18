@@ -150,7 +150,22 @@ Alright, and how do we do this? Its easy, really. (This next steps will be for v
   Let's take a look on how we can automate this and make sure that we use the correct versions each time we are in a new project.
   Let me introduce you to a new section.
 
-### Nice to Have
+### Prerequisites - Install [docker](https://docs.docker.com/get-docker/)
+
+If you have this one already, you can jump to the next section (Running the project)
+
+### Configuration - Setting up localstack s3 to fake Aws
+
+After you have installed Docker we will need to install AWS CLI. Even though we are simulating 
+the AWS, we will require this to comunicate with the docker containers:
+  1. Install [AWS CLI](https://aws.amazon.com/cli/)
+  2. After it is installed we will need to supply credentials, even if the
+    credentials are dummies. Localstack requires this details to be present. For that run the command:
+      ```bash
+        aws configure
+      ```
+
+### Nice to Have  
 
 Well, hello there! If you are looking for automation, you have come to the right place!
 
@@ -183,10 +198,6 @@ I know i know, it looks almost like magic. Let me tell you about direnv
 
 To run, you can start by putting on some comfortable shoes and then... im just kidding, im just kidding!
 Let's start with the prerequisites and then move onto the action.
-
-### Prerequisites - Install [docker](https://docs.docker.com/get-docker/)
-
-If you have this one already, you can jump to the next section (Running the project)
 
 ### Running the Project
 

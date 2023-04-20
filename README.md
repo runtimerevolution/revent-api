@@ -236,3 +236,9 @@ The nomenclature for someone named "João Gomes" that need to fix a new "Bug" on
 ## Who do I talk to?
 
 - You can always talk to your Team Leader or the repo owner for any question regarding this project.
+
+## Data model
+
+The data model for this project is as follows:
+
+![Data Model](/revent-api/Documentation/DataModel.png)

@@ -3,5 +3,6 @@ from django.shortcuts import render
 
 # Create your views here.
 
+
 def hello(request):
-  return HttpResponse("Hello Runtime")
+    return HttpResponse("Hello Runtime")

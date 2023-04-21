@@ -1,16 +1,16 @@
 .DEFAULT_GOAL := help
 
 help:
-    @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 run: ## Run the django server
-    python manage.py runserver
+	python manage.py runserver
 
 migrations: ## Create new django migrations
-    python manage.py makemigrations
+	python manage.py makemigrations
 
 migrate: ## Migrate all new django migrations
-    python manage.py migrate
+	python manage.py migrate
 
 # Pass arguments to the test command
 ifeq (test,$(firstword $(MAKECMDGOALS)))
@@ -19,16 +19,16 @@ ifeq (test,$(firstword $(MAKECMDGOALS)))
 endif
 
 test: ## Test all django apps OR pass testing target like "smart_replenishment" or "planner_requests.tests.csv_file"
-    python manage.py test --no-input $(TEST_ARGS)
+	python manage.py test --no-input $(TEST_ARGS)
 
 up: ## Start the docker containers
-    docker compose --env-file config/.env up -d
+	docker compose --env-file config/.env up -d
 
 down: ## Stop the docker containers
-    docker compose --env-file config/.env down -t 1
+	docker compose --env-file config/.env down -t 1
 
 pre: ## Run pre-commit
-    pre-commit run --all-files
+	pre-commit run --all-files
 
 # Poetry
 install: pyproject.toml

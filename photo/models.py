@@ -1,10 +1,9 @@
-from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
+from django.forms import ValidationError
 
 
 # Create your models here.
-class User(AbstractBaseUser):
-    USERNAME_FIELD = "email"
+class User(models.Model):
 
     email = models.TextField(primary_key=True)
     name_first = models.TextField(blank=True, null=True)
@@ -16,10 +15,7 @@ class User(AbstractBaseUser):
         null=True,
     )
     profile_picture_updated_at = models.DateTimeField(null=True)
-    user_handle = models.TextField(unique=True)
-
-    def __str__(self) -> str:
-        return self.name_first + self.name_last
+    user_handle = models.TextField(unique=True, null=True)
 
 
 class Picture(models.Model):
@@ -92,9 +88,11 @@ class ContestSubmission(models.Model):
     submissionDate = models.DateTimeField(auto_now_add=True)
     votes = models.ManyToManyField(User)
 
-    class Meta:
-        constraints = (
-            models.UniqueConstraint(
-                fields=["picture_user", "contest"], name="single_submission_per_user"
-            ),
-        )
+    def validate_unique(self):
+        qs = ContestSubmission.objects.filter(picture__user=self.picture.user)
+        if qs.exists():
+            raise ValidationError("Each user can only submit one picture per contest")
+
+    def save(self, *args, **kwargs):
+        self.validate_unique()
+        super(ContestSubmission, self).save(*args, **kwargs)

@@ -212,23 +212,9 @@ Perfect! You are now running the project locally and you can now start coding!
 
 ## Running Tests
 
-In order to test our code, we'll be using pytest. You can install it by using:
-
+To run the tests, inside your working environment run:
 ```bash
-pip install pytest-django
-```
-
-Since we're using Django, we need to define `DJANGO_SETTINGS_MODULE`. To do this, create a file named `pytest.ini` in the root directory of your project, with the following:
-
-```bash
-[pytest]
-DJANGO_SETTINGS_MODULE = test.settings
-```
-
-After that just run your tests with pytest:
-
-```bash
-pytest
+make test
 ```
 
 ## Guidelines

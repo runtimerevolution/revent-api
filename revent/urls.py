@@ -1,11 +1,10 @@
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import path
+from strawberry.django.views import AsyncGraphQLView
 
-from photo import views
+from photo.schema import schema
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.hello, name="hello")
-    # In case we wanna have multiple url files for each app
-    # path('photo/', include('photo.urls'))
+    path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
 ]

@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
             name='ContestSubmission',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('submissionDate', models.DateTimeField(auto_now_add=True)),
+                ('submission_date', models.DateTimeField(auto_now_add=True)),
                 ('contest', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='photo.contest')),
                 ('picture', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='photo.picture')),
                 ('votes', models.ManyToManyField(to='photo.user')),

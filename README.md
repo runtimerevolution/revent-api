@@ -156,7 +156,7 @@ If you have this one already, you can jump to the next section (Running the proj
 
 ### Configuration - Setting up localstack s3 to fake Aws
 
-After you have installed Docker we will need to install AWS CLI. Even though we are simulating 
+After you have installed Docker we will need to install AWS CLI. Even though we are simulating
 the AWS, we will require this to comunicate with the docker containers:
   1. Install [AWS CLI](https://aws.amazon.com/cli/)
   2. After it is installed we will need to supply credentials, even if the
@@ -165,7 +165,7 @@ the AWS, we will require this to comunicate with the docker containers:
         aws configure
       ```
 
-### Nice to Have  
+### Nice to Have
 
 Well, hello there! If you are looking for automation, you have come to the right place!
 

@@ -19,7 +19,6 @@ django-pytest = "^0.2.0"
 django-debug-toolbar = "^4.0.0"
 strawberry-django-plus = "^2.2.0"
 pytest = "^7.3.1"
-strawberry-graphql-django = "^0.2.5"
 psycopg = "^3.1.8"
 
 [tool.poetry.dev-dependencies]
@@ -29,7 +28,6 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
-profile = "django"
+profile = "black"
 combine_as_imports = true
-include_trailing_comma = true
-line_length = 120
+

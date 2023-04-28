@@ -31,7 +31,7 @@ class PictureFactory(factory.Factory):
 
     user = factory.SubFactory(UserFactory)
     picture_path = factory.Faker("picture_url")
-    likers = UserFactory.create_batch(random.randint(0, 5))
+    likes = UserFactory.create_batch(random.randint(0, 5))
 
 
 class PictureCommentFactory(factory.Factory):

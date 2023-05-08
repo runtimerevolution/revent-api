@@ -1,7 +1,7 @@
-import datetime
 import random
 
 import factory
+import pytz
 
 from photo.models import (
     Collection,
@@ -13,38 +13,44 @@ from photo.models import (
 )
 
 
-class UserFactory(factory.Factory):
+class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
     email = factory.Faker("email")
     name_first = factory.Faker("first_name")
     name_last = factory.Faker("last_name")
-    user_handle = name_first + name_last
-    profile_picture = factory.RelatedFactory("PictureFactory", "user")
-    profile_picture_updated_at = factory.LazyAttribute(datetime.datetime.now)
+    user_handle = factory.Faker("name")
+    profile_picture = factory.RelatedFactory(
+        "tests.factories.PictureFactory", "user", likes=None
+    )
+    profile_picture_updated_at = factory.Faker("date_time")
 
 
-class PictureFactory(factory.Factory):
+class PictureFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Picture
 
     user = factory.SubFactory(UserFactory)
-    picture_path = factory.Faker("picture_url")
-    likes = UserFactory.create_batch(random.randint(0, 5))
+    picture_path = factory.Faker("url")
+    likes = factory.RelatedFactoryList(
+        "tests.factories.UserFactory",
+        profile_picture=None,
+        size=lambda: random.randint(0, 5),
+    )
 
 
-class PictureCommentFactory(factory.Factory):
+class PictureCommentFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = PictureComment
 
     user = factory.SubFactory(UserFactory)
     picture = factory.SubFactory(PictureFactory)
     text = factory.Faker("sentence")
-    created_at = factory.LazyAttribute(datetime.datetime.now)
+    created_at = factory.Faker("date_time", tzinfo=pytz.UTC)
 
 
-class CollectionFactory(factory.Factory):
+class CollectionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Collection
 
@@ -55,7 +61,7 @@ class CollectionFactory(factory.Factory):
     )
 
 
-class ContestFactory(factory.Factory):
+class ContestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Contest
 
@@ -64,19 +70,19 @@ class ContestFactory(factory.Factory):
     cover_picture = factory.SubFactory(PictureFactory)
     prize = factory.Faker("sentence")
     automated_dates = factory.LazyAttribute(True)
-    upload_phase_start = factory.LazyAttribute(datetime.datetime.now)
-    upload_phase_end = factory.LazyAttribute(datetime.datetime.now)
-    voting_phase_end = factory.LazyAttribute(datetime.datetime.now)
+    upload_phase_start = factory.Faker("date_time", tzinfo=pytz.UTC)
+    upload_phase_end = factory.Faker("date_time", tzinfo=pytz.UTC)
+    voting_phase_end = factory.Faker("date_time", tzinfo=pytz.UTC)
     active = factory.LazyAttribute(True)
     winners = factory.RelatedFactoryList(UserFactory, size=lambda: random.randint(0, 3))
-    created_by = factory.LazyAttribute(cover_picture.user)
+    created_by = factory.LazyAttribute(factory.SelfAttribute("..cover_picture.user"))
 
 
-class ContestSubmissionFactory(factory.Factory):
+class ContestSubmissionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ContestSubmission
 
     contest = factory.SubFactory(ContestFactory)
     picture = factory.SubFactory(PictureFactory)
-    submissionDate = factory.LazyAttribute(datetime.datetime.now)
+    submissionDate = factory.Faker("date_time", tzinfo=pytz.UTC)
     votes = factory.RelatedFactoryList(UserFactory, size=lambda: random.randint(0, 10))

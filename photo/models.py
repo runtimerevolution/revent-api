@@ -17,6 +17,16 @@ class User(models.Model):
     profile_picture_updated_at = models.DateTimeField(null=True)
     user_handle = models.TextField(unique=True, null=True)
 
+    def validate_profile_picture(self):
+        if self.profile_picture.user.email != self.email:
+            raise ValidationError(
+                "The user's profile picture must be owned by the same user."
+            )
+
+    def save(self, *args, **kwargs):
+        self.validate_profile_picture()
+        super(ContestSubmission, self).save(*args, **kwargs)
+
 
 class Picture(models.Model):
     user = models.ForeignKey(
@@ -45,7 +55,7 @@ class Collection(models.Model):
         "User",
         on_delete=models.CASCADE,
     )
-    pictures = models.ManyToManyField(Picture)
+    pictures = models.ManyToManyField(Picture, related_name="collection_pictures")
 
     class Meta:
         constraints = [
@@ -75,6 +85,18 @@ class Contest(models.Model):
         null=True,
     )
 
+    def validate_user(self):
+        qs = User.objects.filter(email=self.created_by.email)
+        if qs.exists():
+            raise ValidationError(
+                "The contest must be created by a valid user (created_by can not be null)."
+            )
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.validate_user()
+        super(ContestSubmission, self).save(*args, **kwargs)
+
 
 class ContestSubmission(models.Model):
     contest = models.ForeignKey(
@@ -86,7 +108,7 @@ class ContestSubmission(models.Model):
         on_delete=models.CASCADE,
     )
     submissionDate = models.DateTimeField(auto_now_add=True)
-    votes = models.ManyToManyField(User)
+    votes = models.ManyToManyField(User, related_name="submission_votes")
 
     def validate_unique(self):
         qs = ContestSubmission.objects.filter(picture__user=self.picture.user)

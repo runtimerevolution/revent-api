@@ -1,6 +1,7 @@
 from django.db import models
 from django.forms import ValidationError
 
+
 class User(models.Model):
 
     email = models.TextField(primary_key=True)
@@ -16,14 +17,14 @@ class User(models.Model):
     user_handle = models.TextField(unique=True, null=True)
 
     def validate_profile_picture(self):
-        if self.profile_picture.user.email != self.email:
+        if self.profile_picture and self.profile_picture.user.email != self.email:
             raise ValidationError(
                 "The user's profile picture must be owned by the same user."
             )
 
     def save(self, *args, **kwargs):
         self.validate_profile_picture()
-        super(ContestSubmission, self).save(*args, **kwargs)
+        super(User, self).save(*args, **kwargs)
 
 
 class Picture(models.Model):
@@ -62,14 +63,14 @@ class Collection(models.Model):
 
 
 class Contest(models.Model):
-    title = models.TextField(null=True)
+    title = models.TextField()
     description = models.TextField()
     cover_picture = models.ForeignKey(
         "Picture",
         on_delete=models.SET_NULL,
         null=True,
     )
-    prize = models.TextField(null=True)
+    prize = models.TextField()
     automated_dates = models.BooleanField(default=True)
     upload_phase_start = models.DateTimeField(auto_now_add=True)
     upload_phase_end = models.DateTimeField(null=True)
@@ -93,7 +94,7 @@ class Contest(models.Model):
     def save(self, *args, **kwargs):
         if self._state.adding:
             self.validate_user()
-        super(ContestSubmission, self).save(*args, **kwargs)
+        super(Contest, self).save(*args, **kwargs)
 
 
 class ContestSubmission(models.Model):

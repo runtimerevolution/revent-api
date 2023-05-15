@@ -25,8 +25,8 @@ class UserFactory(factory.django.DjangoModelFactory):
     profile_picture_updated_at = factory.Faker("date_time", tzinfo=pytz.UTC)
 
     @factory.post_generation
-    def profile_picture(self, create):
-        if not create:
+    def user_profile_picture(self, create, nullPicture=False):
+        if not create or nullPicture:
             return
 
         self.profile_picture = PictureFactory(user=self)
@@ -56,9 +56,9 @@ class PictureCommentFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = PictureComment
 
-    user = factory.SubFactory(UserFactory, profile_picture=None)
+    user = factory.SubFactory(UserFactory, user_profile_picture=True)
     picture = factory.SubFactory(
-        PictureFactory, user=factory.SubFactory(UserFactory, profile_picture=None)
+        PictureFactory, user=factory.SubFactory(UserFactory, user_profile_picture=True)
     )
     text = factory.Faker("sentence")
     created_at = factory.Faker("date_time", tzinfo=pytz.UTC)

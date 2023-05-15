@@ -88,14 +88,21 @@ class ContestFactory(factory.django.DjangoModelFactory):
 
     title = factory.Faker("name")
     description = factory.Faker("sentence")
-    created_by = factory.SubFactory(UserFactory, profile_picture=None)
-    cover_picture = factory.SubFactory(PictureFactory, user=created_by)
+    created_by = factory.SubFactory(UserFactory, user_profile_picture=True)
     prize = factory.Faker("sentence")
     automated_dates = True
     upload_phase_start = factory.Faker("date_time", tzinfo=pytz.UTC)
     upload_phase_end = factory.Faker("date_time", tzinfo=pytz.UTC)
     voting_phase_end = factory.Faker("date_time", tzinfo=pytz.UTC)
     active = True
+
+    @factory.post_generation
+    def contest_cover_picture(self, create, nullPicture=False):
+        if not create or nullPicture:
+            return
+
+        self.cover_picture = PictureFactory(user=self.created_by)
+        self.save()
 
     @factory.post_generation
     def contest_winners(self, create, extracted, **kwargs):

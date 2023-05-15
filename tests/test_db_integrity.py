@@ -141,7 +141,7 @@ class ContestTest(TransactionTestCase):
             self.assertTrue(User.objects.filter(email=winner.email).exists())
 
     def test_factory_null(self):
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(ValidationError):
             ContestFactory(created_by=None)
         with self.assertRaises(IntegrityError):
             ContestFactory(title=None)

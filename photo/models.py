@@ -85,8 +85,10 @@ class Contest(models.Model):
     )
 
     def validate_user(self):
-        qs = User.objects.filter(email=self.created_by.email)
-        if qs.exists():
+        if not (
+            self.created_by
+            and User.objects.filter(email=self.created_by.email).exists()
+        ):
             raise ValidationError(
                 "The contest must be created by a valid user (created_by can not be null)."
             )

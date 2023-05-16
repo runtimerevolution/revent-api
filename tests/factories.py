@@ -1,6 +1,3 @@
-import random
-
-import django.db.models.signals as signals
 import factory
 import pytz
 
@@ -33,7 +30,6 @@ class UserFactory(factory.django.DjangoModelFactory):
         self.save()
 
 
-@factory.django.mute_signals(signals.post_save)
 class PictureFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Picture
@@ -120,6 +116,17 @@ class ContestSubmissionFactory(factory.django.DjangoModelFactory):
         model = ContestSubmission
 
     contest = factory.SubFactory(ContestFactory)
-    picture = factory.SubFactory(PictureFactory)
+    picture = factory.SubFactory(
+        PictureFactory, user=factory.SubFactory(UserFactory, user_profile_picture=True)
+    )
     submissionDate = factory.Faker("date_time", tzinfo=pytz.UTC)
-    votes = factory.RelatedFactoryList(UserFactory, size=lambda: random.randint(0, 10))
+
+    @factory.post_generation
+    def submission_votes(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for user in extracted:
+                self.votes.add(user)
+            self.save()

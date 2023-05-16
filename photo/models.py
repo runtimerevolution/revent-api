@@ -49,7 +49,7 @@ class PictureComment(models.Model):
 
 
 class Collection(models.Model):
-    name = models.TextField(null=True)
+    name = models.TextField()
     user = models.ForeignKey(
         "User",
         on_delete=models.CASCADE,
@@ -112,7 +112,9 @@ class ContestSubmission(models.Model):
     votes = models.ManyToManyField(User, related_name="submission_votes")
 
     def validate_unique(self):
-        qs = ContestSubmission.objects.filter(picture__user=self.picture.user)
+        qs = ContestSubmission.objects.filter(
+            contest=self.contest, picture__user=self.picture.user
+        ).exclude(picture__picture_path=self.picture.picture_path)
         if qs.exists():
             raise ValidationError("Each user can only submit one picture per contest")
 

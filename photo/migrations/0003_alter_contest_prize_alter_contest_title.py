@@ -19,4 +19,9 @@ class Migration(migrations.Migration):
             name="title",
             field=models.TextField(),
         ),
+        migrations.AlterField(
+            model_name="collection",
+            name="name",
+            field=models.TextField(),
+        ),
     ]

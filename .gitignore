@@ -52,3 +52,6 @@ Thumbs.db
 # Database
 db.sqlite3
 data/db
+
+#vscode
+.vscode

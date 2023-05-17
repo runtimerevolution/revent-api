@@ -228,6 +228,11 @@ To run the tests, inside your working environment run:
 make test
 ```
 
+To add tests remember that the python automatic discover only works properly for files named "test_*.py".
+
+If you want to use the vscode debugger for a particular test you can use the launch.json.example, rename it launch.json
+and place it in the .vscode folder in the root of your working directory.
+
 ## Guidelines
 
 ### Branch Naming

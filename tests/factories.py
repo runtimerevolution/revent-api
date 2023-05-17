@@ -15,10 +15,10 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    email = factory.Faker("email")
+    user_handle = factory.Faker("name")
+    email = factory.Sequence(lambda n: "user{0}@email.com".format(n))
     name_first = factory.Faker("first_name")
     name_last = factory.Faker("last_name")
-    user_handle = factory.Faker("name")
     profile_picture_updated_at = factory.Faker("date_time", tzinfo=pytz.UTC)
 
     @factory.post_generation
@@ -35,7 +35,7 @@ class PictureFactory(factory.django.DjangoModelFactory):
         model = Picture
 
     user = factory.SubFactory(UserFactory)
-    picture_path = factory.Faker("url")
+    picture_path = factory.Sequence(lambda n: "https://www.picture{0}.com/".format(n))
 
     @factory.post_generation
     def user_likes(self, create, extracted, **kwargs):

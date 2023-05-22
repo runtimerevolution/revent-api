@@ -1,6 +1,7 @@
 from typing import List
 
 import strawberry
+from strawberry.schema.config import StrawberryConfig
 
 from .models import (
     Collection,
@@ -21,60 +22,70 @@ from .types import (
 
 
 # Query = strawberry_django.queries(User,  Picture, PictureComment, Collection, Contest, ContestSubmission, types=types)
+@strawberry.type
 class Query:
     @strawberry.field
     def users(self, email: str = None) -> List[UserType]:
         if email:
-            return User.objects.find(email=email)
+            return User.objects.filter(email=email)
         return User.objects.all()
 
     @strawberry.field
-    def pictures(self, path: str = None) -> List[PictureType]:
-        if path:
-            return Picture.objects.find(picture_path=path)
+    def pictures(self, picture_path: str = None) -> List[PictureType]:
+        if picture_path:
+            return Picture.objects.filter(picture_path=picture_path)
         return Picture.objects.all()
 
     @strawberry.field
     def picture_comments(
-        self, user_email: str = None, picture_path: str = None
+        self, id: int = None, user_email: str = None, picture_path: str = None
     ) -> List[PictureCommentType]:
-        if user_email or picture_path:
-            if user_email and picture_path:
-                return PictureComment.objects.filter(
-                    user=user_email, picture=picture_path
-                )
-            elif user_email:
-                return PictureComment.objects.filter(user=user_email)
+        if id:
+            return PictureComment.objects.filter(id=id)
+        if user_email and picture_path:
+            return PictureComment.objects.filter(user=user_email, picture=picture_path)
+        elif user_email:
+            return PictureComment.objects.filter(user=user_email)
+        elif picture_path:
             return PictureComment.objects.filter(picture=picture_path)
         return PictureComment.objects.all()
 
     @strawberry.field
-    def collections(self, user_email: str = None) -> List[CollectionType]:
-        if user_email:
-            return Collection.objects.filter(user=user_email)
+    def collections(
+        self, user_email: str = None, name: str = None
+    ) -> List[CollectionType]:
+        if user_email and name:
+            return Collection.objects.filter(user__email=user_email, name=name)
+        elif user_email:
+            return Collection.objects.filter(user__email=user_email)
+        elif name:
+            return Collection.objects.filter(name=name)
         return Collection.objects.all()
 
     @strawberry.field
     def contests(self, user_email: str = None, id: int = None) -> List[ContestType]:
         if id:
-            return Contest.objects.find(id=id)
+            return Contest.objects.filter(id=id)
         if user_email:
-            return Contest.objects.filter(user=user_email)
+            return Contest.objects.filter(created_by=user_email)
         return Contest.objects.all()
 
     @strawberry.field
     def contest_submissions(
-        self, user_email: str = None, contest: int = None, id: int = None
+        self, user_email: str = None, id: int = None, contest: int = None
     ) -> List[ContestSubmissionType]:
-        if contest or user_email:
-            if contest:
-                return ContestSubmission.objects.find(id=contest)
-            return ContestSubmission.objects.filter(user=user_email)
+        if id:
+            return ContestSubmission.objects.filter(id=id)
+        if user_email or contest:
+            if user_email:
+                return ContestSubmission.objects.filter(picture__user__email=user_email)
+            return ContestSubmission.objects.filter(contest__id=contest)
         return ContestSubmission.objects.all()
 
 
+@strawberry.type
 class Mutation:
     pass
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+schema = strawberry.Schema(query=Query, config=StrawberryConfig(auto_camel_case=False))

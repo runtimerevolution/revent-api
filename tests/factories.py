@@ -119,7 +119,7 @@ class ContestSubmissionFactory(factory.django.DjangoModelFactory):
     picture = factory.SubFactory(
         PictureFactory, user=factory.SubFactory(UserFactory, user_profile_picture=True)
     )
-    submissionDate = factory.Faker("date_time", tzinfo=pytz.UTC)
+    submission_date = factory.Faker("date_time", tzinfo=pytz.UTC)
 
     @factory.post_generation
     def submission_votes(self, create, extracted, **kwargs):

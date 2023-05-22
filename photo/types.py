@@ -31,6 +31,7 @@ class PictureType:
 
 @strawberry.django.type(PictureComment)
 class PictureCommentType:
+    id: int
     user: "UserType"
     picture: "PictureType"
     text: str
@@ -46,6 +47,7 @@ class CollectionType:
 
 @strawberry.django.type(Contest)
 class ContestType:
+    id: int
     title: str
     description: str
     cover_picture: "PictureType"
@@ -56,12 +58,13 @@ class ContestType:
     voting_phase_end: strawberry.auto
     active: bool
     winners: List[UserType]
-    created_by: strawberry.auto
+    created_by: "UserType"
 
 
 @strawberry.django.type(ContestSubmission)
 class ContestSubmissionType:
-    contest: str
-    picture: "UserType"
+    id: int
+    contest: "ContestType"
+    picture: "PictureType"
     submission_date: strawberry.auto
-    votes: List[PictureType]
+    votes: List[UserType]

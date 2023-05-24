@@ -2,6 +2,12 @@ from django.test import TestCase
 
 from photo.schema import schema
 from tests.factories import CollectionFactory, PictureFactory, UserFactory
+from tests.test_queries.query_file import (
+    collections_query_all,
+    collections_query_name,
+    collections_query_one,
+    collections_query_user,
+)
 
 
 class PictureTest(TestCase):
@@ -15,21 +21,7 @@ class PictureTest(TestCase):
         )
 
     def test_query_all(self):
-        query = """
-                    query TestQuery {
-                        collections {
-                            name
-                            user {
-                                email
-                                name_first
-                                name_last
-                            }
-                            pictures {
-                                picture_path
-                            }
-                        }
-                    }
-                """
+        query = collections_query_all
 
         result = schema.execute_sync(
             query,
@@ -46,21 +38,7 @@ class PictureTest(TestCase):
         )
         newColletion = CollectionFactory.create(collection_pictures=newPictures)
 
-        query = """
-                    query TestQuery($user_email: String!, $name: String!) {
-                        collections(user_email: $user_email, name: $name) {
-                            name
-                            user {
-                                email
-                                name_first
-                                name_last
-                            }
-                            pictures {
-                                picture_path
-                            }
-                        }
-                    }
-                """
+        query = collections_query_one
 
         result = schema.execute_sync(
             query,
@@ -86,21 +64,7 @@ class PictureTest(TestCase):
         )
         newColletion = CollectionFactory.create(collection_pictures=newPictures)
 
-        query = """
-                    query TestQuery($name: String!) {
-                        collections(name: $name) {
-                            name
-                            user {
-                                email
-                                name_first
-                                name_last
-                            }
-                            pictures {
-                                picture_path
-                            }
-                        }
-                    }
-                """
+        query = collections_query_name
 
         result = schema.execute_sync(
             query,
@@ -124,21 +88,7 @@ class PictureTest(TestCase):
         newColletion = CollectionFactory.create(collection_pictures=newPictures)
         otherCollections = CollectionFactory.create_batch(3, user=newColletion.user)
 
-        query = """
-                    query TestQuery($user_email: String!) {
-                        collections(user_email: $user_email) {
-                            name
-                            user {
-                                email
-                                name_first
-                                name_last
-                            }
-                            pictures {
-                                picture_path
-                            }
-                        }
-                    }
-                """
+        query = collections_query_user
 
         result = schema.execute_sync(
             query,

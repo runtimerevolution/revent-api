@@ -2,6 +2,12 @@ from django.test import TestCase
 
 from photo.schema import schema
 from tests.factories import PictureCommentFactory, PictureFactory, UserFactory
+from tests.test_queries.query_file import (
+    picture_comment_query_all,
+    picture_comment_query_one,
+    picture_comment_query_picture,
+    picture_comment_query_user,
+)
 
 
 class PictureCommentTest(TestCase):
@@ -10,20 +16,7 @@ class PictureCommentTest(TestCase):
         self.newPictures = PictureCommentFactory.create_batch(self.batch)
 
     def test_query_all(self):
-        query = """
-                    query TestQuery {
-                        picture_comments {
-                            user {
-                                email
-                            }
-                            picture {
-                                picture_path
-                            }
-                            text
-                            created_at
-                        }
-                    }
-                """
+        query = picture_comment_query_all
 
         result = schema.execute_sync(
             query,
@@ -36,21 +29,7 @@ class PictureCommentTest(TestCase):
     def test_query_one(self):
         newPictureComment = PictureCommentFactory.create()
 
-        query = """
-                    query TestQuery($id: Int!) {
-                        picture_comments(id: $id) {
-                            id
-                            user {
-                                email
-                            }
-                            picture {
-                                picture_path
-                            }
-                            text
-                            created_at
-                        }
-                    }
-                """
+        query = picture_comment_query_one
 
         result = schema.execute_sync(
             query,
@@ -68,21 +47,7 @@ class PictureCommentTest(TestCase):
         newUser = UserFactory()
         newPictureComments = PictureCommentFactory.create_batch(3, user=newUser)
 
-        query = """
-                    query TestQuery($user_email: String!) {
-                        picture_comments(user_email: $user_email) {
-                            id
-                            user {
-                                email
-                            }
-                            picture {
-                                picture_path
-                            }
-                            text
-                            created_at
-                        }
-                    }
-                """
+        query = picture_comment_query_user
 
         result = schema.execute_sync(
             query,
@@ -99,21 +64,7 @@ class PictureCommentTest(TestCase):
         newPicture = PictureFactory()
         newPictureComments = PictureCommentFactory.create_batch(3, picture=newPicture)
 
-        query = """
-                    query TestQuery($picture_path: String!) {
-                        picture_comments(picture_path: $picture_path) {
-                            id
-                            user {
-                                email
-                            }
-                            picture {
-                                picture_path
-                            }
-                            text
-                            created_at
-                        }
-                    }
-                """
+        query = picture_comment_query_picture
 
         result = schema.execute_sync(
             query,

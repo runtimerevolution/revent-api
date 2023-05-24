@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from photo.schema import schema
 from tests.factories import UserFactory
+from tests.test_queries.query_file import user_query_all, user_query_one
 
 
 class UserTest(TestCase):
@@ -10,20 +11,7 @@ class UserTest(TestCase):
         self.newUsers = UserFactory.create_batch(self.batch)
 
     def test_query_all(self):
-        query = """
-                    query TestQuery {
-                        users {
-                            email
-                            name_first
-                            name_last
-                            profile_picture {
-                                picture_path
-                            }
-                            profile_picture_updated_at
-                            user_handle
-                        }
-                    }
-                """
+        query = user_query_all
 
         result = schema.execute_sync(
             query,
@@ -35,20 +23,7 @@ class UserTest(TestCase):
 
     def test_query_one(self):
         newUser = UserFactory.create()
-        query = """
-                    query TestQuery($email: String!) {
-                        users(email: $email) {
-                            email
-                            name_first
-                            name_last
-                            profile_picture {
-                                picture_path
-                            }
-                            profile_picture_updated_at
-                            user_handle
-                        }
-                    }
-                """
+        query = user_query_one
 
         result = schema.execute_sync(
             query,

@@ -7,6 +7,12 @@ from tests.factories import (
     PictureFactory,
     UserFactory,
 )
+from tests.test_queries.query_file import (
+    contest_submission_query_all,
+    contest_submission_query_contest,
+    contest_submission_query_one,
+    contest_submission_query_user,
+)
 
 
 class ContestSubmissionTest(TestCase):
@@ -15,26 +21,7 @@ class ContestSubmissionTest(TestCase):
         self.newContestSubmissions = ContestSubmissionFactory.create_batch(self.batch)
 
     def test_query_all(self):
-        query = """
-                    query TestQuery {
-                        contest_submissions {
-                            id
-                            contest {
-                                id
-                            }
-                            picture {
-                                picture_path
-                                user {
-                                    email
-                                }
-                            }
-                            submission_date
-                            votes {
-                                email
-                            }
-                        }
-                    }
-                """
+        query = contest_submission_query_all
 
         result = schema.execute_sync(
             query,
@@ -47,26 +34,7 @@ class ContestSubmissionTest(TestCase):
     def test_query_one(self):
         newContestSubmission = ContestSubmissionFactory.create()
 
-        query = """
-                    query TestQuery($id: Int!) {
-                        contest_submissions(id: $id) {
-                            id
-                            contest {
-                                id
-                            }
-                            picture {
-                                picture_path
-                                user {
-                                    email
-                                }
-                            }
-                            submission_date
-                            votes {
-                                email
-                            }
-                        }
-                    }
-                """
+        query = contest_submission_query_one
 
         result = schema.execute_sync(
             query,
@@ -90,26 +58,7 @@ class ContestSubmissionTest(TestCase):
             3, picture=newPicture
         )
 
-        query = """
-                    query TestQuery($user_email: String!) {
-                        contest_submissions(user_email: $user_email) {
-                            id
-                            contest {
-                                id
-                            }
-                            picture {
-                                picture_path
-                                user {
-                                    email
-                                }
-                            }
-                            submission_date
-                            votes {
-                                email
-                            }
-                        }
-                    }
-                """
+        query = contest_submission_query_user
 
         result = schema.execute_sync(
             query,
@@ -131,26 +80,7 @@ class ContestSubmissionTest(TestCase):
             3, contest=newContest
         )
 
-        query = """
-                    query TestQuery($contest: Int!) {
-                        contest_submissions(contest: $contest) {
-                            id
-                            contest {
-                                id
-                            }
-                            picture {
-                                picture_path
-                                user {
-                                    email
-                                }
-                            }
-                            submission_date
-                            votes {
-                                email
-                            }
-                        }
-                    }
-                """
+        query = contest_submission_query_contest
 
         result = schema.execute_sync(
             query,

@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from photo.schema import schema
 from tests.factories import PictureFactory, UserFactory
+from tests.test_queries.query_file import picture_query_all, picture_query_one
 
 
 class PictureTest(TestCase):
@@ -14,21 +15,7 @@ class PictureTest(TestCase):
         )
 
     def test_query_all(self):
-        query = """
-                    query TestQuery {
-                        pictures {
-                            user {
-                                email
-                                name_first
-                                name_last
-                            }
-                            picture_path
-                            likes {
-                                email
-                            }
-                        }
-                    }
-                """
+        query = picture_query_all
 
         result = schema.execute_sync(
             query,
@@ -44,21 +31,7 @@ class PictureTest(TestCase):
         newPicture = PictureFactory.create(
             user=UserFactory(user_profile_picture=True), user_likes=newLikesUsers
         )
-        query = """
-                    query TestQuery($picture_path: String!) {
-                        pictures(picture_path: $picture_path) {
-                            user {
-                                email
-                                name_first
-                                name_last
-                            }
-                            picture_path
-                            likes {
-                                email
-                            }
-                        }
-                    }
-                """
+        query = picture_query_one
 
         result = schema.execute_sync(
             query,

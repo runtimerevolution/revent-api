@@ -11,9 +11,10 @@ class User(models.Model):
         "Picture",
         on_delete=models.SET_NULL,
         related_name="user_picture_path",
+        blank=True,
         null=True,
     )
-    profile_picture_updated_at = models.DateTimeField(null=True)
+    profile_picture_updated_at = models.DateTimeField(blank=True, null=True)
     user_handle = models.TextField(unique=True, null=True)
 
     def validate_profile_picture(self):
@@ -68,6 +69,7 @@ class Contest(models.Model):
     cover_picture = models.ForeignKey(
         "Picture",
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
     )
     prize = models.TextField()
@@ -81,6 +83,7 @@ class Contest(models.Model):
         "User",
         on_delete=models.SET_NULL,
         related_name="contest_created_by",
+        blank=True,
         null=True,
     )
 

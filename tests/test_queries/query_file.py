@@ -20,8 +20,6 @@ collections_query_one = """
                             name
                             user {
                                 email
-                                name_first
-                                name_last
                             }
                             pictures {
                                 picture_path
@@ -36,8 +34,6 @@ collections_query_user = """
                             name
                             user {
                                 email
-                                name_first
-                                name_last
                             }
                             pictures {
                                 picture_path
@@ -52,8 +48,6 @@ collections_query_name = """
                             name
                             user {
                                 email
-                                name_first
-                                name_last
                             }
                             pictures {
                                 picture_path
@@ -226,8 +220,6 @@ picture_query_all = """
                         pictures {
                             user {
                                 email
-                                name_first
-                                name_last
                             }
                             picture_path
                             likes {
@@ -242,8 +234,6 @@ picture_query_one = """
                         pictures(picture_path: $picture_path) {
                             user {
                                 email
-                                name_first
-                                name_last
                             }
                             picture_path
                             likes {

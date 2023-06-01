@@ -10,7 +10,7 @@ from tests.test_queries.query_file import (
 )
 
 
-class PictureTest(TestCase):
+class CollectionTest(TestCase):
     def setUp(self):
         self.batch = 10
         self.newPictures = PictureFactory.create_batch(

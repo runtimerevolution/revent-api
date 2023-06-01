@@ -8,9 +8,10 @@ from tests.test_queries.query_file import picture_query_all, picture_query_one
 class PictureTest(TestCase):
     def setUp(self):
         self.batch = 10
+        newUser = UserFactory(user_profile_picture=True)
         self.newPictures = PictureFactory.create_batch(
             self.batch,
-            user=UserFactory(user_profile_picture=True),
+            user=newUser,
             user_likes=UserFactory.create_batch(2, user_profile_picture=True),
         )
 
@@ -28,9 +29,8 @@ class PictureTest(TestCase):
 
     def test_query_one(self):
         newLikesUsers = UserFactory.create_batch(3, user_profile_picture=True)
-        newPicture = PictureFactory.create(
-            user=UserFactory(user_profile_picture=True), user_likes=newLikesUsers
-        )
+        newUser = UserFactory(user_profile_picture=True)
+        newPicture = PictureFactory.create(user=newUser, user_likes=newLikesUsers)
         query = picture_query_one
 
         result = schema.execute_sync(

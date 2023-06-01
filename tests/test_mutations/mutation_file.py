@@ -22,10 +22,14 @@ user_creation_mutation = """
 picture_creation_mutation = """
                     mutation TestMutation($picture: PictureInput!) {
                         create_picture(input: $picture) {
-                            ... on PictureInput {
-                              user
-                              picture_url
-                              likes
+                            ... on PictureType {
+                              user {
+                                email
+                              }
+                              picture_path
+                              likes {
+                                email
+                              }
                             }
                             ... on OperationInfo {
                                 __typename

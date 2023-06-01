@@ -4,20 +4,27 @@ from django.test import TestCase
 from photo.schema import schema
 from tests.factories import UserFactory
 from tests.test_mutations.mutation_file import picture_creation_mutation
+from tests.test_queries.query_file import user_query_one
 
 
 class UserTest(TestCase):
     def setUp(self):
-        self.newUser = UserFactory()
+        newUser = UserFactory(user_profile_picture=True)
+
+        newUserResult = schema.execute_sync(
+            user_query_one,
+            variable_values={"email": newUser.email},
+        )
+        self.newUser = newUserResult.data["users"][0]
 
     @pytest.mark.asyncio
     async def test_create_one(self):
         mutation = picture_creation_mutation
         newUser = self.newUser
         newPicture = {
-            "user": newUser.__dict__,
+            "user": newUser,
             "picture_path": "www.test.com",
-            "likes": {newUser.email},
+            "likes": {"email": newUser["email"]},
         }
 
         result = await schema.execute(
@@ -31,22 +38,18 @@ class UserTest(TestCase):
     @pytest.mark.asyncio
     async def test_create_fail(self):
         newUser = self.newUser
-        await schema.execute(
-            picture_creation_mutation,
-            variable_values={"email": self.newUser.email},
-        )
 
         mutation = picture_creation_mutation
         newPicture = {
-            "user": newUser.__dict__,
+            "user": newUser,
             "picture_path": "www.test.com",
-            "likes": {newUser.email},
+            "likes": {"email": newUser["email"]},
         }
 
         newPicture2 = {
-            "user": newUser.__dict__,
+            "user": newUser,
             "picture_path": "www.test.com",
-            "likes": {newUser.email},
+            "likes": {"email": newUser["email"]},
         }
 
         result = await schema.execute(

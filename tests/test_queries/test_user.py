@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from photo.models import User
 from photo.schema import schema
 from tests.factories import UserFactory
 from tests.test_queries.query_file import user_query_all, user_query_one
@@ -20,6 +21,10 @@ class UserTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["users"]), self.batch)
+        self.assertEqual(
+            sorted([key for key in result.data["users"][0].keys()]),
+            sorted([field.name for field in User._meta.fields]),
+        )
 
     def test_query_one(self):
         newUser = UserFactory.create()

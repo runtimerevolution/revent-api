@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from photo.models import Picture
 from photo.schema import schema
 from tests.factories import PictureFactory, UserFactory
 from tests.test_queries.query_file import picture_query_all, picture_query_one
@@ -26,6 +27,15 @@ class PictureTest(TestCase):
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["pictures"]), self.batch)
         self.assertEqual(len(result.data["pictures"][0]["likes"]), 2)
+        self.assertEqual(
+            sorted([key for key in result.data["pictures"][0].keys()]),
+            sorted(
+                [
+                    field.name
+                    for field in (Picture._meta.fields + Picture._meta.many_to_many)
+                ]
+            ),
+        )
 
     def test_query_one(self):
         newLikesUsers = UserFactory.create_batch(3, user_profile_picture=True)

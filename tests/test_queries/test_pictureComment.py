@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from photo.models import PictureComment
 from photo.schema import schema
 from tests.factories import PictureCommentFactory, PictureFactory, UserFactory
 from tests.test_queries.query_file import (
@@ -25,6 +26,10 @@ class PictureCommentTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["picture_comments"]), self.batch)
+        self.assertEqual(
+            sorted([key for key in result.data["picture_comments"][0].keys()]),
+            sorted([field.name for field in PictureComment._meta.fields]),
+        )
 
     def test_query_one(self):
         newPictureComment = PictureCommentFactory.create()

@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from photo.models import ContestSubmission
 from photo.schema import schema
 from tests.factories import (
     ContestFactory,
@@ -30,6 +31,18 @@ class ContestSubmissionTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["contest_submissions"]), self.batch)
+        self.assertEqual(
+            sorted([key for key in result.data["contest_submissions"][0].keys()]),
+            sorted(
+                [
+                    field.name
+                    for field in (
+                        ContestSubmission._meta.fields
+                        + ContestSubmission._meta.many_to_many
+                    )
+                ]
+            ),
+        )
 
     def test_query_one(self):
         newContestSubmission = ContestSubmissionFactory.create()

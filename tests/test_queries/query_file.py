@@ -3,6 +3,7 @@
 collections_query_all = """
                             query TestQuery {
                                 collections {
+                                    id
                                     name
                                     user {
                                         email
@@ -15,8 +16,24 @@ collections_query_all = """
                         """
 
 collections_query_one = """
+                    query TestQuery($id: Int!) {
+                        collections(id: $id) {
+                            id
+                            name
+                            user {
+                                email
+                            }
+                            pictures {
+                                picture_path
+                            }
+                        }
+                    }
+                """
+
+collections_query_user_email = """
                     query TestQuery($user_email: String!, $name: String!) {
                         collections(user_email: $user_email, name: $name) {
+                            id
                             name
                             user {
                                 email
@@ -31,6 +48,7 @@ collections_query_one = """
 collections_query_user = """
                     query TestQuery($user_email: String!) {
                         collections(user_email: $user_email) {
+                            id
                             name
                             user {
                                 email
@@ -45,6 +63,7 @@ collections_query_user = """
 collections_query_name = """
                     query TestQuery($name: String!) {
                         collections(name: $name) {
+                            id
                             name
                             user {
                                 email
@@ -246,6 +265,7 @@ picture_query_one = """
 picture_comment_query_all = """
                     query TestQuery {
                         picture_comments {
+                            id
                             user {
                                 email
                             }

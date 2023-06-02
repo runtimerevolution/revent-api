@@ -40,6 +40,7 @@ class PictureCommentType:
 
 @strawberry.django.type(Collection)
 class CollectionType:
+    id: int
     name: str
     user: "UserType"
     pictures: List[PictureType]

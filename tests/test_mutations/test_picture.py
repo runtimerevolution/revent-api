@@ -7,9 +7,10 @@ from tests.test_mutations.mutation_file import picture_creation_mutation
 from tests.test_queries.query_file import user_query_one
 
 
-class UserTest(TestCase):
+class PictureTest(TestCase):
     def setUp(self):
         newUser = UserFactory(user_profile_picture=True)
+        self.newLikesUsers = UserFactory.create_batch(3, user_profile_picture=True)
 
         newUserResult = schema.execute_sync(
             user_query_one,
@@ -21,10 +22,11 @@ class UserTest(TestCase):
     async def test_create_one(self):
         mutation = picture_creation_mutation
         newUser = self.newUser
+        newLikesUsers = self.newLikesUsers
         newPicture = {
-            "user": newUser,
+            "user": newUser["email"],
             "picture_path": "www.test.com",
-            "likes": {"email": newUser["email"]},
+            "likes": [user.email for user in newLikesUsers],
         }
 
         result = await schema.execute(
@@ -33,7 +35,15 @@ class UserTest(TestCase):
         )
 
         self.assertEqual(result.errors, None)
-        self.assertEqual(result.data["create_picture"], newPicture)
+        self.assertEqual(
+            result.data["create_picture"]["user"]["email"], newPicture.email
+        )
+        self.assertEqual(
+            result.data["create_picture"]["picture_path"], newPicture.picture_path
+        )
+        self.assertEqual(
+            len(result.data["create_picture"]["likes"]), len(newPicture.likes)
+        )
 
     @pytest.mark.asyncio
     async def test_create_fail(self):
@@ -41,15 +51,13 @@ class UserTest(TestCase):
 
         mutation = picture_creation_mutation
         newPicture = {
-            "user": newUser,
+            "user": newUser["email"],
             "picture_path": "www.test.com",
-            "likes": {"email": newUser["email"]},
         }
 
         newPicture2 = {
-            "user": newUser,
+            "user": newUser["email"],
             "picture_path": "www.test.com",
-            "likes": {"email": newUser["email"]},
         }
 
         result = await schema.execute(
@@ -65,3 +73,7 @@ class UserTest(TestCase):
         self.assertEqual(result.errors, None)
         self.assertEqual(resultError.errors, None)
         self.assertFalse(resultError.data["create_picture"]["__typename"] is None)
+        self.assertEqual(
+            resultError.data["create_picture"]["messages"][0]["message"],
+            "Picture with this Picture path already exists.",
+        )

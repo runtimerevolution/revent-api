@@ -108,7 +108,7 @@ class ContestSubmission(models.Model):
         "Picture",
         on_delete=models.CASCADE,
     )
-    submissionDate = models.DateTimeField(auto_now_add=True)
+    submission_date = models.DateTimeField(auto_now_add=True)
     votes = models.ManyToManyField(User, related_name="submission_votes")
 
     def validate_unique(self):

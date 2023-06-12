@@ -75,8 +75,8 @@ class Contest(models.Model):
     prize = models.TextField()
     automated_dates = models.BooleanField(default=True)
     upload_phase_start = models.DateTimeField(auto_now_add=True)
-    upload_phase_end = models.DateTimeField(null=True)
-    voting_phase_end = models.DateTimeField(null=True)
+    upload_phase_end = models.DateTimeField(null=True, blank=True)
+    voting_phase_end = models.DateTimeField(null=True, blank=True)
     active = models.BooleanField(default=True)
     winners = models.ManyToManyField(User, related_name="contest_winners")
     created_by = models.ForeignKey(
@@ -114,7 +114,7 @@ class ContestSubmission(models.Model):
     submission_date = models.DateTimeField(auto_now_add=True)
     votes = models.ManyToManyField(User, related_name="submission_votes")
 
-    def validate_unique(self):
+    def validate_unique(self, *args, **kwargs):
         qs = ContestSubmission.objects.filter(
             contest=self.contest, picture__user=self.picture.user
         ).exclude(picture__picture_path=self.picture.picture_path)

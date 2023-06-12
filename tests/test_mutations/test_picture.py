@@ -36,13 +36,13 @@ class PictureTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_picture"]["user"]["email"], newPicture.email
+            result.data["create_picture"]["user"]["email"], newPicture["user"]
         )
         self.assertEqual(
-            result.data["create_picture"]["picture_path"], newPicture.picture_path
+            result.data["create_picture"]["picture_path"], newPicture["picture_path"]
         )
         self.assertEqual(
-            len(result.data["create_picture"]["likes"]), len(newPicture.likes)
+            len(result.data["create_picture"]["likes"]), len(newPicture["likes"])
         )
 
     @pytest.mark.asyncio

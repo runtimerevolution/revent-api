@@ -1,4 +1,5 @@
 import strawberry
+from django.utils import timezone
 from strawberry_django_plus import gql
 
 from .inputs import (
@@ -15,7 +16,7 @@ from .inputs import (
     UserInput,
     UserInputPartial,
 )
-from .models import Collection, ContestSubmission, Picture
+from .models import Collection, Contest, ContestSubmission, Picture
 from .types import (
     CollectionType,
     ContestSubmissionType,
@@ -79,3 +80,12 @@ class Mutation:
         contestSubmission.save()
 
         return contestSubmission
+
+    @strawberry.mutation
+    def contest_close(self, contest: int) -> ContestType:
+        contest = Contest.objects.filter(id=contest).first()
+        contest.active = False
+        contest.voting_phase_end = timezone.now()
+        contest.save()
+
+        return contest

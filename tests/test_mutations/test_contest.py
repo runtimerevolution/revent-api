@@ -2,8 +2,11 @@ import pytest
 from django.test import TestCase
 
 from photo.schema import schema
-from tests.factories import PictureFactory, UserFactory
-from tests.test_mutations.mutation_file import contest_creation_mutation
+from tests.factories import ContestFactory, PictureFactory, UserFactory
+from tests.test_mutations.mutation_file import (
+    contest_close_mutation,
+    contest_creation_mutation,
+)
 from tests.test_queries.query_file import picture_query_one, user_query_one
 
 
@@ -58,3 +61,21 @@ class ContestTest(TestCase):
         )
         self.assertEqual(result.data["create_contest"]["prize"], newContest["prize"])
         self.assertEqual(result.data["create_contest"]["active"], newContest["active"])
+
+    def test_vote(self):
+        mutation = contest_close_mutation
+
+        newContest = ContestFactory()
+
+        result = schema.execute_sync(
+            mutation,
+            variable_values={
+                "contest": newContest.id,
+            },
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["contest_close"]["active"],
+            False,
+        )

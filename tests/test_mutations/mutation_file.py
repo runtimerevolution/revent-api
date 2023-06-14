@@ -159,6 +159,18 @@ contest_creation_mutation = """
                     }
                 """
 
+contest_close_mutation = """
+                    mutation TestMutation($contest: Int!) {
+                        contest_close(contest: $contest) {
+                            ... on ContestType {
+                              id
+                              active
+                              voting_phase_end
+                            }
+                        }
+                    }
+                """
+
 contest_submission_creation_mutation = """
                     mutation TestMutation($contestSubmission: ContestSubmissionInput!) {
                         create_contestSubmission(input: $contestSubmission) {

@@ -25,7 +25,6 @@ class UserInput:
 
 @gql.django.partial(User)
 class UserInputPartial(gql.NodeInput):
-    email: str
     name_first: str
     name_last: str
     profile_picture: str
@@ -42,8 +41,6 @@ class PictureInput:
 
 @gql.django.partial(Picture)
 class PictureInputPartial(gql.NodeInput):
-    user: str
-    picture_path: str
     likes: List[str]
 
 
@@ -57,10 +54,8 @@ class PictureCommentInput:
 
 @gql.django.partial(PictureComment)
 class PictureCommentInputPartial(gql.NodeInput):
-    user: str
-    picture: str
+    id: int
     text: str
-    created_at: strawberry.auto
 
 
 @strawberry.django.input(Collection)
@@ -72,8 +67,8 @@ class CollectionInput:
 
 @gql.django.partial(Collection)
 class CollectionInputPartial(gql.NodeInput):
+    id: int
     name: str
-    user: str
     pictures: List[str]
 
 
@@ -94,17 +89,13 @@ class ContestInput:
 
 @gql.django.partial(Contest)
 class ContestInputPartial(gql.NodeInput):
+    id: int
     title: str
     description: str
     cover_picture: str
     prize: str
-    automated_dates: bool
-    upload_phase_start: strawberry.auto
     upload_phase_end: strawberry.auto
     voting_phase_end: strawberry.auto
-    active: bool
-    winners: List[str]
-    created_by: str
 
 
 @strawberry.django.input(ContestSubmission)
@@ -117,7 +108,7 @@ class ContestSubmissionInput:
 
 @gql.django.partial(ContestSubmission)
 class ContestSubmissionInputPartial(gql.NodeInput):
+    id: int
     contest: int
     picture: str
     submission_date: strawberry.auto
-    votes: List[str]

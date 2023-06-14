@@ -43,6 +43,22 @@ picture_creation_mutation = """
                     }
                 """
 
+picture_like_mutation = """
+                    mutation TestMutation($user: String!, $picture: String!) {
+                        like_picture(user: $user, picture: $picture) {
+                            ... on PictureType {
+                              user {
+                                email
+                              }
+                              picture_path
+                              likes {
+                                email
+                              }
+                            }
+                        }
+                    }
+                """
+
 picture_comment_creation_mutation = """
                     mutation TestMutation($pictureComment: PictureCommentInput!) {
                         create_pictureComment(input: $pictureComment) {
@@ -87,6 +103,22 @@ collection_creation_mutation = """
                                     kind
                                     message
                                 }
+                            }
+                        }
+                    }
+                """
+
+collection_add_picture_mutation = """
+                    mutation TestMutation($collection: Int!, $picture: String!) {
+                        collection_add_picture(collection: $collection, picture: $picture) {
+                            ... on CollectionType {
+                              user {
+                                email
+                              }
+                              name
+                              pictures {
+                                picture_path
+                              }
                             }
                         }
                     }
@@ -149,6 +181,19 @@ contest_submission_creation_mutation = """
                                     kind
                                     message
                                 }
+                            }
+                        }
+                    }
+                """
+
+contest_submission_vote_mutation = """
+                    mutation TestMutation($contestSubmission: Int!, $user: String!) {
+                        contest_submission_add_vote(contestSubmission: $contestSubmission, user: $user) {
+                            ... on ContestSubmissionType {
+                              id
+                              votes {
+                                email
+                              }
                             }
                         }
                     }

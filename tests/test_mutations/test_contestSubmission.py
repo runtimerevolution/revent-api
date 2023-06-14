@@ -2,8 +2,16 @@ import pytest
 from django.test import TestCase
 
 from photo.schema import schema
-from tests.factories import ContestFactory, PictureFactory
-from tests.test_mutations.mutation_file import contest_submission_creation_mutation
+from tests.factories import (
+    ContestFactory,
+    ContestSubmissionFactory,
+    PictureFactory,
+    UserFactory,
+)
+from tests.test_mutations.mutation_file import (
+    contest_submission_creation_mutation,
+    contest_submission_vote_mutation,
+)
 from tests.test_queries.query_file import contest_query_one, picture_query_one
 
 
@@ -51,4 +59,24 @@ class ContestSubmissionTest(TestCase):
         )
         self.assertEqual(
             result.data["create_contestSubmission"]["contest"]["id"], newContest["id"]
+        )
+
+    def test_vote(self):
+        mutation = contest_submission_vote_mutation
+
+        newContestSubmission = ContestSubmissionFactory()
+        newUserVote = UserFactory()
+
+        result = schema.execute_sync(
+            mutation,
+            variable_values={
+                "contestSubmission": newContestSubmission.id,
+                "user": newUserVote.email,
+            },
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["contest_submission_add_vote"]["votes"][0]["email"],
+            newUserVote.email,
         )

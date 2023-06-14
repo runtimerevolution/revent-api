@@ -9,7 +9,7 @@ from .inputs import (
     PictureInput,
     UserInput,
 )
-
+from .models import Collection, ContestSubmission, Picture
 from .types import (
     CollectionType,
     ContestSubmissionType,
@@ -33,3 +33,31 @@ class Mutation:
     create_contestSubmission: ContestSubmissionType = gql.django.create_mutation(
         ContestSubmissionInput
     )
+
+    @strawberry.mutation
+    def like_picture(self, user: str, picture: str) -> PictureType:
+        picture = Picture.objects.filter(picture_path=picture).first()
+        picture.likes.add(user)
+        picture.save()
+
+        return picture
+
+    @strawberry.mutation
+    def collection_add_picture(self, collection: int, picture: str) -> CollectionType:
+        collection = Collection.objects.filter(id=collection).first()
+        collection.pictures.add(picture)
+        collection.save()
+
+        return collection
+
+    @strawberry.mutation
+    def contest_submission_add_vote(
+        self, contestSubmission: int, user: str
+    ) -> ContestSubmissionType:
+        contestSubmission = ContestSubmission.objects.filter(
+            id=contestSubmission
+        ).first()
+        contestSubmission.votes.add(user)
+        contestSubmission.save()
+
+        return contestSubmission

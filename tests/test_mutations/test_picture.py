@@ -2,8 +2,11 @@ import pytest
 from django.test import TestCase
 
 from photo.schema import schema
-from tests.factories import UserFactory
-from tests.test_mutations.mutation_file import picture_creation_mutation
+from tests.factories import PictureFactory, UserFactory
+from tests.test_mutations.mutation_file import (
+    picture_creation_mutation,
+    picture_like_mutation,
+)
 from tests.test_queries.query_file import user_query_one
 
 
@@ -76,4 +79,27 @@ class PictureTest(TestCase):
         self.assertEqual(
             resultError.data["create_picture"]["messages"][0]["message"],
             "Picture with this Picture path already exists.",
+        )
+
+    def test_like(self):
+        mutation = picture_like_mutation
+
+        newUser = UserFactory()
+        newPicture = PictureFactory(user=newUser, picture_path="www.test.com")
+        newUserLike = UserFactory()
+
+        result = schema.execute_sync(
+            mutation,
+            variable_values={
+                "user": newUserLike.email,
+                "picture": newPicture.picture_path,
+            },
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["like_picture"]["user"]["email"], newPicture.user.email
+        )
+        self.assertEqual(
+            result.data["like_picture"]["likes"][0]["email"], newUserLike.email
         )

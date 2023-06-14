@@ -2,8 +2,11 @@ import pytest
 from django.test import TestCase
 
 from photo.schema import schema
-from tests.factories import PictureFactory, UserFactory
-from tests.test_mutations.mutation_file import collection_creation_mutation
+from tests.factories import CollectionFactory, PictureFactory, UserFactory
+from tests.test_mutations.mutation_file import (
+    collection_add_picture_mutation,
+    collection_creation_mutation,
+)
 from tests.test_queries.query_file import user_query_one
 
 
@@ -84,4 +87,24 @@ class PictureCommentTest(TestCase):
                 "kind": "VALIDATION",
                 "message": "Collection with this Name and User already exists.",
             },
+        )
+
+    def test_add_picture(self):
+        mutation = collection_add_picture_mutation
+
+        newCollection = CollectionFactory()
+        newPicture = PictureFactory(picture_path="www.test.com")
+
+        result = schema.execute_sync(
+            mutation,
+            variable_values={
+                "collection": newCollection.id,
+                "picture": newPicture.picture_path,
+            },
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["collection_add_picture"]["pictures"][0]["picture_path"],
+            newPicture.picture_path,
         )

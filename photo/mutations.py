@@ -3,11 +3,17 @@ from strawberry_django_plus import gql
 
 from .inputs import (
     CollectionInput,
+    CollectionInputPartial,
     ContestInput,
+    ContestInputPartial,
     ContestSubmissionInput,
+    ContestSubmissionInputPartial,
     PictureCommentInput,
+    PictureCommentInputPartial,
     PictureInput,
+    PictureInputPartial,
     UserInput,
+    UserInputPartial,
 )
 from .models import Collection, ContestSubmission, Picture
 from .types import (
@@ -32,6 +38,18 @@ class Mutation:
     create_contest: ContestType = gql.django.create_mutation(ContestInput)
     create_contestSubmission: ContestSubmissionType = gql.django.create_mutation(
         ContestSubmissionInput
+    )
+    update_user: UserType = gql.django.update_mutation(UserInputPartial)
+    update_picture: PictureType = gql.django.update_mutation(PictureInputPartial)
+    update_pictureComment: PictureCommentType = gql.django.update_mutation(
+        PictureCommentInputPartial
+    )
+    update_collection: CollectionType = gql.django.update_mutation(
+        CollectionInputPartial
+    )
+    update_contest: ContestType = gql.django.update_mutation(ContestInputPartial)
+    update_contestSubmission: ContestSubmissionType = gql.django.update_mutation(
+        ContestSubmissionInputPartial
     )
 
     @strawberry.mutation

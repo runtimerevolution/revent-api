@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ValidationError
+from django.utils import timezone
 
 
 class User(models.Model):
@@ -18,6 +19,15 @@ class User(models.Model):
     user_handle = models.TextField(unique=True, null=True)
 
     def validate_profile_picture(self):
+        if not self._state.adding:
+            old_picture_path = (
+                User.objects.filter(email=self.email).first().profile_picture
+            )
+            if (
+                old_picture_path
+                and self.profile_picture.pk != old_picture_path.picture_path
+            ):
+                self.profile_picture_updated_at = timezone.now()
         if self.profile_picture and self.profile_picture.user.email != self.email:
             raise ValidationError(
                 "The user's profile picture must be owned by the same user."
@@ -118,7 +128,7 @@ class ContestSubmission(models.Model):
         qs = ContestSubmission.objects.filter(
             contest=self.contest, picture__user=self.picture.user
         ).exclude(picture__picture_path=self.picture.picture_path)
-        if qs.exists():
+        if qs.exists() and self._state.adding:
             raise ValidationError("Each user can only submit one picture per contest")
 
     def save(self, *args, **kwargs):

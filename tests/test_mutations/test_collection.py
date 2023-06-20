@@ -6,6 +6,7 @@ from tests.factories import CollectionFactory, PictureFactory, UserFactory
 from tests.test_mutations.mutation_file import (
     collection_add_picture_mutation,
     collection_creation_mutation,
+    collection_update_mutation,
 )
 from tests.test_queries.query_file import user_query_one
 
@@ -108,3 +109,37 @@ class PictureCommentTest(TestCase):
             result.data["collection_add_picture"]["pictures"][0]["picture_path"],
             newPicture.picture_path,
         )
+
+    def test_update(self):
+        mutation = collection_update_mutation
+
+        newUser = UserFactory()
+        oldPictures = PictureFactory.create_batch(5, user=newUser)
+        newCollection = CollectionFactory(user=newUser, collection_pictures=oldPictures)
+        newPictures = PictureFactory.create_batch(10, user=newUser)
+
+        self.assertEqual(newCollection.pictures.count(), len(oldPictures))
+
+        pictures = [picture.picture_path for picture in newPictures]
+        updatedCollection = {
+            "id": newCollection.id,
+            "name": "test name",
+            "pictures": pictures,
+        }
+
+        result = schema.execute_sync(
+            mutation,
+            variable_values={
+                "collection": updatedCollection,
+            },
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["update_collection"]["name"], updatedCollection["name"]
+        )
+        self.assertEqual(
+            len(result.data["update_collection"]["pictures"]), len(newPictures)
+        )
+        for picture in result.data["update_collection"]["pictures"]:
+            self.assertTrue(picture["picture_path"] in pictures)

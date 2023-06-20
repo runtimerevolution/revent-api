@@ -6,6 +6,7 @@ from tests.factories import PictureFactory, UserFactory
 from tests.test_mutations.mutation_file import (
     picture_creation_mutation,
     picture_like_mutation,
+    picture_update_mutation,
 )
 from tests.test_queries.query_file import user_query_one
 
@@ -103,3 +104,28 @@ class PictureTest(TestCase):
         self.assertEqual(
             result.data["like_picture"]["likes"][0]["email"], newUserLike.email
         )
+
+    def test_update(self):
+        mutation = picture_update_mutation
+
+        newUser = UserFactory()
+        newPicture = PictureFactory(user=newUser, picture_path="www.test.com")
+        newUserLikes = UserFactory.create_batch(3)
+        likes = [user.email for user in newUserLikes]
+        updatedPicture = {
+            "pk": newPicture.picture_path,
+            "likes": likes,
+        }
+
+        result = schema.execute_sync(
+            mutation,
+            variable_values={
+                "picture": updatedPicture,
+            },
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(result.data["update_picture"]["user"]["email"], newUser.email)
+        self.assertEqual(len(result.data["update_picture"]["likes"]), len(newUserLikes))
+        for like in result.data["update_picture"]["likes"]:
+            self.assertTrue(like["email"] in likes)

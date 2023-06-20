@@ -19,6 +19,23 @@ user_creation_mutation = """
                     }
                 """
 
+user_update_mutation = """
+                    mutation TestMutation($user: UserInputPartial!) {
+                        update_user(input: $user) {
+                            ... on UserType {
+                              email
+                              name_first
+                              name_last
+                              user_handle
+                              profile_picture {
+                                picture_path
+                              }
+                              profile_picture_updated_at
+                            }
+                        }
+                    }
+                """
+
 picture_creation_mutation = """
                     mutation TestMutation($picture: PictureInput!) {
                         create_picture(input: $picture) {
@@ -59,6 +76,22 @@ picture_like_mutation = """
                     }
                 """
 
+picture_update_mutation = """
+                    mutation TestMutation($picture: PictureInputPartial!) {
+                        update_picture(input: $picture) {
+                            ... on PictureType {
+                              user {
+                                email
+                              }
+                              picture_path
+                              likes {
+                                email
+                              }
+                            }
+                        }
+                    }
+                """
+
 picture_comment_creation_mutation = """
                     mutation TestMutation($pictureComment: PictureCommentInput!) {
                         create_pictureComment(input: $pictureComment) {
@@ -79,6 +112,23 @@ picture_comment_creation_mutation = """
                                     kind
                                     message
                                 }
+                            }
+                        }
+                    }
+                """
+
+picture_comment_update_mutation = """
+                    mutation TestMutation($pictureComment: PictureCommentInputPartial!) {
+                        update_pictureComment(input: $pictureComment) {
+                            ... on PictureCommentType {
+                              id
+                              user {
+                                email
+                              }
+                              picture {
+                                picture_path
+                              }
+                              text
                             }
                         }
                     }
@@ -124,6 +174,20 @@ collection_add_picture_mutation = """
                     }
                 """
 
+collection_update_mutation = """
+                    mutation TestMutation($collection: CollectionInputPartial!) {
+                        update_collection(input: $collection) {
+                            ... on CollectionType {
+                              id
+                              name
+                              pictures {
+                                picture_path
+                              }
+                            }
+                        }
+                    }
+                """
+
 contest_creation_mutation = """
                     mutation TestMutation($contest: ContestInput!) {
                         create_contest(input: $contest) {
@@ -154,6 +218,24 @@ contest_creation_mutation = """
                                     kind
                                     message
                                 }
+                            }
+                        }
+                    }
+                """
+
+contest_update_mutation = """
+                    mutation TestMutation($contest: ContestInputPartial!) {
+                        update_contest(input: $contest) {
+                            ... on ContestType {
+                              id
+                              title
+                              description
+                              cover_picture {
+                                picture_path
+                              }
+                              prize
+                              upload_phase_end
+                              voting_phase_end
                             }
                         }
                     }
@@ -193,6 +275,20 @@ contest_submission_creation_mutation = """
                                     kind
                                     message
                                 }
+                            }
+                        }
+                    }
+                """
+
+contest_submission_update_mutation = """
+                    mutation TestMutation($contestSubmission: ContestSubmissionInputPartial!) {
+                        update_contestSubmission(input: $contestSubmission) {
+                            ... on ContestSubmissionType {
+                              id
+                              picture {
+                                picture_path
+                              }
+                              submission_date
                             }
                         }
                     }

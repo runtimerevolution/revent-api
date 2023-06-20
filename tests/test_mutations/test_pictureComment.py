@@ -2,8 +2,11 @@ import pytest
 from django.test import TestCase
 
 from photo.schema import schema
-from tests.factories import PictureFactory, UserFactory
-from tests.test_mutations.mutation_file import picture_comment_creation_mutation
+from tests.factories import PictureCommentFactory, PictureFactory, UserFactory
+from tests.test_mutations.mutation_file import (
+    picture_comment_creation_mutation,
+    picture_comment_update_mutation,
+)
 from tests.test_queries.query_file import picture_query_one, user_query_one
 
 
@@ -48,4 +51,33 @@ class PictureCommentTest(TestCase):
         )
         self.assertEqual(
             result.data["create_pictureComment"]["text"], newPictureComment["text"]
+        )
+
+    def test_update(self):
+        mutation = picture_comment_update_mutation
+
+        newPictureComment = PictureCommentFactory()
+        updatedPictureComment = {
+            "id": newPictureComment.id,
+            "text": "test text",
+        }
+
+        result = schema.execute_sync(
+            mutation,
+            variable_values={
+                "pictureComment": updatedPictureComment,
+            },
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["update_pictureComment"]["user"]["email"],
+            newPictureComment.user.email,
+        )
+        self.assertEqual(
+            result.data["update_pictureComment"]["picture"]["picture_path"],
+            newPictureComment.picture.picture_path,
+        )
+        self.assertEqual(
+            result.data["update_pictureComment"]["text"], updatedPictureComment["text"]
         )

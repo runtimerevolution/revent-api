@@ -150,6 +150,17 @@ contest_query_creator = """
                     }
                 """
 
+contest_query_search = """
+                    query TestQuery($search: String!) {
+                        contest_search(search: $search) {
+                            id
+                            title
+                            description
+                            prize
+                        }
+                    }
+                """
+
 contest_submission_query_all = """
                     query TestQuery {
                         contest_submissions {

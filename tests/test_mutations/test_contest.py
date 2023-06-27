@@ -41,7 +41,6 @@ class ContestTest(TestCase):
             "title": "Best contest",
             "description": "Epic pictures.",
             "prize": "Money.",
-            "active": True,
             "created_by": newUser["email"],
             "cover_picture": newPicture["picture_path"],
         }
@@ -64,7 +63,6 @@ class ContestTest(TestCase):
             result.data["create_contest"]["description"], newContest["description"]
         )
         self.assertEqual(result.data["create_contest"]["prize"], newContest["prize"])
-        self.assertEqual(result.data["create_contest"]["active"], newContest["active"])
 
     def test_close(self):
         mutation = contest_close_mutation
@@ -79,10 +77,6 @@ class ContestTest(TestCase):
         )
 
         self.assertEqual(result.errors, None)
-        self.assertEqual(
-            result.data["contest_close"]["active"],
-            False,
-        )
 
     def test_update(self):
         mutation = contest_update_mutation

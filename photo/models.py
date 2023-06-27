@@ -87,7 +87,6 @@ class Contest(models.Model):
     upload_phase_start = models.DateTimeField(auto_now_add=True)
     upload_phase_end = models.DateTimeField(null=True, blank=True)
     voting_phase_end = models.DateTimeField(null=True, blank=True)
-    active = models.BooleanField(default=True)
     winners = models.ManyToManyField(User, related_name="contest_winners")
     created_by = models.ForeignKey(
         "User",

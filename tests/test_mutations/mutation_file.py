@@ -206,7 +206,6 @@ contest_creation_mutation = """
                                 upload_phase_start
                                 upload_phase_end
                                 voting_phase_end
-                                active
                                 winners {
                                     email
                                 }
@@ -246,7 +245,6 @@ contest_close_mutation = """
                         contest_close(contest: $contest) {
                             ... on ContestType {
                               id
-                              active
                               voting_phase_end
                             }
                         }

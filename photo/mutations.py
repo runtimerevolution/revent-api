@@ -82,8 +82,8 @@ class Mutation:
     @strawberry.mutation
     def contest_close(self, contest: int) -> ContestType:
         contest = Contest.objects.get(id=contest)
-        contest.active = False
         contest.voting_phase_end = timezone.now()
+        contest.status = "closed"
         contest.save()
 
         return contest

@@ -58,7 +58,6 @@ class ContestType:
     upload_phase_start: strawberry.auto
     upload_phase_end: strawberry.auto
     voting_phase_end: strawberry.auto
-    active: bool
     winners: List[UserType]
     created_by: "UserType"
     status: str

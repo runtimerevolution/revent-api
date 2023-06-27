@@ -92,7 +92,6 @@ contest_query_all = """
                             upload_phase_start
                             upload_phase_end
                             voting_phase_end
-                            active
                             winners {
                                 email
                             }
@@ -118,7 +117,6 @@ contest_query_one = """
                             upload_phase_start
                             upload_phase_end
                             voting_phase_end
-                            active
                             winners {
                                 email
                             }
@@ -144,7 +142,6 @@ contest_query_creator = """
                             upload_phase_start
                             upload_phase_end
                             voting_phase_end
-                            active
                             winners {
                                 email
                             }

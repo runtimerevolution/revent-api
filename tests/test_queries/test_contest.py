@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.test import TestCase
+from django.utils import timezone
 
 from photo.models import Contest
 from photo.schema import schema
@@ -30,7 +33,9 @@ class ContestTest(TestCase):
             sorted(
                 [
                     field.name
-                    for field in (Contest._meta.fields + Contest._meta.many_to_many)
+                    for field in (
+                        Contest._meta.fields + Contest._meta.many_to_many + ["status"]
+                    )
                 ]
             ),
         )
@@ -65,3 +70,47 @@ class ContestTest(TestCase):
         self.assertEqual(
             result.data["contests"][0]["created_by"]["email"], newUser.email
         )
+
+    def test_query_status(self):
+        newUser = UserFactory()
+        newContestSchedule = ContestFactory(
+            created_by=newUser,
+            upload_phase_start=timezone.now() + timedelta(1),
+            upload_phase_end=timezone.now() + timedelta(2),
+            voting_phase_end=timezone.now() + timedelta(3),
+        )
+        newContestOpen = ContestFactory(
+            created_by=newUser,
+            upload_phase_start=timezone.now() - timedelta(1),
+            upload_phase_end=timezone.now() + timedelta(1),
+            voting_phase_end=timezone.now() + timedelta(2),
+        )
+        newContestVoting = ContestFactory(
+            created_by=newUser,
+            upload_phase_start=timezone.now() - timedelta(1),
+            upload_phase_end=timezone.now() - timedelta(2),
+            voting_phase_end=timezone.now() + timedelta(1),
+        )
+        newContestClose = ContestFactory(
+            created_by=newUser,
+            upload_phase_start=timezone.now() - timedelta(3),
+            upload_phase_end=timezone.now() - timedelta(2),
+            voting_phase_end=timezone.now() - timedelta(1),
+        )
+        status = {
+            str(newContestSchedule.id): "schedule",
+            str(newContestOpen.id): "open",
+            str(newContestVoting.id): "voting",
+            str(newContestClose.id): "close",
+        }
+
+        query = contest_query_creator
+
+        result = schema.execute_sync(
+            query,
+            variable_values={"user_email": newUser.email},
+        )
+
+        self.assertEqual(result.errors, None)
+        for contest in result.data["contests"]:
+            self.assertEqual(contest["status"], status[str(contest["id"])])

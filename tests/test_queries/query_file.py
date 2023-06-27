@@ -96,6 +96,7 @@ contest_query_all = """
                             winners {
                                 email
                             }
+                            status
                         }
                     }
                 """
@@ -121,6 +122,7 @@ contest_query_one = """
                             winners {
                                 email
                             }
+                            status
                         }
                     }
                 """
@@ -146,6 +148,7 @@ contest_query_creator = """
                             winners {
                                 email
                             }
+                            status
                         }
                     }
                 """

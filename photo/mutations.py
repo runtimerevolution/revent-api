@@ -55,7 +55,7 @@ class Mutation:
 
     @strawberry.mutation
     def like_picture(self, user: str, picture: str) -> PictureType:
-        picture = Picture.objects.filter(picture_path=picture).first()
+        picture = Picture.objects.get(picture_path=picture)
         picture.likes.add(user)
         picture.save()
 
@@ -63,7 +63,7 @@ class Mutation:
 
     @strawberry.mutation
     def collection_add_picture(self, collection: int, picture: str) -> CollectionType:
-        collection = Collection.objects.filter(id=collection).first()
+        collection = Collection.objects.get(id=collection)
         collection.pictures.add(picture)
         collection.save()
 
@@ -73,9 +73,7 @@ class Mutation:
     def contest_submission_add_vote(
         self, contestSubmission: int, user: str
     ) -> ContestSubmissionType:
-        contestSubmission = ContestSubmission.objects.filter(
-            id=contestSubmission
-        ).first()
+        contestSubmission = ContestSubmission.objects.get(id=contestSubmission)
         contestSubmission.votes.add(user)
         contestSubmission.save()
 
@@ -83,7 +81,7 @@ class Mutation:
 
     @strawberry.mutation
     def contest_close(self, contest: int) -> ContestType:
-        contest = Contest.objects.filter(id=contest).first()
+        contest = Contest.objects.get(id=contest)
         contest.active = False
         contest.voting_phase_end = timezone.now()
         contest.save()

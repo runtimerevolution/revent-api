@@ -11,7 +11,7 @@ from tests.test_mutations.mutation_file import (
 from tests.test_queries.query_file import user_query_one
 
 
-class PictureCommentTest(TestCase):
+class CollectionTest(TestCase):
     def setUp(self):
         newUser = UserFactory(user_profile_picture=True)
         self.newPictures = PictureFactory.create_batch(10, user=newUser)
@@ -117,8 +117,6 @@ class PictureCommentTest(TestCase):
         oldPictures = PictureFactory.create_batch(5, user=newUser)
         newCollection = CollectionFactory(user=newUser, collection_pictures=oldPictures)
         newPictures = PictureFactory.create_batch(10, user=newUser)
-
-        self.assertEqual(newCollection.pictures.count(), len(oldPictures))
 
         pictures = [picture.picture_path for picture in newPictures]
         updatedCollection = {

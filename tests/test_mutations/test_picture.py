@@ -8,19 +8,12 @@ from tests.test_mutations.mutation_file import (
     picture_like_mutation,
     picture_update_mutation,
 )
-from tests.test_queries.query_file import user_query_one
 
 
 class PictureTest(TestCase):
     def setUp(self):
-        newUser = UserFactory(user_profile_picture=True)
+        self.newUser = UserFactory(user_profile_picture=True)
         self.newLikesUsers = UserFactory.create_batch(3, user_profile_picture=True)
-
-        newUserResult = schema.execute_sync(
-            user_query_one,
-            variable_values={"email": newUser.email},
-        )
-        self.newUser = newUserResult.data["users"][0]
 
     @pytest.mark.asyncio
     async def test_create_one(self):
@@ -28,7 +21,7 @@ class PictureTest(TestCase):
         newUser = self.newUser
         newLikesUsers = self.newLikesUsers
         newPicture = {
-            "user": newUser["email"],
+            "user": newUser.email,
             "picture_path": "www.test.com",
             "likes": [user.email for user in newLikesUsers],
         }
@@ -55,12 +48,12 @@ class PictureTest(TestCase):
 
         mutation = picture_creation_mutation
         newPicture = {
-            "user": newUser["email"],
+            "user": newUser.email,
             "picture_path": "www.test.com",
         }
 
         newPicture2 = {
-            "user": newUser["email"],
+            "user": newUser.email,
             "picture_path": "www.test.com",
         }
 

@@ -8,19 +8,12 @@ from tests.test_mutations.mutation_file import (
     collection_creation_mutation,
     collection_update_mutation,
 )
-from tests.test_queries.query_file import user_query_one
 
 
 class CollectionTest(TestCase):
     def setUp(self):
-        newUser = UserFactory(user_profile_picture=True)
-        self.newPictures = PictureFactory.create_batch(10, user=newUser)
-
-        newUserResult = schema.execute_sync(
-            user_query_one,
-            variable_values={"email": newUser.email},
-        )
-        self.newUser = newUserResult.data["users"][0]
+        self.newUser = UserFactory(user_profile_picture=True)
+        self.newPictures = PictureFactory.create_batch(10, user=self.newUser)
 
     @pytest.mark.asyncio
     async def test_create_one(self):
@@ -28,7 +21,7 @@ class CollectionTest(TestCase):
         newUser = self.newUser
 
         newCollection = {
-            "user": newUser["email"],
+            "user": newUser.email,
             "name": "Best collection",
             "pictures": [picture.picture_path for picture in self.newPictures],
         }
@@ -40,7 +33,7 @@ class CollectionTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_collection"]["user"]["email"], newUser["email"]
+            result.data["create_collection"]["user"]["email"], newUser.email
         )
         self.assertEqual(
             len(result.data["create_collection"]["pictures"]), len(self.newPictures)
@@ -57,13 +50,13 @@ class CollectionTest(TestCase):
         newUser = self.newUser
 
         newCollection = {
-            "user": newUser["email"],
+            "user": newUser.email,
             "name": "Best collection",
             "pictures": [picture.picture_path for picture in self.newPictures],
         }
 
         newCollection2 = {
-            "user": newUser["email"],
+            "user": newUser.email,
             "name": "Best collection",
             "pictures": [picture.picture_path for picture in self.newPictures],
         }

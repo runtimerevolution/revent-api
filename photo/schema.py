@@ -2,5 +2,8 @@ import strawberry
 from strawberry.schema.config import StrawberryConfig
 
 from photo.queries import Query
+from photo.mutations import Mutation
 
-schema = strawberry.Schema(query=Query, config=StrawberryConfig(auto_camel_case=False))
+schema = strawberry.Schema(
+    query=Query, mutation=Mutation, config=StrawberryConfig(auto_camel_case=False)
+)

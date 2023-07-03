@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ValidationError
+from django.utils import timezone
 
 
 class User(models.Model):
@@ -11,12 +12,22 @@ class User(models.Model):
         "Picture",
         on_delete=models.SET_NULL,
         related_name="user_picture_path",
+        blank=True,
         null=True,
     )
-    profile_picture_updated_at = models.DateTimeField(null=True)
+    profile_picture_updated_at = models.DateTimeField(blank=True, null=True)
     user_handle = models.TextField(unique=True, null=True)
 
     def validate_profile_picture(self):
+        if not self._state.adding:
+            old_picture_path = (
+                User.objects.filter(email=self.email).first().profile_picture
+            )
+            if (
+                old_picture_path
+                and self.profile_picture.pk != old_picture_path.picture_path
+            ):
+                self.profile_picture_updated_at = timezone.now()
         if self.profile_picture and self.profile_picture.user.email != self.email:
             raise ValidationError(
                 "The user's profile picture must be owned by the same user."
@@ -68,19 +79,21 @@ class Contest(models.Model):
     cover_picture = models.ForeignKey(
         "Picture",
         on_delete=models.SET_NULL,
+        blank=True,
         null=True,
     )
     prize = models.TextField()
     automated_dates = models.BooleanField(default=True)
     upload_phase_start = models.DateTimeField(auto_now_add=True)
-    upload_phase_end = models.DateTimeField(null=True)
-    voting_phase_end = models.DateTimeField(null=True)
+    upload_phase_end = models.DateTimeField(null=True, blank=True)
+    voting_phase_end = models.DateTimeField(null=True, blank=True)
     active = models.BooleanField(default=True)
     winners = models.ManyToManyField(User, related_name="contest_winners")
     created_by = models.ForeignKey(
         "User",
         on_delete=models.SET_NULL,
         related_name="contest_created_by",
+        blank=True,
         null=True,
     )
 
@@ -111,11 +124,11 @@ class ContestSubmission(models.Model):
     submission_date = models.DateTimeField(auto_now_add=True)
     votes = models.ManyToManyField(User, related_name="submission_votes")
 
-    def validate_unique(self):
+    def validate_unique(self, *args, **kwargs):
         qs = ContestSubmission.objects.filter(
             contest=self.contest, picture__user=self.picture.user
         ).exclude(picture__picture_path=self.picture.picture_path)
-        if qs.exists():
+        if qs.exists() and self._state.adding:
             raise ValidationError("Each user can only submit one picture per contest")
 
     def save(self, *args, **kwargs):

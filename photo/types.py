@@ -1,6 +1,7 @@
 from typing import List
 
 import strawberry
+from django.utils import timezone
 
 from .models import (
     Collection,
@@ -57,9 +58,21 @@ class ContestType:
     upload_phase_start: strawberry.auto
     upload_phase_end: strawberry.auto
     voting_phase_end: strawberry.auto
-    active: bool
     winners: List[UserType]
     created_by: "UserType"
+    status: str
+
+    @strawberry.field
+    def status(self) -> str:
+        currentTime = timezone.now()
+        if self.upload_phase_start > currentTime:
+            return "schedule"
+        elif self.upload_phase_end > currentTime:
+            return "open"
+        elif self.voting_phase_end > currentTime:
+            return "voting"
+        else:
+            return "closed"
 
 
 @strawberry.django.type(ContestSubmission)

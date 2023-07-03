@@ -90,7 +90,6 @@ class ContestFactory(factory.django.DjangoModelFactory):
     upload_phase_start = factory.Faker("date_time", tzinfo=pytz.UTC)
     upload_phase_end = factory.Faker("date_time", tzinfo=pytz.UTC)
     voting_phase_end = factory.Faker("date_time", tzinfo=pytz.UTC)
-    active = True
 
     @factory.post_generation
     def contest_cover_picture(self, create, nullPicture=False):

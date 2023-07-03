@@ -140,3 +140,4 @@ class ContestTest(TestCase):
         self.assertEqual(len(result.data["contest_search"]), 3)
         for contest in result.data["contest_search"]:
             self.assertTrue(contest["id"] in newContestIDs)
+

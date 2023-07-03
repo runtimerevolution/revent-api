@@ -1,6 +1,7 @@
 from typing import List
 
 import strawberry
+from django.contrib.postgres.search import SearchVector
 
 from .models import (
     Collection,
@@ -81,3 +82,11 @@ class Query:
                 return ContestSubmission.objects.filter(picture__user__email=user_email)
             return ContestSubmission.objects.filter(contest__id=contest)
         return ContestSubmission.objects.all()
+
+    @strawberry.field
+    def contest_search(self, search: str) -> List[ContestType]:
+        contests = Contest.objects.annotate(
+            search=SearchVector("title", "description", "prize"),
+        ).filter(search=search)
+
+        return contests

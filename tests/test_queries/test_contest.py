@@ -10,6 +10,7 @@ from tests.test_queries.query_file import (
     contest_query_all,
     contest_query_creator,
     contest_query_one,
+    contest_query_search,
 )
 
 
@@ -114,3 +115,29 @@ class ContestTest(TestCase):
         self.assertEqual(result.errors, None)
         for contest in result.data["contests"]:
             self.assertEqual(contest["status"], status[str(contest["id"])])
+
+    def test_query_search(self):
+
+        testText = "This is a text with a weird word 1234Test1234."
+
+        newContestTitle = ContestFactory(title=testText)
+        newContestDescription = ContestFactory(description=testText)
+        newContestPrize = ContestFactory(prize=testText)
+
+        newContestIDs = [
+            contest.id
+            for contest in [newContestTitle, newContestDescription, newContestPrize]
+        ]
+
+        query = contest_query_search
+
+        result = schema.execute_sync(
+            query,
+            variable_values={"search": "1234Test1234"},
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(len(result.data["contest_search"]), 3)
+        for contest in result.data["contest_search"]:
+            self.assertTrue(contest["id"] in newContestIDs)
+

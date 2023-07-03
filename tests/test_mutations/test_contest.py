@@ -28,7 +28,6 @@ class ContestTest(TestCase):
             "title": "Best contest",
             "description": "Epic pictures.",
             "prize": "Money.",
-            "active": True,
             "created_by": newUser.email,
             "cover_picture": newPicture.picture_path,
         }

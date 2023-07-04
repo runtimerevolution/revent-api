@@ -34,10 +34,9 @@ class ContestTest(TestCase):
             sorted(
                 [
                     field.name
-                    for field in (
-                        Contest._meta.fields + Contest._meta.many_to_many + ["status"]
-                    )
+                    for field in (Contest._meta.fields + Contest._meta.many_to_many)
                 ]
+                + ["status"]
             ),
         )
 
@@ -140,4 +139,3 @@ class ContestTest(TestCase):
         self.assertEqual(len(result.data["contest_search"]), 3)
         for contest in result.data["contest_search"]:
             self.assertTrue(contest["id"] in newContestIDs)
-

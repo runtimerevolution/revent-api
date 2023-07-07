@@ -73,35 +73,37 @@ class ContestTest(TestCase):
 
     def test_query_status(self):
         newUser = UserFactory()
+        currentTime = timezone.now()
+
         newContestSchedule = ContestFactory(
             created_by=newUser,
-            upload_phase_start=timezone.now() + timedelta(1),
-            upload_phase_end=timezone.now() + timedelta(2),
-            voting_phase_end=timezone.now() + timedelta(3),
+            upload_phase_start=currentTime + timedelta(days=1),
+            upload_phase_end=currentTime + timedelta(days=2),
+            voting_phase_end=currentTime + timedelta(days=3),
         )
         newContestOpen = ContestFactory(
             created_by=newUser,
-            upload_phase_start=timezone.now() - timedelta(1),
-            upload_phase_end=timezone.now() + timedelta(1),
-            voting_phase_end=timezone.now() + timedelta(2),
+            upload_phase_start=currentTime - timedelta(days=1),
+            upload_phase_end=currentTime + timedelta(days=1),
+            voting_phase_end=currentTime + timedelta(days=2),
         )
         newContestVoting = ContestFactory(
             created_by=newUser,
-            upload_phase_start=timezone.now() - timedelta(1),
-            upload_phase_end=timezone.now() - timedelta(2),
-            voting_phase_end=timezone.now() + timedelta(1),
+            upload_phase_start=currentTime - timedelta(days=3),
+            upload_phase_end=currentTime - timedelta(days=2),
+            voting_phase_end=currentTime + timedelta(days=1),
         )
         newContestClose = ContestFactory(
             created_by=newUser,
-            upload_phase_start=timezone.now() - timedelta(3),
-            upload_phase_end=timezone.now() - timedelta(2),
-            voting_phase_end=timezone.now() - timedelta(1),
+            upload_phase_start=currentTime - timedelta(days=3),
+            upload_phase_end=currentTime - timedelta(days=2),
+            voting_phase_end=currentTime - timedelta(days=1),
         )
         status = {
             str(newContestSchedule.id): "schedule",
             str(newContestOpen.id): "open",
             str(newContestVoting.id): "voting",
-            str(newContestClose.id): "close",
+            str(newContestClose.id): "closed",
         }
 
         query = contest_query_creator

@@ -84,7 +84,7 @@ class Contest(models.Model):
     )
     prize = models.TextField()
     automated_dates = models.BooleanField(default=True)
-    upload_phase_start = models.DateTimeField(auto_now_add=True)
+    upload_phase_start = models.DateTimeField(default=timezone.now)
     upload_phase_end = models.DateTimeField(null=True, blank=True)
     voting_phase_end = models.DateTimeField(null=True, blank=True)
     winners = models.ManyToManyField(User, related_name="contest_winners")

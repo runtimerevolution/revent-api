@@ -25,6 +25,7 @@ class UserType:
 
 @strawberry.django.type(Picture)
 class PictureType:
+    id: int
     user: "UserType"
     picture_path: str
     likes: List[UserType]

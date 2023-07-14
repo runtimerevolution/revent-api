@@ -42,7 +42,7 @@ class Picture(models.Model):
     user = models.ForeignKey(
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
-    picture_path = models.TextField(primary_key=True)
+    picture_path = models.TextField(unique=True)
     likes = models.ManyToManyField(User, related_name="picture_likes")
 
 

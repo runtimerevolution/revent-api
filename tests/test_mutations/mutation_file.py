@@ -28,7 +28,7 @@ user_update_mutation = """
                               name_last
                               user_handle
                               profile_picture {
-                                picture_path
+                                id
                               }
                               profile_picture_updated_at
                             }
@@ -40,6 +40,7 @@ picture_creation_mutation = """
                     mutation TestMutation($picture: PictureInput!) {
                         create_picture(input: $picture) {
                             ... on PictureType {
+                              id
                               user {
                                 email
                               }
@@ -61,9 +62,10 @@ picture_creation_mutation = """
                 """
 
 picture_like_mutation = """
-                    mutation TestMutation($user: String!, $picture: String!) {
+                    mutation TestMutation($user: String!, $picture: Int!) {
                         like_picture(user: $user, picture: $picture) {
                             ... on PictureType {
+                              id
                               user {
                                 email
                               }
@@ -80,6 +82,7 @@ picture_update_mutation = """
                     mutation TestMutation($picture: PictureInputPartial!) {
                         update_picture(input: $picture) {
                             ... on PictureType {
+                              id
                               user {
                                 email
                               }
@@ -100,7 +103,7 @@ picture_comment_creation_mutation = """
                                 email
                               }
                               picture {
-                                picture_path
+                                id
                               }
                               text
                               created_at
@@ -126,7 +129,7 @@ picture_comment_update_mutation = """
                                 email
                               }
                               picture {
-                                picture_path
+                                id
                               }
                               text
                             }
@@ -143,7 +146,7 @@ collection_creation_mutation = """
                               }
                               name
                               pictures {
-                                picture_path
+                                id
                               }
                             }
                             ... on OperationInfo {
@@ -159,7 +162,7 @@ collection_creation_mutation = """
                 """
 
 collection_add_picture_mutation = """
-                    mutation TestMutation($collection: Int!, $picture: String!) {
+                    mutation TestMutation($collection: Int!, $picture: Int!) {
                         collection_add_picture(collection: $collection, picture: $picture) {
                             ... on CollectionType {
                               user {
@@ -167,7 +170,7 @@ collection_add_picture_mutation = """
                               }
                               name
                               pictures {
-                                picture_path
+                                id
                               }
                             }
                         }
@@ -181,7 +184,7 @@ collection_update_mutation = """
                               id
                               name
                               pictures {
-                                picture_path
+                                id
                               }
                             }
                         }
@@ -199,7 +202,7 @@ contest_creation_mutation = """
                                     email
                                 }
                                 cover_picture {
-                                    picture_path
+                                    id
                                 }
                                 prize
                                 automated_dates
@@ -230,7 +233,7 @@ contest_update_mutation = """
                               title
                               description
                               cover_picture {
-                                picture_path
+                                id
                               }
                               prize
                               upload_phase_end
@@ -259,6 +262,7 @@ contest_submission_creation_mutation = """
                                     id
                                 }
                                 picture {
+                                    id
                                     picture_path
                                     user {
                                         email
@@ -284,7 +288,7 @@ contest_submission_update_mutation = """
                             ... on ContestSubmissionType {
                               id
                               picture {
-                                picture_path
+                                id
                               }
                               submission_date
                             }

@@ -79,14 +79,14 @@ class PictureTest(TestCase):
         mutation = picture_like_mutation
 
         newUser = UserFactory()
-        newPicture = PictureFactory(user=newUser, picture_path="www.test.com")
+        newPicture = PictureFactory(user=newUser)
         newUserLike = UserFactory()
 
         result = schema.execute_sync(
             mutation,
             variable_values={
                 "user": newUserLike.email,
-                "picture": newPicture.picture_path,
+                "picture": newPicture.id,
             },
         )
 
@@ -106,7 +106,7 @@ class PictureTest(TestCase):
         newUserLikes = UserFactory.create_batch(3)
         likes = [user.email for user in newUserLikes]
         updatedPicture = {
-            "pk": newPicture.picture_path,
+            "id": newPicture.id,
             "likes": likes,
         }
 

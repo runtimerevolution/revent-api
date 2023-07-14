@@ -21,7 +21,7 @@ class PictureCommentTest(TestCase):
         newPicture = self.newPicture
         newPictureComment = {
             "user": newUser.email,
-            "picture": newPicture.picture_path,
+            "picture": newPicture.id,
             "text": "Random text",
         }
 
@@ -35,8 +35,8 @@ class PictureCommentTest(TestCase):
             result.data["create_pictureComment"]["user"]["email"], newUser.email
         )
         self.assertEqual(
-            result.data["create_pictureComment"]["picture"]["picture_path"],
-            newPicture.picture_path,
+            result.data["create_pictureComment"]["picture"]["id"],
+            newPicture.id,
         )
         self.assertEqual(
             result.data["create_pictureComment"]["text"], newPictureComment["text"]
@@ -64,8 +64,8 @@ class PictureCommentTest(TestCase):
             newPictureComment.user.email,
         )
         self.assertEqual(
-            result.data["update_pictureComment"]["picture"]["picture_path"],
-            newPictureComment.picture.picture_path,
+            result.data["update_pictureComment"]["picture"]["id"],
+            newPictureComment.picture.id,
         )
         self.assertEqual(
             result.data["update_pictureComment"]["text"], updatedPictureComment["text"]

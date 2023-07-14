@@ -54,15 +54,15 @@ class Mutation:
     )
 
     @strawberry.mutation
-    def like_picture(self, user: str, picture: str) -> PictureType:
-        picture = Picture.objects.get(picture_path=picture)
+    def like_picture(self, user: str, picture: int) -> PictureType:
+        picture = Picture.objects.get(id=picture)
         picture.likes.add(user)
         picture.save()
 
         return picture
 
     @strawberry.mutation
-    def collection_add_picture(self, collection: int, picture: str) -> CollectionType:
+    def collection_add_picture(self, collection: int, picture: int) -> CollectionType:
         collection = Collection.objects.get(id=collection)
         collection.pictures.add(picture)
         collection.save()

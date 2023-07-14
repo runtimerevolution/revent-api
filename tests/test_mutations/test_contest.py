@@ -29,7 +29,7 @@ class ContestTest(TestCase):
             "description": "Epic pictures.",
             "prize": "Money.",
             "created_by": newUser.email,
-            "cover_picture": newPicture.picture_path,
+            "cover_picture": newPicture.id,
         }
 
         result = await schema.execute(
@@ -42,8 +42,8 @@ class ContestTest(TestCase):
             result.data["create_contest"]["created_by"]["email"], newUser.email
         )
         self.assertEqual(
-            result.data["create_contest"]["cover_picture"]["picture_path"],
-            newPicture.picture_path,
+            result.data["create_contest"]["cover_picture"]["id"],
+            newPicture.id,
         )
         self.assertEqual(result.data["create_contest"]["title"], newContest["title"])
         self.assertEqual(
@@ -76,7 +76,7 @@ class ContestTest(TestCase):
             "id": newContest.id,
             "title": "Title test",
             "description": "Description test",
-            "cover_picture": newPicture.picture_path,
+            "cover_picture": newPicture.id,
             "prize": "Prize test",
             "upload_phase_end": str(timezone.now() + timedelta(1)),
             "voting_phase_end": str(timezone.now() + timedelta(2)),
@@ -100,7 +100,7 @@ class ContestTest(TestCase):
             result.data["update_contest"]["prize"], updatedContest["prize"]
         )
         self.assertEqual(
-            result.data["update_contest"]["cover_picture"]["picture_path"],
+            result.data["update_contest"]["cover_picture"]["id"],
             updatedContest["cover_picture"],
         )
         self.assertEqual(

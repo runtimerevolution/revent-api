@@ -28,7 +28,7 @@ class ContestSubmissionTest(TestCase):
         newContest = self.newContest
 
         newContestSubmission = {
-            "picture": newPicture.picture_path,
+            "picture": newPicture.id,
             "contest": newContest.id,
         }
 
@@ -43,8 +43,8 @@ class ContestSubmissionTest(TestCase):
             newPicture.user.email,
         )
         self.assertEqual(
-            result.data["create_contestSubmission"]["picture"]["picture_path"],
-            newPicture.picture_path,
+            result.data["create_contestSubmission"]["picture"]["id"],
+            newPicture.id,
         )
         self.assertEqual(
             result.data["create_contestSubmission"]["contest"]["id"], newContest.id
@@ -89,7 +89,7 @@ class ContestSubmissionTest(TestCase):
 
         updatedContestSubmission = {
             "id": newContestSubmission.id,
-            "picture": newPicture.picture_path,
+            "picture": newPicture.id,
             "submission_date": str(timezone.now()),
         }
 
@@ -102,7 +102,7 @@ class ContestSubmissionTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["update_contestSubmission"]["picture"]["picture_path"],
+            result.data["update_contestSubmission"]["picture"]["id"],
             updatedContestSubmission["picture"],
         )
         self.assertEqual(

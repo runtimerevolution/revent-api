@@ -100,7 +100,7 @@ class ContestTest(TestCase):
             voting_phase_end=currentTime - timedelta(days=1),
         )
         status = {
-            str(newContestSchedule.id): "schedule",
+            str(newContestSchedule.id): "scheduled",
             str(newContestOpen.id): "open",
             str(newContestVoting.id): "voting",
             str(newContestClose.id): "closed",

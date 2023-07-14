@@ -35,4 +35,6 @@ class PictureTest(TransactionTestCase):
 
     def test_factory_pk(self):
         with self.assertRaises(IntegrityError):
+            PictureFactory(id=self.newPicture.id)
+        with self.assertRaises(IntegrityError):
             PictureFactory(picture_path=self.newPicture.picture_path)

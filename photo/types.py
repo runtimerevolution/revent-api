@@ -66,9 +66,13 @@ class ContestType:
     def status(self) -> str:
         currentTime = timezone.now()
         if self.upload_phase_start > currentTime:
-            return "schedule"
+            return "scheduled"
+        elif self.upload_phase_end is None:
+            return "open"
         elif self.upload_phase_end > currentTime:
             return "open"
+        elif self.voting_phase_end is None:
+            return "voting"
         elif self.voting_phase_end > currentTime:
             return "voting"
         else:

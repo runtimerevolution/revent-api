@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import factory
 import pytz
 
@@ -88,8 +90,18 @@ class ContestFactory(factory.django.DjangoModelFactory):
     prize = factory.Faker("sentence")
     automated_dates = True
     upload_phase_start = factory.Faker("date_time", tzinfo=pytz.UTC)
-    upload_phase_end = factory.Faker("date_time", tzinfo=pytz.UTC)
-    voting_phase_end = factory.Faker("date_time", tzinfo=pytz.UTC)
+    upload_phase_end = None
+    voting_phase_end = None
+
+    @factory.post_generation
+    def contest_auto_dates(self, create, auto_dates=True):
+        if not create or not auto_dates:
+            self.automated_dates = False
+            return
+        if not self.upload_phase_end:
+            self.upload_phase_end = self.upload_phase_start + timedelta(15)
+            if not self.voting_phase_end:
+                self.voting_phase_end = self.upload_phase_end + timedelta(15)
 
     @factory.post_generation
     def contest_cover_picture(self, create, nullPicture=False):

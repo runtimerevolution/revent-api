@@ -23,7 +23,7 @@ class CollectionTest(TestCase):
         newCollection = {
             "user": newUser.email,
             "name": "Best collection",
-            "pictures": [picture.picture_path for picture in self.newPictures],
+            "pictures": [picture.id for picture in self.newPictures],
         }
 
         result = await schema.execute(
@@ -39,7 +39,7 @@ class CollectionTest(TestCase):
             len(result.data["create_collection"]["pictures"]), len(self.newPictures)
         )
         for picture in result.data["create_collection"]["pictures"]:
-            self.assertTrue(picture["picture_path"] in newCollection["pictures"])
+            self.assertTrue(picture["id"] in newCollection["pictures"])
         self.assertEqual(
             result.data["create_collection"]["name"], newCollection["name"]
         )
@@ -52,13 +52,13 @@ class CollectionTest(TestCase):
         newCollection = {
             "user": newUser.email,
             "name": "Best collection",
-            "pictures": [picture.picture_path for picture in self.newPictures],
+            "pictures": [picture.id for picture in self.newPictures],
         }
 
         newCollection2 = {
             "user": newUser.email,
             "name": "Best collection",
-            "pictures": [picture.picture_path for picture in self.newPictures],
+            "pictures": [picture.id for picture in self.newPictures],
         }
 
         result = await schema.execute(
@@ -93,14 +93,14 @@ class CollectionTest(TestCase):
             mutation,
             variable_values={
                 "collection": newCollection.id,
-                "picture": newPicture.picture_path,
+                "picture": newPicture.id,
             },
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["collection_add_picture"]["pictures"][0]["picture_path"],
-            newPicture.picture_path,
+            result.data["collection_add_picture"]["pictures"][0]["id"],
+            newPicture.id,
         )
 
     def test_update(self):
@@ -111,7 +111,7 @@ class CollectionTest(TestCase):
         newCollection = CollectionFactory(user=newUser, collection_pictures=oldPictures)
         newPictures = PictureFactory.create_batch(10, user=newUser)
 
-        pictures = [picture.picture_path for picture in newPictures]
+        pictures = [picture.id for picture in newPictures]
         updatedCollection = {
             "id": newCollection.id,
             "name": "test name",
@@ -133,4 +133,4 @@ class CollectionTest(TestCase):
             len(result.data["update_collection"]["pictures"]), len(newPictures)
         )
         for picture in result.data["update_collection"]["pictures"]:
-            self.assertTrue(picture["picture_path"] in pictures)
+            self.assertTrue(picture["id"] in pictures)

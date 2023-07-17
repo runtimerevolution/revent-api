@@ -9,7 +9,7 @@ collections_query_all = """
                                         email
                                     }
                                     pictures {
-                                        picture_path
+                                        id
                                     }
                                 }
                             }
@@ -24,7 +24,7 @@ collections_query_one = """
                                 email
                             }
                             pictures {
-                                picture_path
+                                id
                             }
                         }
                     }
@@ -39,7 +39,7 @@ collections_query_user_email = """
                                 email
                             }
                             pictures {
-                                picture_path
+                                id
                             }
                         }
                     }
@@ -54,7 +54,7 @@ collections_query_user = """
                                 email
                             }
                             pictures {
-                                picture_path
+                                id
                             }
                         }
                     }
@@ -69,7 +69,7 @@ collections_query_name = """
                                 email
                             }
                             pictures {
-                                picture_path
+                                id
                             }
                         }
                     }
@@ -85,7 +85,7 @@ contest_query_all = """
                                 email
                             }
                             cover_picture {
-                                picture_path
+                                id
                             }
                             prize
                             automated_dates
@@ -110,7 +110,7 @@ contest_query_one = """
                                 email
                             }
                             cover_picture {
-                                picture_path
+                                id
                             }
                             prize
                             automated_dates
@@ -135,7 +135,7 @@ contest_query_creator = """
                                 email
                             }
                             cover_picture {
-                                picture_path
+                                id
                             }
                             prize
                             automated_dates
@@ -169,7 +169,7 @@ contest_submission_query_all = """
                                 id
                             }
                             picture {
-                                picture_path
+                                id
                                 user {
                                     email
                                 }
@@ -190,7 +190,7 @@ contest_submission_query_one = """
                                 id
                             }
                             picture {
-                                picture_path
+                                id
                                 user {
                                     email
                                 }
@@ -211,7 +211,7 @@ contest_submission_query_user = """
                                 id
                             }
                             picture {
-                                picture_path
+                                id
                                 user {
                                     email
                                 }
@@ -232,7 +232,7 @@ contest_submission_query_contest = """
                                 id
                             }
                             picture {
-                                picture_path
+                                id
                                 user {
                                     email
                                 }
@@ -248,6 +248,7 @@ contest_submission_query_contest = """
 picture_query_all = """
                     query TestQuery {
                         pictures {
+                            id
                             user {
                                 email
                             }
@@ -260,8 +261,9 @@ picture_query_all = """
                 """
 
 picture_query_one = """
-                    query TestQuery($picture_path: String!) {
-                        pictures(picture_path: $picture_path) {
+                    query TestQuery($picture: Int!) {
+                        pictures(picture: $picture) {
+                            id
                             user {
                                 email
                             }
@@ -281,7 +283,7 @@ picture_comment_query_all = """
                                 email
                             }
                             picture {
-                                picture_path
+                                id
                             }
                             text
                             created_at
@@ -297,7 +299,7 @@ picture_comment_query_one = """
                                 email
                             }
                             picture {
-                                picture_path
+                                id
                             }
                             text
                             created_at
@@ -313,7 +315,7 @@ picture_comment_query_user = """
                                 email
                             }
                             picture {
-                                picture_path
+                                id
                             }
                             text
                             created_at
@@ -322,14 +324,14 @@ picture_comment_query_user = """
                 """
 
 picture_comment_query_picture = """
-                    query TestQuery($picture_path: String!) {
-                        picture_comments(picture_path: $picture_path) {
+                    query TestQuery($picture_id: Int!) {
+                        picture_comments(picture_id: $picture_id) {
                             id
                             user {
                                 email
                             }
                             picture {
-                                picture_path
+                                id
                             }
                             text
                             created_at
@@ -344,7 +346,7 @@ user_query_all = """
                             name_first
                             name_last
                             profile_picture {
-                                picture_path
+                                id
                             }
                             profile_picture_updated_at
                             user_handle
@@ -359,7 +361,7 @@ user_query_one = """
                             name_first
                             name_last
                             profile_picture {
-                                picture_path
+                                id
                             }
                             profile_picture_updated_at
                             user_handle

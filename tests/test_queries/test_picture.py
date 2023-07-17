@@ -45,11 +45,12 @@ class PictureTest(TestCase):
 
         result = schema.execute_sync(
             query,
-            variable_values={"picture_path": newPicture.picture_path},
+            variable_values={"picture": newPicture.id},
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["pictures"]), 1)
+        self.assertEqual(result.data["pictures"][0]["id"], newPicture.id)
         self.assertEqual(
             result.data["pictures"][0]["picture_path"], newPicture.picture_path
         )

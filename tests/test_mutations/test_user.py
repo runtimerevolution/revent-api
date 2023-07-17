@@ -81,12 +81,12 @@ class UserTest(TestCase):
 
         updatedProfilePictureTime = timezone.now()
         newUser = UserFactory(profile_picture_updated_at=updatedProfilePictureTime)
-        newPicture = PictureFactory(user=newUser, picture_path="www.test.com")
+        newPicture = PictureFactory(user=newUser)
         updatedUser = {
             "pk": newUser.email,
             "name_first": "John",
             "name_last": "Smith",
-            "profile_picture": newPicture.picture_path,
+            "profile_picture": newPicture.id,
             "user_handle": "johnSmithHandle",
         }
 
@@ -106,7 +106,7 @@ class UserTest(TestCase):
             result.data["update_user"]["name_last"], updatedUser["name_last"]
         )
         self.assertEqual(
-            result.data["update_user"]["profile_picture"]["picture_path"],
+            result.data["update_user"]["profile_picture"]["id"],
             updatedUser["profile_picture"],
         )
         self.assertEqual(
@@ -126,7 +126,7 @@ class UserTest(TestCase):
             "pk": newUser.email,
             "name_first": "Test1",
             "name_last": "Test2",
-            "profile_picture": newUser.profile_picture.picture_path,
+            "profile_picture": newUser.profile_picture.id,
             "user_handle": "Test123",
         }
 

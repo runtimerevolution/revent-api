@@ -29,7 +29,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Picture',
             fields=[
-                ('picture_path', models.TextField(primary_key=True, serialize=False)),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('picture_path', models.TextField(unique=True)),
             ],
         ),
         migrations.CreateModel(

@@ -73,12 +73,12 @@ class PictureCommentTest(TestCase):
 
         result = schema.execute_sync(
             query,
-            variable_values={"picture_path": newPicture.picture_path},
+            variable_values={"picture_id": newPicture.id},
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["picture_comments"][0]["picture"]["picture_path"],
-            newPicture.picture_path,
+            result.data["picture_comments"][0]["picture"]["id"],
+            newPicture.id,
         )
         self.assertEqual(len(result.data["picture_comments"]), len(newPictureComments))

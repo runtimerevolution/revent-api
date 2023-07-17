@@ -30,23 +30,23 @@ class Query:
         return User.objects.all()
 
     @strawberry.field
-    def pictures(self, picture_path: str = None) -> List[PictureType]:
-        if picture_path:
-            return Picture.objects.filter(picture_path=picture_path)
+    def pictures(self, picture: int = None) -> List[PictureType]:
+        if picture:
+            return Picture.objects.filter(id=picture)
         return Picture.objects.all()
 
     @strawberry.field
     def picture_comments(
-        self, id: int = None, user_email: str = None, picture_path: str = None
+        self, id: int = None, user_email: str = None, picture_id: int = None
     ) -> List[PictureCommentType]:
         if id:
             return PictureComment.objects.filter(id=id)
-        if user_email and picture_path:
-            return PictureComment.objects.filter(user=user_email, picture=picture_path)
+        if user_email and picture_id:
+            return PictureComment.objects.filter(user=user_email, picture=picture_id)
         elif user_email:
             return PictureComment.objects.filter(user=user_email)
-        elif picture_path:
-            return PictureComment.objects.filter(picture=picture_path)
+        elif picture_id:
+            return PictureComment.objects.filter(picture=picture_id)
         return PictureComment.objects.all()
 
     @strawberry.field

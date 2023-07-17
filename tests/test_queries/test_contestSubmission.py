@@ -60,8 +60,8 @@ class ContestSubmissionTest(TestCase):
             result.data["contest_submissions"][0]["id"], newContestSubmission.id
         )
         self.assertEqual(
-            result.data["contest_submissions"][0]["picture"]["picture_path"],
-            newContestSubmission.picture.picture_path,
+            result.data["contest_submissions"][0]["picture"]["id"],
+            newContestSubmission.picture.id,
         )
 
     def test_query_by_user(self):
@@ -79,6 +79,10 @@ class ContestSubmissionTest(TestCase):
         )
 
         self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["contest_submissions"][0]["picture"]["id"],
+            newPicture.id,
+        )
         self.assertEqual(
             result.data["contest_submissions"][0]["picture"]["user"]["email"],
             newUser.email,

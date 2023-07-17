@@ -11,7 +11,7 @@ class User(models.Model):
     profile_picture = models.ForeignKey(
         "Picture",
         on_delete=models.SET_NULL,
-        related_name="user_picture_path",
+        related_name="user_picture",
         blank=True,
         null=True,
     )
@@ -20,13 +20,8 @@ class User(models.Model):
 
     def validate_profile_picture(self):
         if not self._state.adding:
-            old_picture_path = (
-                User.objects.filter(email=self.email).first().profile_picture
-            )
-            if (
-                old_picture_path
-                and self.profile_picture.pk != old_picture_path.picture_path
-            ):
+            old_picture = User.objects.filter(email=self.email).first().profile_picture
+            if old_picture and self.profile_picture.id != old_picture.id:
                 self.profile_picture_updated_at = timezone.now()
         if self.profile_picture and self.profile_picture.user.email != self.email:
             raise ValidationError(
@@ -126,7 +121,7 @@ class ContestSubmission(models.Model):
     def validate_unique(self, *args, **kwargs):
         qs = ContestSubmission.objects.filter(
             contest=self.contest, picture__user=self.picture.user
-        ).exclude(picture__picture_path=self.picture.picture_path)
+        )
         if qs.exists() and self._state.adding:
             raise ValidationError("Each user can only submit one picture per contest")
 

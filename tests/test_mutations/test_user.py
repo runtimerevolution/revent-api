@@ -138,7 +138,7 @@ class UserTest(TestCase):
         )
 
         self.assertEqual(result.errors, None)
-        self.assertTrue(
-            result.data["update_user"]["profile_picture_updated_at"]
-            > str(updatedProfilePictureTime).replace(" ", "T")
+        self.assertEqual(
+            result.data["update_user"]["profile_picture_updated_at"],
+            str(updatedProfilePictureTime).replace(" ", "T"),
         )

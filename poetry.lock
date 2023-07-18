@@ -442,26 +442,26 @@ virtualenv = ">=20.10.0"
 
 [[package]]
 name = "psycopg"
-version = "3.1.8"
+version = "3.1"
 description = "PostgreSQL database adapter for Python"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "psycopg-3.1.8-py3-none-any.whl", hash = "sha256:b1500c42063abaa01d30b056f0b300826b8dd8d586900586029a294ce74af327"},
-    {file = "psycopg-3.1.8.tar.gz", hash = "sha256:59b4a71536b146925513c0234dfd1dc42b81e65d56ce5335dff4813434dbc113"},
+    {file = "psycopg-3.1-py3-none-any.whl", hash = "sha256:46a13ea46d16523c0f4fbf98a573881ba483ca94a920940629e29a688925121a"},
+    {file = "psycopg-3.1.tar.gz", hash = "sha256:1dfbbf221de14eab4bf01c6a5f15496f737d6b6e0db698f9e6081a692c598dc1"},
 ]
 
 [package.dependencies]
-typing-extensions = ">=4.1"
+typing-extensions = {version = ">=4.1", markers = "python_version < \"3.11\""}
 tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
 [package.extras]
-binary = ["psycopg-binary (>=3.1.6,<=3.1.8)"]
-c = ["psycopg-c (>=3.1.6,<=3.1.8)"]
-dev = ["black (>=22.3.0)", "dnspython (>=2.1)", "flake8 (>=4.0)", "mypy (>=0.990)", "types-setuptools (>=57.4)", "wheel (>=0.37)"]
+binary = ["psycopg-binary (==3.1)"]
+c = ["psycopg-c (==3.1)"]
+dev = ["black (>=22.3.0)", "dnspython (>=2.1)", "flake8 (>=4.0)", "mypy (>=0.940)", "types-setuptools (>=57.4)", "wheel (>=0.37)"]
 docs = ["Sphinx (>=5.0)", "furo (==2022.6.21)", "sphinx-autobuild (>=2021.3.14)", "sphinx-autodoc-typehints (>=1.12)"]
 pool = ["psycopg-pool"]
-test = ["mypy (>=0.990)", "pproxy (>=2.7)", "pytest (>=6.2.5)", "pytest-asyncio (>=0.17)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.5)"]
+test = ["mypy (>=0.940)", "pproxy (>=2.7)", "pytest (>=6.2.5)", "pytest-asyncio (>=0.17)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.10)"]
 
 [[package]]
 name = "psycopg2-binary"
@@ -840,4 +840,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.3)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "7a5a615bf58b0c864c3966893519f90f7808c6a0b8e7548a9c00322d51d1ce20"
+content-hash = "b5d36d8e152064f09a01786ef4bf420ee2bfa9ee30a21612da2bdf69bba4156f"

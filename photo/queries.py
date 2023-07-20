@@ -87,6 +87,6 @@ class Query:
     def contest_search(self, search: str) -> List[ContestType]:
         contests = Contest.objects.annotate(
             search=SearchVector("title", "description", "prize"),
-        ).filter(search=search)
+        ).filter(search__icontains=search)
 
         return contests

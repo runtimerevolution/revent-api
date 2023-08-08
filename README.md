@@ -160,9 +160,13 @@ After you have installed Docker we will need to install AWS CLI. Even though we 
 the AWS, we will require this to comunicate with the docker containers:
   1. Install [AWS CLI](https://aws.amazon.com/cli/)
   2. After it is installed we will need to supply credentials, even if the
-    credentials are dummies. Localstack requires this details to be present. For that run the command:
+    credentials are dummies. Localstack requires this details to be present to make pre-signed URLs for S3 buckets work. For that run the command:
       ```bash
-        aws configure
+        aws configure --profile localstack
+        AWS Access Key ID [None]: test
+        AWS Secret Access Key [None]: test
+        Default region name [None]: us-east-1
+        Default output format [None]:
       ```
 
 ### Nice to Have

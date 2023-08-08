@@ -1,7 +1,9 @@
 from datetime import timedelta
+from io import BytesIO
 
 import factory
 import pytz
+from PIL import Image
 
 from photo.models import (
     Collection,
@@ -32,12 +34,19 @@ class UserFactory(factory.django.DjangoModelFactory):
         self.save()
 
 
+def new_picture():
+    image = Image.open("revent-api/tests/media/apple.jpeg")
+    thumb_io = BytesIO()
+    image.save(thumb_io, image.format, quality=60)
+    return image
+
+
 class PictureFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Picture
 
     user = factory.SubFactory(UserFactory)
-    picture_path = factory.Sequence(lambda n: "https://www.picture{0}.com/".format(n))
+    picture_path = new_picture()
 
     @factory.post_generation
     def user_likes(self, create, extracted, **kwargs):

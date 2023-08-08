@@ -2,6 +2,7 @@ from typing import List
 
 import strawberry
 from django.utils import timezone
+from strawberry.file_uploads import Upload
 
 from .models import (
     Collection,
@@ -27,7 +28,7 @@ class UserType:
 class PictureType:
     id: int
     user: "UserType"
-    picture_path: str
+    picture_path: Upload
     likes: List[UserType]
 
 

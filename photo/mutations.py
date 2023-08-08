@@ -1,5 +1,6 @@
 import strawberry
 from django.utils import timezone
+from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
 
 from .inputs import (
@@ -31,7 +32,10 @@ from .types import (
 class Mutation:
 
     create_user: UserType = gql.django.create_mutation(UserInput)
-    create_picture: PictureType = gql.django.create_mutation(PictureInput)
+
+    def create_picture(self, input: PictureInput, picture: Upload) -> PictureType:
+        return Picture(user=input.user, picture_path=picture)
+
     create_pictureComment: PictureCommentType = gql.django.create_mutation(
         PictureCommentInput
     )

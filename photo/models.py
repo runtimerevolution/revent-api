@@ -37,7 +37,7 @@ class Picture(models.Model):
     user = models.ForeignKey(
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
-    picture_path = models.TextField(unique=True)
+    picture_path = models.ImageField(upload_to="pictures/")
     likes = models.ManyToManyField(User, related_name="picture_likes")
 
 

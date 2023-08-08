@@ -1,6 +1,7 @@
 from typing import List
 
 import strawberry
+from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
 
 from .models import (
@@ -35,7 +36,7 @@ class UserInputPartial:
 @strawberry.django.input(Picture)
 class PictureInput:
     user: str
-    picture_path: str
+    picture_path: Upload
     likes: List[str]
 
 

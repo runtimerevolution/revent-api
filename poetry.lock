@@ -15,6 +15,22 @@ files = [
 tests = ["mypy (>=0.800)", "pytest", "pytest-asyncio"]
 
 [[package]]
+name = "awscli-local"
+version = "0.21"
+description = "Thin wrapper around the \"aws\" command line interface for use with LocalStack"
+optional = false
+python-versions = "*"
+files = [
+    {file = "awscli-local-0.21.tar.gz", hash = "sha256:99aad6b8e0cfefb2093453866cbcd24e710d7e6a1523cac0969ed0f64442ea7c"},
+]
+
+[package.dependencies]
+localstack-client = "*"
+
+[package.extras]
+ver1 = ["awscli"]
+
+[[package]]
 name = "black"
 version = "23.3.0"
 description = "The uncompromising code formatter."
@@ -722,6 +738,22 @@ localstack-ext = "2.2.0"
 [package.extras]
 full = ["localstack-core[runtime]", "localstack-ext[runtime] (==2.2.0)"]
 runtime = ["localstack-core[runtime]", "localstack-ext[runtime] (==2.2.0)"]
+
+[[package]]
+name = "localstack-client"
+version = "2.3"
+description = "A lightweight Python client for LocalStack."
+optional = false
+python-versions = "*"
+files = [
+    {file = "localstack-client-2.3.tar.gz", hash = "sha256:377ed05e7854eb476dc73b0ab992c433c683bd1026aa84755eaa29f7561757c1"},
+]
+
+[package.dependencies]
+boto3 = "*"
+
+[package.extras]
+test = ["black", "coverage", "flake8", "isort", "localstack", "pytest"]
 
 [[package]]
 name = "localstack-core"
@@ -1687,4 +1719,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "001af1fd90ecb724e3d0c2e9407c5a8821bed6e63234f7dac275dbba42aa65af"
+content-hash = "6c3c6eb4414ea41734bc2654d3199ec3da5ba94a8002ff2524e147e16813a1a8"

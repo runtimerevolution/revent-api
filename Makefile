@@ -12,6 +12,9 @@ migrations: ## Create new django migrations
 migrate: ## Migrate all new django migrations
 	python manage.py migrate
 
+bucket:
+	python tests/create_bucket.py
+
 # Pass arguments to the test command
 ifeq (test,$(firstword $(MAKECMDGOALS)))
   TEST_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))

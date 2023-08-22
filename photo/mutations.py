@@ -1,4 +1,7 @@
+from io import BytesIO
+
 import strawberry
+from django.core.files.base import ContentFile
 from django.utils import timezone
 from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
@@ -17,7 +20,7 @@ from .inputs import (
     UserInput,
     UserInputPartial,
 )
-from .models import Collection, Contest, ContestSubmission, Picture
+from .models import Collection, Contest, ContestSubmission, Picture, User
 from .types import (
     CollectionType,
     ContestSubmissionType,
@@ -33,8 +36,15 @@ class Mutation:
 
     create_user: UserType = gql.django.create_mutation(UserInput)
 
+    @strawberry.mutation
     def create_picture(self, input: PictureInput, picture: Upload) -> PictureType:
-        return Picture(user=input.user, picture_path=picture)
+        user = User.objects.get(email=input.user)
+        newPicture = Picture(user=user)
+        thumb_io = BytesIO()
+        newPicture.picture_path.save(
+            picture.filename, ContentFile(thumb_io.getvalue()), save=False
+        )
+        return newPicture
 
     create_pictureComment: PictureCommentType = gql.django.create_mutation(
         PictureCommentInput

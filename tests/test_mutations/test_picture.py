@@ -1,5 +1,7 @@
 import pytest
 from django.test import TestCase
+from PIL import Image
+from strawberry.file_uploads import Upload
 
 from photo.schema import schema
 from tests.factories import PictureFactory, UserFactory
@@ -15,8 +17,7 @@ class PictureTest(TestCase):
         self.newUser = UserFactory(user_profile_picture=True)
         self.newLikesUsers = UserFactory.create_batch(3, user_profile_picture=True)
 
-    @pytest.mark.asyncio
-    async def test_create_one(self):
+    def test_create_one(self):
         mutation = picture_creation_mutation
         newUser = self.newUser
         newLikesUsers = self.newLikesUsers
@@ -25,10 +26,13 @@ class PictureTest(TestCase):
             "picture_path": "www.test.com",
             "likes": [user.email for user in newLikesUsers],
         }
-
-        result = await schema.execute(
+        newImage = Image.open("revent-api/tests/media/apple.jpeg")
+        result = schema.execute_sync(
             mutation,
-            variable_values={"picture": newPicture},
+            variable_values={
+                "input": newPicture,
+                "picture": Upload(newImage),
+            },
         )
 
         self.assertEqual(result.errors, None)

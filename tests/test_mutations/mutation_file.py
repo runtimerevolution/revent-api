@@ -37,8 +37,8 @@ user_update_mutation = """
                 """
 
 picture_creation_mutation = """
-                    mutation TestMutation($picture: PictureInput!) {
-                        create_picture(input: $picture) {
+                    mutation TestMutation($input: PictureInput!, $picture: Upload!) {
+                        create_picture(input: $input, picture: $picture) {
                             ... on PictureType {
                               id
                               user {
@@ -48,14 +48,6 @@ picture_creation_mutation = """
                               likes {
                                 email
                               }
-                            }
-                            ... on OperationInfo {
-                                __typename
-                                messages {
-                                    field
-                                    kind
-                                    message
-                                }
                             }
                         }
                     }

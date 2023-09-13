@@ -1,5 +1,8 @@
 .DEFAULT_GOAL := help
 
+include .env
+export
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
@@ -22,10 +25,10 @@ test: ## Test all django apps OR pass testing target like "smart_replenishment" 
 	python manage.py test --no-input $(TEST_ARGS)
 
 up: ## Start the docker containers
-	docker compose --env-file config/.env up -d
+	docker compose up -d
 
 down: ## Stop the docker containers
-	docker compose --env-file config/.env down -t 1
+	docker compose down -t 1
 
 pre: ## Run pre-commit
 	pre-commit run --all-files

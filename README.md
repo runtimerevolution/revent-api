@@ -261,3 +261,40 @@ The nomenclature for someone named "João Gomes" that need to fix a new "Bug" on
 The data model for this project is as follows:
 
 ![Data Model](/revent-api/Documentation/DataModel.png)
+
+## FAQ
+
+### Macos m1
+
+#### gdal related error
+
+When experiencing an error such as the one below:
+
+```bash
+OSError: dlopen(/usr/local/lib/libgdal.dylib, 0x0006): Symbol not found: __ZN3Aws6Client19ClientConfigurationC1Ev
+  Referenced from: <94E9B77D-69B0-39FF-BF05-8494E3AB846D> /usr/local/Cellar/apache-arrow/12.0.1_4/lib/libarrow.1200.1.0.dylib
+  Expected in:     <D3694CDE-733E-33BE-9C47-F7B918E1764B> /usr/local/Cellar/aws-sdk-cpp/1.11.145/lib/libaws-cpp-sdk-core.dylib
+```
+
+> The solution considers you are using Rosetta in your terminal
+
+Try to reinstall gdal.
+
+1. Check it is installed
+
+```bash
+brew list
+```
+
+2. Remove it
+
+```bash
+brew remove gdal
+```
+
+3. Install it
+
+```bash
+brew install gdal
+```
+

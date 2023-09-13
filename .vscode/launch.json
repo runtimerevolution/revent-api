@@ -8,14 +8,13 @@
             "name": "Python: Django",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/revent-api/manage.py",
+            "program": "${workspaceFolder}/manage.py",
             "args": [
-                "test",
-                "--noinput",
-                "tests.database.contestSubmission",
+                "runserver"
             ],
             "django": true,
             "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

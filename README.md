@@ -8,88 +8,34 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 
 ## Table of Contents
 
-  1. [Setup](#setup-time)
-
-     - [Prerequisites](#prerequisites---install-pyenv-and-poetry)
-
-     - [Pyenv](#configuration---setting-your-python-version)
-
-     - [Poetry](#configuration---using-poetry-for-package-and-dependency-management)
-
-     - [Nice-to-Have](#nice-to-have)
-
-        - [Direnv](#direnv)
-
-  2. [How-to-Run](#how-to-run)
-
-     - [Prerequisites](#prerequisites---install-docker)
-
-     - [Run-Docker](#running-the-project)
-
-  3. [Tests](#running-tests)
-
-  4. [Guidelines](#guidelines)
-
-     - [Branch-naming](#branch-naming)
-
-  5. [Who-do-I-talk-to](#who-do-i-talk-to)
+- [PHOTO CONTEST API 📸](#photo-contest-api-)
+  - [Description](#description)
+  - [Table of Contents](#table-of-contents)
+  - [Setup Time](#setup-time)
+    - [Prerequisites -](#prerequisites--)
+    - [Configuration - Setting your python version](#configuration---setting-your-python-version)
+    - [Configuration - Using poetry for package and dependency management](#configuration---using-poetry-for-package-and-dependency-management)
+    - [Configuration - Setting up localstack s3 to fake Aws](#configuration---setting-up-localstack-s3-to-fake-aws)
+    - [Nice to Have](#nice-to-have)
+      - [Direnv](#direnv)
+  - [How to Run](#how-to-run)
+    - [Running the Project](#running-the-project)
+  - [Running Tests](#running-tests)
+  - [Guidelines](#guidelines)
+    - [Branch Naming](#branch-naming)
+  - [Who do I talk to?](#who-do-i-talk-to)
+  - [Data model](#data-model)
+  - [FAQ](#faq)
+    - [Macos m1](#macos-m1)
+      - [gdal related error](#gdal-related-error)
 
 ## Setup Time
 
-### Prerequisites - Install [pyenv](https://github.com/pyenv/pyenv) and [poetry](https://python-poetry.org/docs/#installation)
+### Prerequisites - 
+
+Install [pyenv](https://github.com/pyenv/pyenv) and [poetry](https://python-poetry.org/docs/#installation)
 
 If you have this one already, you can jump to the next section [(Configuration - Setting your python version)](#configuration---setting-your-python-version).
-
-- Example:
-
-    1. Pyenv
-
-        - We will need to install some dependencies that will also depend on the OS being used.
-          For macOS users:
-
-          ```bash
-          brew install openssl readline sqlite3 xz zlib
-          ```
-
-        - To initialize the pyenv installer use:
-
-          ```bash
-          brew install pyenv
-          ```
-
-        - Depending on the shell you'r using, you can see something at the end of this installation like:
-
-          ```bash
-          WARNING: seems you still have not added 'pyenv' to the load path.
-
-          Load pyenv automatically by adding the following to ~/.bashrc:
-
-          export PATH="$HOME/.pyenv/bin:$PATH"
-          eval "$(pyenv init -)"
-          eval "$(pyenv virtualenv-init -)"
-          ```
-
-          You just need to follow the steps above, add the export to your shell file and restart your shell.
-
-    2. Poetry
-
-        - To install poetry, do it by running:
-
-          ```bash
-          brew install poetry
-          ```
-
-        - And finally we can confirm you got this installed by running:
-
-          ```bash
-          poetry --version
-          ```
-
-        - You can also update poetry to the latest stable version:
-
-          ```bash
-          poetry self update
-          ```
 
 ### Configuration - Setting your python version
 
@@ -150,10 +96,6 @@ Alright, and how do we do this? Its easy, really. (This next steps will be for v
   Let's take a look on how we can automate this and make sure that we use the correct versions each time we are in a new project.
   Let me introduce you to a new section.
 
-### Prerequisites - Install [docker](https://docs.docker.com/get-docker/)
-
-If you have this one already, you can jump to the next section (Running the project)
-
 ### Configuration - Setting up localstack s3 to fake Aws
 
 After you have installed Docker we will need to install AWS CLI. Even though we are simulating
@@ -203,30 +145,29 @@ Let's start with the prerequisites and then move onto the action.
 
 *Now, how can we run the app?*
 
-- Now that u have docker installed we just need to build our image out of
-Dockerfile. Its a little file you have on your project folder that will tell docker
-everything he needs to run and make a new environment just like yours! isnt that awesome?
-I wish we had something like that and didn't had to go through this README 🤔
+To start the docker container run
+  ```bash
+    make up
+  ```
+After that run the migrations if needed
+  ```bash
+    make migrate
+  ```
+Finally run the app
 
   ```bash
-    docker build -t revent:latest .
+    make run
   ```
 
-- Hopefully everything went smooth and we are ready to see how the project is going!
-For us to take a look let's run:
-
-  ```bash
-    docker-compose up
-  ```
 
 Perfect! You are now running the project locally and you can now start coding!
 
 ## Running Tests
 
 To run the tests, inside your working environment run:
-```bash
-make test
-```
+  ```bash
+    make test
+  ```
 
 To add tests remember that the python automatic discover only works properly for files named "test_*.py".
 
@@ -260,7 +201,67 @@ The nomenclature for someone named "João Gomes" that need to fix a new "Bug" on
 
 The data model for this project is as follows:
 
-![Data Model](/revent-api/Documentation/DataModel.png)
+<!-- ![Data Model](/revent-api/Documentation/DataModel.png) -->
+
+```mermaid
+classDiagram
+    User <|-- Collection
+    User <|-- Picture
+    PictureComment <|-- Picture
+    Contest <|-- Picture
+    Contest <|-- ContestSubmission
+    Contest <|-- User
+    ContestSubmission <|-- User
+    PictureComment <|-- User
+    Collection <|-- Picture
+    ContestSubmission <|-- Picture
+
+    class User{
+      +String email
+      +String name_first
+      +String name_last
+      +Picture profile_picture
+      +DateTime profile_picture_updated_at
+      +String user_handle
+      
+    }
+    class Picture{
+      +User User
+      +String picture_path
+      +User likes
+    }
+    class PictureComment{
+      +User user
+      +Picture picture
+      +String text
+      +DateTime created_at
+    }
+    class Collection{
+      +String name
+      +User user
+      +Picture pictures
+    }
+    class Contest{
+        +String title
+        +String description
+        +Picture cover_picture
+        +String prize
+        +Boolean automated_dates
+        +DateTime upload_phase_start
+        +DateTime upload_phase_end
+        +DateTime voting_phase_end
+        +User winners
+        +User created_by
+
+    }
+    class ContestSubmission{
+        +Contest contest
+        +Picture picture
+        +DateTime submission_date
+        +User votes
+    }
+    
+``````
 
 ## FAQ
 

@@ -85,17 +85,11 @@ jobs:
         run: |
           export PATH="/root/.local/bin:$PATH"
           poetry install --no-interaction
-        env:
-          POETRY_VIRTUALENVS_CREATE: false
-          POETRY_VIRTUALENVS_IN_PROJECT: false
 
       # This is all very self-explanatory, everything is configured and ready for execution, simply invoke the tests.
       - name: Run Tests
         env:
           DJANGO_SETTINGS_MODULE: your_project_name.settings  # Replace with your project's settings module
         run: |
-          poetry run python manage.py test
-      # - name: Run Tests
-      #   run: |
-      #     source $VENV
-      #     python manage.py test
+          source $VENV
+          python manage.py test

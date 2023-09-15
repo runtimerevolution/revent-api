@@ -13,6 +13,8 @@ env:
   POSTGRES_PASSWORD: postgres
   POSTGRES_HOST: 127.0.0.1
   POSTGRES_PORT: 15433
+  SECRET_KEY: dummy
+
 
 jobs:
   # Defines the name of the first and only job in this workflow.
@@ -33,7 +35,6 @@ jobs:
           POSTGRES_PASSWORD: ${{env.POSTGRES_PASSWORD}}
           POSTGRES_USER: ${{env.POSTGRES_USER}}
           POSTGRES_DB: ${{env.POSTGRES_DB}}
-          SECRET_KEY: ${{env.SECRET_KEY}}
         # Note that we didn't use ${{env.POSTGRES_PORT}} in the ports section. That's because you don't have access to the env object in the ports section.
         # Read more about this here: https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
         # TODO: If anyone knows if there's a way to use the env value in the ports, feel free to make a PR.

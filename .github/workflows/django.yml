@@ -22,7 +22,7 @@ jobs:
     # This job will run on a Ubuntu Linux runner with the Ubuntu version 22.04.
     # Because this job requires a postgres database and it uses a docker container for that purpose. The Runner must be a Linux-based OS.
     runs-on: ubuntu-20.04
-
+    container: ubuntu
     # Services are Docker containers. For this job, we are using a postgres container for the database.
     # See more information regarding the services here: https://docs.github.com/en/actions/using-containerized-services/about-service-containers
     services:

@@ -15,12 +15,11 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
     - [Prerequisites -](#prerequisites--)
     - [Configuration - Setting your python version](#configuration---setting-your-python-version)
     - [Configuration - Using poetry for package and dependency management](#configuration---using-poetry-for-package-and-dependency-management)
-    - [Configuration - Setting up localstack s3 to fake Aws](#configuration---setting-up-localstack-s3-to-fake-aws)
-    - [Nice to Have](#nice-to-have)
-      - [Direnv](#direnv)
-  - [How to Run](#how-to-run)
     - [Running the Project](#running-the-project)
   - [Running Tests](#running-tests)
+    - [Setting up localstack s3 to fake Aws](#setting-up-localstack-s3-to-fake-aws)
+    - [Nice to Have](#nice-to-have)
+      - [Direnv](#direnv)
   - [Guidelines](#guidelines)
     - [Branch Naming](#branch-naming)
   - [Who do I talk to?](#who-do-i-talk-to)
@@ -39,7 +38,7 @@ If you have this one already, you can jump to the next section [(Configuration -
 
 ### Configuration - Setting your python version
 
-- Now that you have pyenv, install the version you want to use:
+- Now that you have pyenv, install the version we want to use:
 
     ```bash
     pyenv install -v 3.10.4
@@ -91,12 +90,39 @@ Alright, and how do we do this? Its easy, really. (This next steps will be for v
     3. Now select to use a specific path and use the one you just copied
     Press Enter and you'r done! Now vscode will use this one.
 
-- You can now start using the project, but wait! don't go! Now we have our virtual environment
-  ready, but do you really want to keep activating it everytime you join the project?
-  Let's take a look on how we can automate this and make sure that we use the correct versions each time we are in a new project.
-  Let me introduce you to a new section.
+### Running the Project
 
-### Configuration - Setting up localstack s3 to fake Aws
+*Now, how can we run the app?*
+
+To start the docker container run
+  ```bash
+    make up
+  ```
+After that run the migrations if needed
+  ```bash
+    make migrate
+  ```
+Finally run the app
+
+  ```bash
+    make run
+  ```
+
+Perfect! You are now running the project locally and you can now start coding!
+
+## Running Tests
+
+To run the tests, inside your working environment run:
+  ```bash
+    make test
+  ```
+
+To add tests remember that the python automatic discover only works properly for files named "test_*.py".
+
+If you want to use the vscode debugger for a particular test you can use the launch.json.example, rename it launch.json
+and place it in the .vscode folder in the root of your working directory.
+
+### Setting up localstack s3 to fake Aws
 
 After you have installed Docker we will need to install AWS CLI. Even though we are simulating
 the AWS, we will require this to comunicate with the docker containers:
@@ -135,45 +161,6 @@ I know i know, it looks almost like magic. Let me tell you about direnv
 
     6. Reload your shell and you'r set! Now you can leave your folder and come back inside to test if .direnv will show up (thats your new venv).
     Everytime you go into or out of your project folder .direnv will activate or deactivate!
-
-## How to Run
-
-To run, you can start by putting on some comfortable shoes and then... im just kidding, im just kidding!
-Let's start with the prerequisites and then move onto the action.
-
-### Running the Project
-
-*Now, how can we run the app?*
-
-To start the docker container run
-  ```bash
-    make up
-  ```
-After that run the migrations if needed
-  ```bash
-    make migrate
-  ```
-Finally run the app
-
-  ```bash
-    make run
-  ```
-
-
-Perfect! You are now running the project locally and you can now start coding!
-
-## Running Tests
-
-To run the tests, inside your working environment run:
-  ```bash
-    make test
-  ```
-
-To add tests remember that the python automatic discover only works properly for files named "test_*.py".
-
-If you want to use the vscode debugger for a particular test you can use the launch.json.example, rename it launch.json
-and place it in the .vscode folder in the root of your working directory.
-
 ## Guidelines
 
 ### Branch Naming

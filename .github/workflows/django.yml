@@ -89,5 +89,4 @@ jobs:
       - name: Run Tests
         run: |
           source $VENV
-          
           python manage.py test

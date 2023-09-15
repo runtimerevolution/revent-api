@@ -54,11 +54,11 @@ jobs:
       - uses: actions/checkout@v3
 
       # You can also name your steps so that everything is clearer.
-      - name: Set up Python 3.10.3
+      - name: Set up Python 3.11
         # This setup-python action will do exactly what it suggests, install python in your runner's OS. Note that v4 is not the version of python, it's the version of the action.
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10.3"
+          python-version: "3.11"
 
       # I chose to do a custom installation of poetry, but there are actions that will handle this for you. For example: https://github.com/snok/install-poetry
       - name: Install and configure Poetry
@@ -90,4 +90,4 @@ jobs:
         run: |
           source $VENV
           ls
-      # cd revent-api && python manage.py test
+    # cd revent-api && python manage.py test

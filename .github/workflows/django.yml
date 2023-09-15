@@ -89,5 +89,4 @@ jobs:
       - name: Run Tests
         run: |
           source $VENV
-          ls
-    # cd revent-api && python manage.py test
+          # cd revent && python manage.py test

@@ -89,7 +89,7 @@ jobs:
       # This is all very self-explanatory, everything is configured and ready for execution, simply invoke the tests.
       - name: Run Tests
         env:
-          DJANGO_SETTINGS_MODULE: your_project_name.settings  # Replace with your project's settings module
+          DJANGO_SETTINGS_MODULE: revent.settings  # Replace with your project's settings module
         run: |
           source $VENV
           python manage.py test

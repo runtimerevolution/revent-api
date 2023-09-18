@@ -17,6 +17,7 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
     - [Configuration - Using poetry for package and dependency management](#configuration---using-poetry-for-package-and-dependency-management)
     - [Running the Project](#running-the-project)
   - [Running Tests](#running-tests)
+    - [TLDR;](#tldr)
     - [Setting up localstack s3 to fake Aws](#setting-up-localstack-s3-to-fake-aws)
     - [Nice to Have](#nice-to-have)
       - [Direnv](#direnv)
@@ -121,6 +122,17 @@ To add tests remember that the python automatic discover only works properly for
 
 If you want to use the vscode debugger for a particular test you can use the launch.json.example, rename it launch.json
 and place it in the .vscode folder in the root of your working directory.
+
+### TLDR;
+
+Check what's available in the Makefile.
+
+Python 3.10.13 environment must exist and be active. Use poetry shell for this.
+  ```bash
+    make up
+    make migrate
+    make run
+  ```
 
 ### Setting up localstack s3 to fake Aws
 

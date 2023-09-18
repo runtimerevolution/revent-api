@@ -12,12 +12,11 @@ env:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
   POSTGRES_HOST: 127.0.0.1
-  POSTGRES_PORT: 15433
+  POSTGRES_PORT: 5432
   SECRET_KEY: dummy
 
 
 jobs:
-  # Defines the name of the first and only job in this workflow.
   django_tests:
     # This job will run on a Ubuntu Linux runner with the Ubuntu version 22.04.
     # Because this job requires a postgres database and it uses a docker container for that purpose. The Runner must be a Linux-based OS.
@@ -25,20 +24,15 @@ jobs:
     # Services are Docker containers. For this job, we are using a postgres container for the database.
     # See more information regarding the services here: https://docs.github.com/en/actions/using-containerized-services/about-service-containers
     services:
-      # A name for the service.
       postgres:
-        # Use postgres version 14.
         image: "postgres:14"
-        # Define the variables for the postgres container.
         env:
           POSTGRES_PASSWORD: ${{env.POSTGRES_PASSWORD}}
           POSTGRES_USER: ${{env.POSTGRES_USER}}
           POSTGRES_DB: ${{env.POSTGRES_DB}}
         # Note that we didn't use ${{env.POSTGRES_PORT}} in the ports section. That's because you don't have access to the env object in the ports section.
         # Read more about this here: https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
-        # TODO: If anyone knows if there's a way to use the env value in the ports, feel free to make a PR.
         ports:
-          # Here we are saying that the port 5432 is exposed outwards through port 15433.
           - 5432:5432
         # These are just some optional yet recommended health checks.
         options: >-
@@ -47,21 +41,17 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    # steps is important as it divides a job into smaller parts.
-    # In this case, the job is to run django tests, and we can divide that job into smaller steps.
+    
     steps:
       # This is the first step. The "uses" keyword specifies that this step will run v3 of the actions/checkout action. This is an action that checks out your repository onto the runner, allowing you to run scripts or other actions against your code (such as build and test tools).
       # You can read more about this action here: https://github.com/actions/checkout#readme
       - uses: actions/checkout@v3
 
-      # You can also name your steps so that everything is clearer.
       - name: Set up Python 3.10.13
-        # This setup-python action will do exactly what it suggests, install python in your runner's OS. Note that v4 is not the version of python, it's the version of the action.
         uses: actions/setup-python@v4
         with:
           python-version: "3.10.13"
 
-      # I chose to do a custom installation of poetry, but there are actions that will handle this for you. For example: https://github.com/snok/install-poetry
       - name: Install and configure Poetry
         run: |
           INSTALL_PATH="$HOME/.local"
@@ -80,13 +70,11 @@ jobs:
 
           echo "VENV=.venv/bin/activate" >> "$GITHUB_ENV"
 
-      # The last step installed and configured poetry, now we can install our dependencies.
       - name: Install Dependencies
         run: |
           export PATH="/root/.local/bin:$PATH"
           poetry install --no-interaction
 
-      # This is all very self-explanatory, everything is configured and ready for execution, simply invoke the tests.
       - name: Run Tests
         env:
           DJANGO_SETTINGS_MODULE: revent.settings  # Replace with your project's settings module

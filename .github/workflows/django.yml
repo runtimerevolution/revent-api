@@ -33,8 +33,7 @@ jobs:
         # Note that we didn't use ${{env.POSTGRES_PORT}} in the ports section. That's because you don't have access to the env object in the ports section.
         # Read more about this here: https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
         ports:
-          # Here we are saying that the port 5432 is exposed outwards through port 15433.
-          - 15433:5432
+          - 5432:5432
         # These are just some optional yet recommended health checks.
         options: >-
           --health-cmd pg_isready

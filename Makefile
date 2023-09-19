@@ -49,3 +49,9 @@ superuser:
 
 # Setup
 setup: up install migrate
+
+coverage:
+	coverage run manage.py test
+
+coverage-report:
+	coverage html

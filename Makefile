@@ -10,10 +10,10 @@ run: ## Run the django server
 	poetry run python manage.py runserver
 
 migrations: ## Create new django migrations
-	python manage.py makemigrations
+	poetry run python manage.py makemigrations
 
 migrate: ## Migrate all new django migrations
-	python manage.py migrate
+	poetry run python manage.py migrate
 
 # Pass arguments to the test command
 ifeq (test,$(firstword $(MAKECMDGOALS)))
@@ -22,7 +22,7 @@ ifeq (test,$(firstword $(MAKECMDGOALS)))
 endif
 
 test: ## Test all django apps OR pass testing target like "smart_replenishment" or "planner_requests.tests.csv_file"
-	python manage.py test --no-input $(TEST_ARGS)
+	poetry run python manage.py test --no-input $(TEST_ARGS)
 
 up: ## Start the docker containers
 	docker compose up -d

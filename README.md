@@ -200,8 +200,6 @@ The nomenclature for someone named "João Gomes" that need to fix a new "Bug" on
 
 The data model for this project is as follows:
 
-<!-- ![Data Model](/revent-api/Documentation/DataModel.png) -->
-
 ```mermaid
 classDiagram
     User <|-- Collection

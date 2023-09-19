@@ -13,16 +13,9 @@ services:
 
   revent-s3:
     container_name: revent-s3
-    environment:
-      - DEBUG=1
-      - LOCALSTACK_HOSTNAME=localhost
-      - TEST_AWS_ACCOUNT_ID=000000000000
-      - AWS_DEFAULT_REGION=us-west-2
-      - DATA_DIR=/tmp/localstack/data
-      - KINESIS_STREAM_SHARDS=1
-      - KINESIS_ERROR_PROBABILITY=0.0
-      - KINESIS_STREAM_NAME=kinesis-stream
-      - KINESIS_PROVIDER=kinesalite
     image: localstack/localstack:latest
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
     ports:
-      - "4566:4566"
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4510-4559:4510-4559"

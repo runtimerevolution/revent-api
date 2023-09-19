@@ -2,6 +2,8 @@ from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
 
+from photo.storages_backend import PublicMediaStorage
+
 
 class User(models.Model):
 
@@ -37,7 +39,7 @@ class Picture(models.Model):
     user = models.ForeignKey(
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
-    picture_path = models.TextField(unique=True)
+    picture_path = models.FileField(storage=PublicMediaStorage())
     likes = models.ManyToManyField(User, related_name="picture_likes")
 
 

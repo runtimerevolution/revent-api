@@ -24,11 +24,11 @@ endif
 test: ## Test all django apps OR pass testing target like "smart_replenishment" or "planner_requests.tests.csv_file"
 	poetry run python manage.py test --no-input $(TEST_ARGS)
 
-up: ## Start the docker containers
-	docker compose up -d
-
 down: ## Stop the docker containers
 	docker compose down -t 1
+
+up: down## Start the docker containers
+	docker compose up -d
 
 pre: ## Run pre-commit
 	pre-commit run --all-files

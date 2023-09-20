@@ -25,8 +25,12 @@ psycopg2-binary = "^2.9.6"
 pytz = "^2023.3"
 django-cors-headers = "^4.0.0"
 pytest-django = "^4.5.2"
+boto3 = "^1.28.51"
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.25.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -40,8 +40,12 @@ superuser:
 # Setup
 setup: up install migrate
 
-coverage:
+coverage-erase:
+	coverage erase
+	
+coverage-test:
 	coverage run manage.py test
 
 coverage-report:
-	coverage html
+	coverage report
+

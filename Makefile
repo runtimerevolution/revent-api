@@ -49,3 +49,9 @@ superuser:
 
 # Setup
 setup: up install migrate
+
+# Localstack
+localstack-start:
+		docker-compose up revent-Localstack
+localstack-create:
+		python photo/create_bucket.py

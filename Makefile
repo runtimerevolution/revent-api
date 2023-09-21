@@ -52,6 +52,6 @@ setup: up install migrate
 
 # Localstack
 localstack-start:
-		docker-compose up revent-localstack
+		docker-compose up revent-s3
 localstack-create:
 		python photo/create_bucket.py

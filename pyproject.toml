@@ -28,6 +28,7 @@ pytest-django = "^4.5.2"
 localstack = "^2.2.0"
 django-storages = "^1.14"
 pillow = "^10.0.1"
+boto3 = "^1.28.51"
 
 [tool.poetry.dev-dependencies]
 

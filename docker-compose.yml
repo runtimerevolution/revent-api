@@ -14,8 +14,6 @@ services:
   revent-s3:
     container_name: revent-s3
     image: localstack/localstack:latest
-    environment:
-      - DOCKER_HOST=unix:///var/run/docker.sock
     ports:
-      - "127.0.0.1:4566:4566"
-      - "127.0.0.1:4510-4559:4510-4559"
+      - "4566:4566"
+      - "4510-4559:4510-4559"

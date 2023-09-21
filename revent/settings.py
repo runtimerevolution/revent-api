@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "strawberry.django",
     "corsheaders",
     "photo",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -136,5 +137,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": "media",
+            "location": "http://127.0.0.1:4566/",
+        },
     },
 }

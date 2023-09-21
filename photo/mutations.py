@@ -1,6 +1,9 @@
 import strawberry
 from django.utils import timezone
+from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
+
+from photo.models import User
 
 from .inputs import (
     CollectionInput,
@@ -52,6 +55,21 @@ class Mutation:
     update_contestSubmission: ContestSubmissionType = gql.django.update_mutation(
         ContestSubmissionInputPartial
     )
+
+    @strawberry.mutation
+    def create_picture(self, input: PictureInput, picture: Upload) -> PictureType:
+        print("hey")
+
+        user = User.objects.get(email=input.user)
+
+        newPicture = Picture(user=user)
+        print("how")
+        newPicture.picture_path.save(name="teste.jpg", content=picture)
+        print("are")
+        newPicture.save()
+        print("you")
+
+        return newPicture
 
     @strawberry.mutation
     def like_picture(self, user: str, picture: int) -> PictureType:

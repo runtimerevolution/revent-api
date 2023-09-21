@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="picture",
             name="picture_path",
             field=models.FileField(
-                storage=photo.storages_backend.PublicMediaStorage(), upload_to=""
+                storage=photo.storages_backend.PublicMediaStorage()
             ),
         ),
     ]

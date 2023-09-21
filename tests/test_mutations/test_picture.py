@@ -1,5 +1,6 @@
 import pytest
 from django.test import TestCase
+from PIL import Image
 
 from photo.schema import schema
 from tests.factories import PictureFactory, UserFactory
@@ -15,20 +16,22 @@ class PictureTest(TestCase):
         self.newUser = UserFactory(user_profile_picture=True)
         self.newLikesUsers = UserFactory.create_batch(3, user_profile_picture=True)
 
-    @pytest.mark.asyncio
-    async def test_create_one(self):
+    def test_create_one(self):
         mutation = picture_creation_mutation
         newUser = self.newUser
         newLikesUsers = self.newLikesUsers
+        newImage = Image.new(mode="RGB", size=(200, 200))
         newPicture = {
             "user": newUser.email,
-            "picture_path": "www.test.com",
             "likes": [user.email for user in newLikesUsers],
         }
 
-        result = await schema.execute(
+        result = schema.execute_sync(
             mutation,
-            variable_values={"picture": newPicture},
+            variable_values={
+                "input": newPicture,
+                "picture": newImage,
+            },
         )
 
         self.assertEqual(result.errors, None)

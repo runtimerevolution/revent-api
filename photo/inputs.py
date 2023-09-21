@@ -35,7 +35,6 @@ class UserInputPartial:
 @strawberry.django.input(Picture)
 class PictureInput:
     user: str
-    picture_path: str
     likes: List[str]
 
 

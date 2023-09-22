@@ -3,14 +3,14 @@ from datetime import timedelta
 import pytest
 from django.test import TestCase
 from django.utils import timezone
-
-from photo.schema import schema
 from tests.factories import ContestFactory, PictureFactory, UserFactory
 from tests.test_mutations.mutation_file import (
     contest_close_mutation,
     contest_creation_mutation,
     contest_update_mutation,
 )
+
+from photo.schema import schema
 
 
 class ContestTest(TestCase):

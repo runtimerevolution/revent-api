@@ -1,7 +1,4 @@
 from django.test import TestCase
-
-from photo.models import ContestSubmission
-from photo.schema import schema
 from tests.factories import (
     ContestFactory,
     ContestSubmissionFactory,
@@ -14,6 +11,9 @@ from tests.test_queries.query_file import (
     contest_submission_query_one,
     contest_submission_query_user,
 )
+
+from photo.models import ContestSubmission
+from photo.schema import schema
 
 
 class ContestSubmissionTest(TestCase):

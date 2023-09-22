@@ -2,9 +2,6 @@ from datetime import timedelta
 
 from django.test import TestCase
 from django.utils import timezone
-
-from photo.models import Contest
-from photo.schema import schema
 from tests.factories import ContestFactory, UserFactory
 from tests.test_queries.query_file import (
     contest_query_all,
@@ -12,6 +9,9 @@ from tests.test_queries.query_file import (
     contest_query_one,
     contest_query_search,
 )
+
+from photo.models import Contest
+from photo.schema import schema
 
 
 class ContestTest(TestCase):

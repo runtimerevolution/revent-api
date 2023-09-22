@@ -1,10 +1,15 @@
 import random
+from io import BytesIO
 
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import IntegrityError
-from django.test import TransactionTestCase
-
-from photo.models import Picture, User
+from django.test import TestCase, TransactionTestCase
+from PIL import Image
 from tests.factories import PictureFactory, UserFactory
+
+from integrations.aws.s3 import Client
+from photo.models import Picture, User
 
 
 class PictureTest(TransactionTestCase):
@@ -38,3 +43,26 @@ class PictureTest(TransactionTestCase):
             PictureFactory(id=self.newPicture.id)
         with self.assertRaises(IntegrityError):
             PictureFactory(picture_path=self.newPicture.picture_path)
+
+
+class PictureUploadTest(TestCase):
+    def setUp(self):
+        image = Image.new(mode="RGB", size=(200, 200))
+        image_bytes = BytesIO()
+        image.save(image_bytes, format="JPEG")
+        image_bytes.seek(0)
+        self.image_file = SimpleUploadedFile(
+            "test_image.jpg", image_bytes.getvalue(), content_type="image/jpeg"
+        )
+
+    def test_upload(self):
+        picture = Picture.objects.create(
+            user=UserFactory(), picture_path=self.image_file
+        )
+
+        self.assertEqual(picture.picture_path.name, "sample/test_image.jpg")
+
+        s3_object = Client.get_object(
+            bucket=settings.AWS_STORAGE_BUCKET_NAME, key="sample/test_image.jpg"
+        )
+        print(s3_object)

@@ -1,14 +1,14 @@
 import pytest
 from django.test import TestCase
 from PIL import Image
-
-from photo.schema import schema
 from tests.factories import PictureFactory, UserFactory
 from tests.test_mutations.mutation_file import (
     picture_creation_mutation,
     picture_like_mutation,
     picture_update_mutation,
 )
+
+from photo.schema import schema
 
 
 class PictureTest(TestCase):

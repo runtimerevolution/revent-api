@@ -1,9 +1,9 @@
 from django.test import TestCase
+from tests.factories import UserFactory
+from tests.test_queries.query_file import user_query_all, user_query_one
 
 from photo.models import User
 from photo.schema import schema
-from tests.factories import UserFactory
-from tests.test_queries.query_file import user_query_all, user_query_one
 
 
 class UserTest(TestCase):

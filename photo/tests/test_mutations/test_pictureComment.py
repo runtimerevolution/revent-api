@@ -1,12 +1,12 @@
 import pytest
 from django.test import TestCase
-
-from photo.schema import schema
 from tests.factories import PictureCommentFactory, PictureFactory, UserFactory
 from tests.test_mutations.mutation_file import (
     picture_comment_creation_mutation,
     picture_comment_update_mutation,
 )
+
+from photo.schema import schema
 
 
 class PictureCommentTest(TestCase):

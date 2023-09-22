@@ -1,8 +1,6 @@
 import pytest
 from django.test import TestCase
 from django.utils import timezone
-
-from photo.schema import schema
 from tests.factories import (
     ContestFactory,
     ContestSubmissionFactory,
@@ -14,6 +12,8 @@ from tests.test_mutations.mutation_file import (
     contest_submission_update_mutation,
     contest_submission_vote_mutation,
 )
+
+from photo.schema import schema
 
 
 class ContestSubmissionTest(TestCase):

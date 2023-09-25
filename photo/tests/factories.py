@@ -38,7 +38,7 @@ class PictureFactory(factory.django.DjangoModelFactory):
         model = Picture
 
     user = factory.SubFactory(UserFactory)
-    picture_path = factory.LazyAttributeSequence(
+    file = factory.LazyAttributeSequence(
         lambda _, n: ContentFile(
             factory.django.ImageField()._make_data({"width": 1024, "height": 768}),
             "picture{0}.jpg".format(n),

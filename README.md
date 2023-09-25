@@ -31,7 +31,7 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 
 ## Setup Time
 
-### Prerequisites - 
+### Prerequisites -
 
 Install [pyenv](https://github.com/pyenv/pyenv) and [poetry](https://python-poetry.org/docs/#installation)
 
@@ -220,11 +220,11 @@ classDiagram
       +Picture profile_picture
       +DateTime profile_picture_updated_at
       +String user_handle
-      
+
     }
     class Picture{
       +User User
-      +String picture_path
+      +String file
       +User likes
     }
     class PictureComment{
@@ -257,7 +257,7 @@ classDiagram
         +DateTime submission_date
         +User votes
     }
-    
+
 ``````
 
 ## FAQ
@@ -295,4 +295,3 @@ brew remove gdal
 ```bash
 brew install gdal
 ```
-

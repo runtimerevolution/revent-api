@@ -2,4 +2,8 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 
 class PublicMediaStorage(S3Boto3Storage):
-    custom_domain = "{0}/{1}".format("localhost:4566", "revent-media")
+    bucket_name = "revent-media"
+
+
+def picture_path(instance, filename):
+    return "pictures/{0}/{1}".format(instance.user.id, filename)

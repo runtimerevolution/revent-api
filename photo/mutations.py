@@ -64,7 +64,7 @@ class Mutation:
         picture.save(image_bytes, format="JPEG")
         image_bytes.seek(0)
         image_file = SimpleUploadedFile(
-            picture, image_bytes.getvalue(), content_type="image/jpeg"
+            "sample.jpg", image_bytes.getvalue(), content_type="image/jpeg"
         )
 
         user = User.objects.get(email=input.user)

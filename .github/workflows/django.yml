@@ -43,7 +43,14 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    
+      revent-s3:
+        container_name: revent-s3
+        image: localstack/localstack:latest
+        ports:
+          - "4566:4566"
+          - "4510-4559:4510-4559"
+
+
     steps:
       # This is the first step. The "uses" keyword specifies that this step will run v3 of the actions/checkout action. This is an action that checks out your repository onto the runner, allowing you to run scripts or other actions against your code (such as build and test tools).
       # You can read more about this action here: https://github.com/actions/checkout#readme

@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import factory
 import pytz
+from django.core.files.base import ContentFile
 
 from photo.models import (
     Collection,
@@ -37,7 +38,12 @@ class PictureFactory(factory.django.DjangoModelFactory):
         model = Picture
 
     user = factory.SubFactory(UserFactory)
-    picture_path = factory.Sequence(lambda n: "https://www.picture{0}.com/".format(n))
+    picture_path = factory.LazyAttributeSequence(
+        lambda _, n: ContentFile(
+            factory.django.ImageField()._make_data({"width": 1024, "height": 768}),
+            "picture{0}.jpg".format(n),
+        )
+    )
 
     @factory.post_generation
     def user_likes(self, create, extracted, **kwargs):

@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.test import TransactionTestCase
 
 from photo.models import Collection, Picture, User
-from tests.factories import CollectionFactory, PictureFactory, UserFactory
+from photo.tests.factories import CollectionFactory, PictureFactory, UserFactory
 
 
 class CollectionTest(TransactionTestCase):

@@ -1,6 +1,12 @@
+from io import BytesIO
+
 import strawberry
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
+from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
+
+from photo.models import User
 
 from .inputs import (
     CollectionInput,
@@ -29,7 +35,6 @@ from .types import (
 
 @strawberry.type
 class Mutation:
-
     create_user: UserType = gql.django.create_mutation(UserInput)
     create_picture: PictureType = gql.django.create_mutation(PictureInput)
     create_pictureComment: PictureCommentType = gql.django.create_mutation(
@@ -54,7 +59,23 @@ class Mutation:
     )
 
     @strawberry.mutation
-    def like_picture(self, user: str, picture: int) -> PictureType:
+    def create_picture(self, input: PictureInput, picture: Upload) -> PictureType:
+        image_bytes = BytesIO()
+        picture.save(image_bytes, format="JPEG")
+        image_bytes.seek(0)
+        image_file = SimpleUploadedFile(
+            "sample.jpg", image_bytes.getvalue(), content_type="image/jpeg"
+        )
+
+        user = User.objects.get(email=input.user)
+
+        newPicture = Picture(user=user, picture_path=image_file)
+        newPicture.save()
+
+        return newPicture
+
+    @strawberry.mutation
+    def like_picture(self, user: int, picture: int) -> PictureType:
         picture = Picture.objects.get(id=picture)
         picture.likes.add(user)
         picture.save()

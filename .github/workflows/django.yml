@@ -43,7 +43,13 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    
+      revent-s3:
+        image: localstack/localstack:latest
+        ports:
+          - "4566:4566"
+          - "4510-4559:4510-4559"
+
+
     steps:
       # This is the first step. The "uses" keyword specifies that this step will run v3 of the actions/checkout action. This is an action that checks out your repository onto the runner, allowing you to run scripts or other actions against your code (such as build and test tools).
       # You can read more about this action here: https://github.com/actions/checkout#readme
@@ -79,7 +85,13 @@ jobs:
 
       - name: Run Tests
         env:
-          DJANGO_SETTINGS_MODULE: revent.settings  # Replace with your project's settings module
+          DJANGO_SETTINGS_MODULE: revent.settings
+          AWS_S3_ENDPOINT_URL: http://localhost.localstack.cloud:4566/
+          AWS_DEFAULT_REGION: us-west-1
+          AWS_STORAGE_BUCKET_NAME: revent-media
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_QUERYSTRING_AUTH: False
         run: |
           source $VENV
           python manage.py test

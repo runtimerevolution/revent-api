@@ -5,7 +5,7 @@ from django.forms import ValidationError
 from django.test import TransactionTestCase
 
 from photo.models import Contest, Picture, User
-from tests.factories import ContestFactory, UserFactory
+from photo.tests.factories import ContestFactory, UserFactory
 
 
 class ContestTest(TransactionTestCase):

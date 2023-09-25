@@ -2,16 +2,16 @@ from datetime import timedelta
 
 from django.test import TestCase
 from django.utils import timezone
-from tests.factories import ContestFactory, UserFactory
-from tests.test_queries.query_file import (
+
+from photo.models import Contest
+from photo.schema import schema
+from photo.tests.factories import ContestFactory, UserFactory
+from photo.tests.test_queries.query_file import (
     contest_query_all,
     contest_query_creator,
     contest_query_one,
     contest_query_search,
 )
-
-from photo.models import Contest
-from photo.schema import schema
 
 
 class ContestTest(TestCase):
@@ -118,7 +118,6 @@ class ContestTest(TestCase):
             self.assertEqual(contest["status"], status[str(contest["id"])])
 
     def test_query_search(self):
-
         testText = "This is a text with a weird word 1234Test1234."
 
         newContestTitle = ContestFactory(title=testText)

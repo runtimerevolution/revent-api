@@ -6,10 +6,10 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import IntegrityError
 from django.test import TestCase, TransactionTestCase
 from PIL import Image
-from tests.factories import PictureFactory, UserFactory
 
 from integrations.aws.s3 import Client
 from photo.models import Picture, User
+from photo.tests.factories import PictureFactory, UserFactory
 
 
 class PictureTest(TransactionTestCase):

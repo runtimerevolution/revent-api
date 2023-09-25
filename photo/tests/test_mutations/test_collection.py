@@ -1,13 +1,13 @@
 import pytest
 from django.test import TestCase
-from tests.factories import CollectionFactory, PictureFactory, UserFactory
-from tests.test_mutations.mutation_file import (
+
+from photo.schema import schema
+from photo.tests.factories import CollectionFactory, PictureFactory, UserFactory
+from photo.tests.test_mutations.mutation_file import (
     collection_add_picture_mutation,
     collection_creation_mutation,
     collection_update_mutation,
 )
-
-from photo.schema import schema
 
 
 class CollectionTest(TestCase):

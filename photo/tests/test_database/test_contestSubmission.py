@@ -3,9 +3,9 @@ import random
 from django.db import IntegrityError
 from django.forms import ValidationError
 from django.test import TransactionTestCase
-from tests.factories import ContestSubmissionFactory, PictureFactory, UserFactory
 
 from photo.models import Contest, ContestSubmission, Picture, User
+from photo.tests.factories import ContestSubmissionFactory, PictureFactory, UserFactory
 
 
 class ContestSubmissionTest(TransactionTestCase):

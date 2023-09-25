@@ -1,13 +1,13 @@
 import pytest
 from django.test import TestCase
 from django.utils import timezone
-from tests.factories import PictureFactory, UserFactory
-from tests.test_mutations.mutation_file import (
+
+from photo.schema import schema
+from photo.tests.factories import PictureFactory, UserFactory
+from photo.tests.test_mutations.mutation_file import (
     user_creation_mutation,
     user_update_mutation,
 )
-
-from photo.schema import schema
 
 
 class UserTest(TestCase):

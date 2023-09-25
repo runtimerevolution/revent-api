@@ -1,8 +1,8 @@
 from django.db import IntegrityError
 from django.test import TransactionTestCase
-from tests.factories import UserFactory
 
 from photo.models import Picture, User
+from photo.tests.factories import UserFactory
 
 
 class UserTest(TransactionTestCase):

@@ -2,9 +2,9 @@ import random
 
 from django.db import IntegrityError
 from django.test import TransactionTestCase
-from tests.factories import CollectionFactory, PictureFactory, UserFactory
 
 from photo.models import Collection, Picture, User
+from photo.tests.factories import CollectionFactory, PictureFactory, UserFactory
 
 
 class CollectionTest(TransactionTestCase):

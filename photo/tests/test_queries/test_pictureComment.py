@@ -1,14 +1,14 @@
 from django.test import TestCase
-from tests.factories import PictureCommentFactory, PictureFactory, UserFactory
-from tests.test_queries.query_file import (
+
+from photo.models import PictureComment
+from photo.schema import schema
+from photo.tests.factories import PictureCommentFactory, PictureFactory, UserFactory
+from photo.tests.test_queries.query_file import (
     picture_comment_query_all,
     picture_comment_query_one,
     picture_comment_query_picture,
     picture_comment_query_user,
 )
-
-from photo.models import PictureComment
-from photo.schema import schema
 
 
 class PictureCommentTest(TestCase):

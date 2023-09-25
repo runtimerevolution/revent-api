@@ -1,19 +1,19 @@
 import pytest
 from django.test import TestCase
 from django.utils import timezone
-from tests.factories import (
+
+from photo.schema import schema
+from photo.tests.factories import (
     ContestFactory,
     ContestSubmissionFactory,
     PictureFactory,
     UserFactory,
 )
-from tests.test_mutations.mutation_file import (
+from photo.tests.test_mutations.mutation_file import (
     contest_submission_creation_mutation,
     contest_submission_update_mutation,
     contest_submission_vote_mutation,
 )
-
-from photo.schema import schema
 
 
 class ContestSubmissionTest(TestCase):

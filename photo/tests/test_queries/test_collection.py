@@ -1,15 +1,15 @@
 from django.test import TestCase
-from tests.factories import CollectionFactory, PictureFactory, UserFactory
-from tests.test_queries.query_file import (
+
+from photo.models import Collection
+from photo.schema import schema
+from photo.tests.factories import CollectionFactory, PictureFactory, UserFactory
+from photo.tests.test_queries.query_file import (
     collections_query_all,
     collections_query_name,
     collections_query_one,
     collections_query_user,
     collections_query_user_email,
 )
-
-from photo.models import Collection
-from photo.schema import schema
 
 
 class CollectionTest(TestCase):

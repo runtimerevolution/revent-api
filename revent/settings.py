@@ -146,8 +146,8 @@ STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3.S3Storage",
         "OPTIONS": {
-            "bucket_name": "revent-media",
-            "location": "http://127.0.0.1:4566/",
+            "bucket_name": AWS_STORAGE_BUCKET_NAME,
+            "location": AWS_S3_ENDPOINT_URL,
         },
     },
 }

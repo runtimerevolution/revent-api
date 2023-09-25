@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
@@ -6,7 +7,8 @@ from photo.storages_backend import PublicMediaStorage, picture_path
 
 
 class User(models.Model):
-    email = models.TextField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    email = models.TextField()
     name_first = models.TextField(blank=True, null=True)
     name_last = models.TextField(blank=True, null=True)
     profile_picture = models.ForeignKey(
@@ -36,7 +38,7 @@ class User(models.Model):
 
 class Picture(models.Model):
     user = models.ForeignKey(
-        "User", on_delete=models.CASCADE, related_name="picture_user"
+        "User", on_delete=models.CASCADE, related_name="picture_user", to_field="id"
     )
     picture_path = models.FileField(
         storage=PublicMediaStorage(),
@@ -46,10 +48,7 @@ class Picture(models.Model):
 
 
 class PictureComment(models.Model):
-    user = models.ForeignKey(
-        "User",
-        on_delete=models.CASCADE,
-    )
+    user = models.ForeignKey("User", on_delete=models.CASCADE, to_field="id")
     picture = models.ForeignKey(
         "Picture",
         on_delete=models.CASCADE,
@@ -60,10 +59,7 @@ class PictureComment(models.Model):
 
 class Collection(models.Model):
     name = models.TextField()
-    user = models.ForeignKey(
-        "User",
-        on_delete=models.CASCADE,
-    )
+    user = models.ForeignKey("User", on_delete=models.CASCADE, to_field="id")
     pictures = models.ManyToManyField(Picture, related_name="collection_pictures")
 
     class Meta:
@@ -93,6 +89,7 @@ class Contest(models.Model):
         related_name="contest_created_by",
         blank=True,
         null=True,
+        to_field="id",
     )
 
     def validate_user(self):

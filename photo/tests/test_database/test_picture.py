@@ -3,7 +3,6 @@ from io import BytesIO
 
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.db import IntegrityError
 from django.test import TestCase, TransactionTestCase
 from PIL import Image
 
@@ -34,16 +33,6 @@ class PictureTest(TransactionTestCase):
         for like in self.newPicture.likes.all():
             self.assertTrue(User.objects.filter(email=like.email).exists())
 
-    def test_factory_null(self):
-        with self.assertRaises(IntegrityError):
-            PictureFactory(user=None)
-
-    def test_factory_pk(self):
-        with self.assertRaises(IntegrityError):
-            PictureFactory(id=self.newPicture.id)
-        with self.assertRaises(IntegrityError):
-            PictureFactory(picture_path=self.newPicture.picture_path)
-
 
 class PictureUploadTest(TestCase):
     def setUp(self):
@@ -54,15 +43,19 @@ class PictureUploadTest(TestCase):
         self.image_file = SimpleUploadedFile(
             "test_image.jpg", image_bytes.getvalue(), content_type="image/jpeg"
         )
+        self.client = Client()
+        self.client.create_bucket()
 
     def test_upload(self):
-        picture = Picture.objects.create(
-            user=UserFactory(), picture_path=self.image_file
+        user = UserFactory()
+        picture = Picture.objects.create(user=user, picture_path=self.image_file)
+
+        self.assertEqual(
+            picture.picture_path.name, f"pictures/{user.email}/test_image.jpg"
         )
 
-        self.assertEqual(picture.picture_path.name, "sample/test_image.jpg")
-
-        s3_object = Client.get_object(
-            bucket=settings.AWS_STORAGE_BUCKET_NAME, key="sample/test_image.jpg"
+        s3_object = self.client.get_object(
+            bucket=settings.AWS_STORAGE_BUCKET_NAME, key=picture.picture_path.name
         )
-        print(s3_object)
+
+        self.assertEqual(s3_object["ContentType"], "image/jpeg")

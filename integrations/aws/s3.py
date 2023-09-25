@@ -11,10 +11,13 @@ class Client:
         bucket_name=settings.AWS_STORAGE_BUCKET_NAME,
         location=settings.AWS_DEFAULT_REGION,
     ):
-        return self.s3.create_bucket(
-            Bucket=bucket_name,
-            CreateBucketConfiguration={"LocationConstraint": location},
-        )
+        bucket_list = self.s3.list_buckets()
+        bucket_list_names = [bucket["Name"] for bucket in bucket_list["Buckets"]]
+        if bucket_name not in bucket_list_names:
+            return self.s3.create_bucket(
+                Bucket=bucket_name,
+                CreateBucketConfiguration={"LocationConstraint": location},
+            )
 
     def list_bucket(self):
         return self.s3.list_buckets()

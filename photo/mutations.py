@@ -69,7 +69,7 @@ class Mutation:
 
         user = User.objects.get(email=input.user)
 
-        newPicture = Picture(user=user, picture_path=image_file)
+        newPicture = Picture(user=user, file=image_file)
         newPicture.save()
 
         return newPicture

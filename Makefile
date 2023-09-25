@@ -37,3 +37,10 @@ pre: ## Run pre-commit
 superuser:
 	python manage.py createsuperuser
 
+# Setup
+setup: up install migrate
+
+coverage:
+	coverage erase && coverage run manage.py test && coverage html --skip-empty --skip-covered
+	open htmlcov/index.html
+

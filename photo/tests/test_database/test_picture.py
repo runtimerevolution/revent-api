@@ -44,7 +44,6 @@ class PictureUploadTest(TestCase):
             "test_image.jpg", image_bytes.getvalue(), content_type="image/jpeg"
         )
         self.client = Client()
-        self.client.create_bucket()
 
     def test_upload(self):
         user = UserFactory()

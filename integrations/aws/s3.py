@@ -1,4 +1,5 @@
 import boto3
+import botocore
 from django.conf import settings
 
 
@@ -11,13 +12,19 @@ class Client:
         bucket_name=settings.AWS_STORAGE_BUCKET_NAME,
         location=settings.AWS_DEFAULT_REGION,
     ):
-        bucket_list = self.s3.list_buckets()
-        bucket_list_names = [bucket["Name"] for bucket in bucket_list["Buckets"]]
-        if bucket_name not in bucket_list_names:
+        try:
+            self.head_bucket(bucket_name)
+        except botocore.exceptions.ClientError:
             return self.s3.create_bucket(
                 Bucket=bucket_name,
                 CreateBucketConfiguration={"LocationConstraint": location},
             )
+
+    def head_bucket(self, bucket_name):
+        return self.s3.head_bucket(Bucket=bucket_name)
+
+    def delete_bucket(self, bucket_name):
+        return self.s3.delete_bucket(Bucket=bucket_name)
 
     def list_bucket(self):
         return self.s3.list_buckets()

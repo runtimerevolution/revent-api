@@ -150,4 +150,7 @@ STORAGES = {
             "location": AWS_S3_ENDPOINT_URL,
         },
     },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
 }

@@ -8,7 +8,7 @@ from photo.storages_backend import PublicMediaStorage, picture_path
 
 class User(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    email = models.TextField()
+    email = models.TextField(unique=True)
     name_first = models.TextField(blank=True, null=True)
     name_last = models.TextField(blank=True, null=True)
     profile_picture = models.ForeignKey(

@@ -18,6 +18,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
+    id = factory.Faker("uuid4")
     user_handle = factory.Faker("name")
     email = factory.Sequence(lambda n: "user{0}@email.com".format(n))
     name_first = factory.Faker("first_name")

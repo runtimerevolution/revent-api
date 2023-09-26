@@ -142,12 +142,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Django-storages
 
-# STORAGES = {
-#     "default": {
-#         "BACKEND": "storages.backends.s3.S3Storage",
-#         "OPTIONS": {
-#             "bucket_name": AWS_STORAGE_BUCKET_NAME,
-#             "location": AWS_S3_ENDPOINT_URL,
-#         },
-#     },
-# }
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": AWS_STORAGE_BUCKET_NAME,
+            "location": AWS_S3_ENDPOINT_URL,
+        },
+    },
+}

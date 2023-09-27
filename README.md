@@ -226,7 +226,7 @@ classDiagram
     }
     class Picture{
       +User User
-      +String picture_path
+      +String file
       +User likes
     }
     class PictureComment{

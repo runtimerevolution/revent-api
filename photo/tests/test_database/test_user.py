@@ -19,8 +19,8 @@ class UserTest(TransactionTestCase):
             User.objects.first().email, User.objects.first().profile_picture.user.email
         )
         self.assertEqual(
-            Picture.objects.first().picture_path,
-            User.objects.first().profile_picture.picture_path,
+            Picture.objects.first().file,
+            User.objects.first().profile_picture.file,
         )
 
     def test_factory_pk(self):

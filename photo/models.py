@@ -40,7 +40,7 @@ class Picture(models.Model):
     user = models.ForeignKey(
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
-    picture_path = models.FileField(
+    file = models.FileField(
         storage=PublicMediaStorage(),
         upload_to=picture_path,
     )

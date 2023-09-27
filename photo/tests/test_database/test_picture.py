@@ -24,7 +24,7 @@ class PictureTest(TransactionTestCase):
         # One picture is created by the factory and another is created by the User subFactory
         self.assertEqual(Picture.objects.count(), (1 + User.objects.count()))
         self.assertEqual(
-            Picture.objects.filter(picture_path=self.newPicture.picture_path).first(),
+            Picture.objects.filter(file=self.newPicture.file).first(),
             self.newPicture,
         )
         self.assertEqual(
@@ -47,14 +47,12 @@ class PictureUploadTest(TestCase):
 
     def test_upload(self):
         user = UserFactory()
-        picture = Picture.objects.create(user=user, picture_path=self.image_file)
+        picture = Picture.objects.create(user=user, file=self.image_file)
 
-        self.assertEqual(
-            picture.picture_path.name, f"pictures/{user.email}/test_image.jpg"
-        )
+        self.assertEqual(picture.file.name, f"pictures/{user.email}/test_image.jpg")
 
         s3_object = self.client.get_object(
-            bucket=settings.AWS_STORAGE_BUCKET_NAME, key=picture.picture_path.name
+            bucket=settings.AWS_STORAGE_BUCKET_NAME, key=picture.file.name
         )
 
         self.assertEqual(s3_object["ContentType"], "image/jpeg")

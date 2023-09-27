@@ -26,7 +26,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Picture)
 class PictureAdmin(admin.ModelAdmin):
-    list_display = ("user", "picture_path")
+    list_display = ("user", "file")
 
 
 @admin.register(Collection)

@@ -145,6 +145,8 @@ the AWS, we will require this to comunicate with the docker containers:
         aws configure
       ```
 
+In order to create a bucket you can just run the tests to verify everithing is working properly and it will be created automatically.
+
 ### Nice to Have
 
 Well, hello there! If you are looking for automation, you have come to the right place!

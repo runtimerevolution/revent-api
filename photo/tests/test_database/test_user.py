@@ -25,4 +25,4 @@ class UserTest(TransactionTestCase):
 
     def test_factory_pk(self):
         with self.assertRaises(IntegrityError):
-            UserFactory(email=self.newUser.email)
+            UserFactory(id=self.newUser.id)

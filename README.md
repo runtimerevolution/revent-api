@@ -31,7 +31,7 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
 
 ## Setup Time
 
-### Prerequisites - 
+### Prerequisites -
 
 Install [pyenv](https://github.com/pyenv/pyenv) and [poetry](https://python-poetry.org/docs/#installation)
 
@@ -145,6 +145,8 @@ the AWS, we will require this to comunicate with the docker containers:
         aws configure
       ```
 
+In order to create a bucket you can just run the tests to verify everithing is working properly and it will be created automatically.
+
 ### Nice to Have
 
 Well, hello there! If you are looking for automation, you have come to the right place!
@@ -220,11 +222,11 @@ classDiagram
       +Picture profile_picture
       +DateTime profile_picture_updated_at
       +String user_handle
-      
+
     }
     class Picture{
       +User User
-      +String picture_path
+      +String file
       +User likes
     }
     class PictureComment{
@@ -257,7 +259,7 @@ classDiagram
         +DateTime submission_date
         +User votes
     }
-    
+
 ``````
 
 ## FAQ
@@ -295,4 +297,3 @@ brew remove gdal
 ```bash
 brew install gdal
 ```
-

@@ -27,7 +27,7 @@ class UserType:
 class PictureType:
     id: int
     user: "UserType"
-    picture_path: str
+    file: str
     likes: List[UserType]
 
 

@@ -38,7 +38,7 @@ class User(models.Model):
 
 class Picture(models.Model):
     user = models.ForeignKey(
-        "User", on_delete=models.CASCADE, related_name="picture_user", to_field="id"
+        "User", on_delete=models.CASCADE, related_name="picture_user"
     )
     picture_path = models.FileField(
         storage=PublicMediaStorage(),
@@ -48,7 +48,7 @@ class Picture(models.Model):
 
 
 class PictureComment(models.Model):
-    user = models.ForeignKey("User", on_delete=models.CASCADE, to_field="id")
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
     picture = models.ForeignKey(
         "Picture",
         on_delete=models.CASCADE,
@@ -59,7 +59,7 @@ class PictureComment(models.Model):
 
 class Collection(models.Model):
     name = models.TextField()
-    user = models.ForeignKey("User", on_delete=models.CASCADE, to_field="id")
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
     pictures = models.ManyToManyField(Picture, related_name="collection_pictures")
 
     class Meta:
@@ -89,7 +89,6 @@ class Contest(models.Model):
         related_name="contest_created_by",
         blank=True,
         null=True,
-        to_field="id",
     )
 
     def validate_user(self):

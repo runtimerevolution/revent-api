@@ -38,9 +38,9 @@ class PictureTest(TestCase):
         )
 
     def test_query_one(self):
-        new_likes_users = UserFactory.create_batch(3, user_profile_picture=True)
+        likes_users = UserFactory.create_batch(3, user_profile_picture=True)
         user = UserFactory(user_profile_picture=True)
-        picture = PictureFactory.create(user=user, user_likes=new_likes_users)
+        picture = PictureFactory.create(user=user, user_likes=likes_users)
         query = picture_query_one
 
         result = schema.execute_sync(
@@ -52,4 +52,4 @@ class PictureTest(TestCase):
         self.assertEqual(len(result.data["pictures"]), 1)
         self.assertEqual(result.data["pictures"][0]["id"], picture.id)
         self.assertEqual(result.data["pictures"][0]["file"], picture.file)
-        self.assertEqual(len(result.data["pictures"][0]["likes"]), len(new_likes_users))
+        self.assertEqual(len(result.data["pictures"][0]["likes"]), len(likes_users))

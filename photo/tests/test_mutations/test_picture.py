@@ -8,6 +8,7 @@ from .mutation_file import (
     picture_like_mutation,
     picture_update_mutation,
 )
+from strawberry.file_uploads import Upload
 
 
 class PictureTest(TestCase):
@@ -20,6 +21,9 @@ class PictureTest(TestCase):
         mutation = picture_creation_mutation
         newUser = self.newUser
         newLikesUsers = self.newLikesUsers
+        file_upload = Upload(
+            b"\xFF\xD8\xFF\xE0\x00\x10JFIF\x00\x01\x01\x01\x00\x60\x00\x60\x00\x00...",
+        )
         newPicture = {
             "user": str(newUser.id),
             "file": "www.test.com",
@@ -28,10 +32,9 @@ class PictureTest(TestCase):
 
         result = await schema.execute(
             mutation,
-            variable_values={"picture": newPicture},
+            variable_values={"picture": newPicture, "upload": file_upload},
         )
 
-        breakpoint()
         self.assertEqual(result.errors, None)
         self.assertEqual(
             result.data["create_picture"]["user"]["email"], newPicture["user"]
@@ -65,7 +68,6 @@ class PictureTest(TestCase):
             mutation,
             variable_values={"picture": newPicture2},
         )
-        breakpoint()
         self.assertEqual(result.errors, None)
         self.assertEqual(resultError.errors, None)
         self.assertFalse(resultError.data["create_picture"]["__typename"] is None)

@@ -38,8 +38,8 @@ user_update_mutation = """
                 """
 
 picture_creation_mutation = """
-                    mutation TestMutation($picture: PictureInput!) {
-                        create_picture(input: $picture) {
+                    mutation TestMutation($picture: PictureInput!, $upload: Upload!) {
+                        create_picture(input: $picture, picture: $upload) {
                             ... on PictureType {
                               id
                               user {

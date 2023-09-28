@@ -30,6 +30,70 @@ picture_query_one = """
                     }
                 """
 
+picture_comment_query_all = """
+                    query TestQuery {
+                        picture_comments {
+                            id
+                            user {
+                                email
+                            }
+                            picture {
+                                id
+                            }
+                            text
+                            created_at
+                        }
+                    }
+                """
+
+picture_comment_query_one = """
+                    query TestQuery($id: Int!) {
+                        picture_comments(id: $id) {
+                            id
+                            user {
+                                email
+                            }
+                            picture {
+                                id
+                            }
+                            text
+                            created_at
+                        }
+                    }
+                """
+
+picture_comment_query_user = """
+                    query TestQuery($user: UUID!) {
+                        picture_comments(user: $user) {
+                            id
+                            user {
+                                email
+                            }
+                            picture {
+                                id
+                            }
+                            text
+                            created_at
+                        }
+                    }
+                """
+
+picture_comment_query_picture = """
+                    query TestQuery($picture_id: Int!) {
+                        picture_comments(picture_id: $picture_id) {
+                            id
+                            user {
+                                email
+                            }
+                            picture {
+                                id
+                            }
+                            text
+                            created_at
+                        }
+                    }
+                """
+
 user_query_all = """
                     query TestQuery {
                         users {

@@ -40,14 +40,14 @@ class Query:
 
     @strawberry.field
     def picture_comments(
-        self, id: int = None, user_email: str = None, picture_id: int = None
+        self, id: int = None, user: uuid.UUID = None, picture_id: int = None
     ) -> List[PictureCommentType]:
         if id:
             return PictureComment.objects.filter(id=id)
-        if user_email and picture_id:
-            return PictureComment.objects.filter(user=user_email, picture=picture_id)
-        elif user_email:
-            return PictureComment.objects.filter(user=user_email)
+        if user and picture_id:
+            return PictureComment.objects.filter(user=user, picture=picture_id)
+        elif user:
+            return PictureComment.objects.filter(user=user)
         elif picture_id:
             return PictureComment.objects.filter(picture=picture_id)
         return PictureComment.objects.all()

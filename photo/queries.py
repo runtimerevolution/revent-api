@@ -67,11 +67,11 @@ class Query:
         return Collection.objects.all()
 
     @strawberry.field
-    def contests(self, user_email: str = None, id: int = None) -> List[ContestType]:
+    def contests(self, user: uuid.UUID = None, id: int = None) -> List[ContestType]:
         if id:
             return Contest.objects.filter(id=id)
-        if user_email:
-            return Contest.objects.filter(created_by=user_email)
+        if user:
+            return Contest.objects.filter(created_by=user)
         return Contest.objects.all()
 
     @strawberry.field

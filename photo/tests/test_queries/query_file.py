@@ -75,6 +75,92 @@ collections_query_name = """
                     }
                 """
 
+contest_query_all = """
+                    query TestQuery {
+                        contests {
+                            id
+                            title
+                            description
+                            created_by {
+                                id
+                            }
+                            cover_picture {
+                                id
+                            }
+                            prize
+                            automated_dates
+                            upload_phase_start
+                            upload_phase_end
+                            voting_phase_end
+                            winners {
+                                id
+                            }
+                            status
+                        }
+                    }
+                """
+
+contest_query_one = """
+                    query TestQuery($id: Int!) {
+                        contests(id: $id) {
+                            id
+                            title
+                            description
+                            created_by {
+                                id
+                            }
+                            cover_picture {
+                                id
+                            }
+                            prize
+                            automated_dates
+                            upload_phase_start
+                            upload_phase_end
+                            voting_phase_end
+                            winners {
+                                id
+                            }
+                            status
+                        }
+                    }
+                """
+
+contest_query_creator = """
+                    query TestQuery($user: UUID!) {
+                        contests(user: $user) {
+                            id
+                            title
+                            description
+                            created_by {
+                                id
+                            }
+                            cover_picture {
+                                id
+                            }
+                            prize
+                            automated_dates
+                            upload_phase_start
+                            upload_phase_end
+                            voting_phase_end
+                            winners {
+                                id
+                            }
+                            status
+                        }
+                    }
+                """
+
+contest_query_search = """
+                    query TestQuery($search: String!) {
+                        contest_search(search: $search) {
+                            id
+                            title
+                            description
+                            prize
+                        }
+                    }
+                """
+
 picture_query_all = """
                     query TestQuery {
                         pictures {

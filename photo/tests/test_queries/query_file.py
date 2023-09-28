@@ -161,6 +161,90 @@ contest_query_search = """
                     }
                 """
 
+contest_submission_query_all = """
+                    query TestQuery {
+                        contest_submissions {
+                            id
+                            contest {
+                                id
+                            }
+                            picture {
+                                id
+                                user {
+                                    id
+                                }
+                            }
+                            submission_date
+                            votes {
+                                email
+                            }
+                        }
+                    }
+                """
+
+contest_submission_query_one = """
+                    query TestQuery($id: Int!) {
+                        contest_submissions(id: $id) {
+                            id
+                            contest {
+                                id
+                            }
+                            picture {
+                                id
+                                user {
+                                    id
+                                }
+                            }
+                            submission_date
+                            votes {
+                                email
+                            }
+                        }
+                    }
+                """
+
+contest_submission_query_user = """
+                    query TestQuery($user: UUID!) {
+                        contest_submissions(user: $user) {
+                            id
+                            contest {
+                                id
+                            }
+                            picture {
+                                id
+                                user {
+                                    id
+                                }
+                            }
+                            submission_date
+                            votes {
+                                email
+                            }
+                        }
+                    }
+                """
+
+contest_submission_query_contest = """
+                    query TestQuery($contest: Int!) {
+                        contest_submissions(contest: $contest) {
+                            id
+                            contest {
+                                id
+                            }
+                            picture {
+                                id
+                                user {
+                                    id
+                                }
+                            }
+                            submission_date
+                            votes {
+                                email
+                            }
+                        }
+                    }
+                """
+
 picture_query_all = """
                     query TestQuery {
                         pictures {

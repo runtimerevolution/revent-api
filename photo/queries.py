@@ -76,13 +76,13 @@ class Query:
 
     @strawberry.field
     def contest_submissions(
-        self, user_email: str = None, id: int = None, contest: int = None
+        self, user: uuid.UUID = None, id: int = None, contest: int = None
     ) -> List[ContestSubmissionType]:
         if id:
             return ContestSubmission.objects.filter(id=id)
-        if user_email or contest:
-            if user_email:
-                return ContestSubmission.objects.filter(picture__user__email=user_email)
+        if user or contest:
+            if user:
+                return ContestSubmission.objects.filter(picture__user=user)
             return ContestSubmission.objects.filter(contest__id=contest)
         return ContestSubmission.objects.all()
 

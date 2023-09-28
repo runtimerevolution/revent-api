@@ -54,14 +54,14 @@ class Query:
 
     @strawberry.field
     def collections(
-        self, user_email: str = None, name: str = None, id: int = None
+        self, user: uuid.UUID = None, name: str = None, id: int = None
     ) -> List[CollectionType]:
         if id:
             return Collection.objects.filter(id=id)
-        if user_email and name:
-            return Collection.objects.filter(user__email=user_email, name=name)
-        elif user_email:
-            return Collection.objects.filter(user__email=user_email)
+        if user and name:
+            return Collection.objects.filter(user=user, name=name)
+        elif user:
+            return Collection.objects.filter(user=user)
         elif name:
             return Collection.objects.filter(name=name)
         return Collection.objects.all()

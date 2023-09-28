@@ -1,5 +1,80 @@
 # File with the queries used by the tests
 
+collections_query_all = """
+                            query TestQuery {
+                                collections {
+                                    id
+                                    name
+                                    user {
+                                        id
+                                    }
+                                    pictures {
+                                        id
+                                    }
+                                }
+                            }
+                        """
+
+collections_query_one = """
+                    query TestQuery($id: Int!) {
+                        collections(id: $id) {
+                            id
+                            name
+                            user {
+                                id
+                            }
+                            pictures {
+                                id
+                            }
+                        }
+                    }
+                """
+
+collections_query_user_name = """
+                    query TestQuery($user: UUID!, $name: String!) {
+                        collections(user: $user, name: $name) {
+                            id
+                            name
+                            user {
+                                id
+                            }
+                            pictures {
+                                id
+                            }
+                        }
+                    }
+                """
+
+collections_query_user = """
+                    query TestQuery($user: UUID!) {
+                        collections(user: $user) {
+                            id
+                            name
+                            user {
+                                id
+                            }
+                            pictures {
+                                id
+                            }
+                        }
+                    }
+                """
+
+collections_query_name = """
+                    query TestQuery($name: String!) {
+                        collections(name: $name) {
+                            id
+                            name
+                            user {
+                                id
+                            }
+                            pictures {
+                                id
+                            }
+                        }
+                    }
+                """
+
 picture_query_all = """
                     query TestQuery {
                         pictures {

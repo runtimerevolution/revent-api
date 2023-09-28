@@ -1,3 +1,4 @@
+import uuid
 from typing import List
 
 import strawberry
@@ -24,7 +25,9 @@ from .types import (
 @strawberry.type
 class Query:
     @strawberry.field
-    def users(self, email: str = None) -> List[UserType]:
+    def users(self, user: uuid.UUID = None, email: str = None) -> List[UserType]:
+        if user:
+            return User.objects.filter(id=user)
         if email:
             return User.objects.filter(email=email)
         return User.objects.all()

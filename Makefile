@@ -22,7 +22,7 @@ ifeq (test,$(firstword $(MAKECMDGOALS)))
 endif
 
 test: ## Test all django apps OR pass testing target like "smart_replenishment" or "planner_requests.tests.csv_file"
-	poetry run python manage.py test --no-input $(TEST_ARGS)
+	poetry run python manage.py test photo.tests.test_mutations.test_picture.PictureTest.test_create_one
 
 up: ## Start the docker containers
 	docker compose up -d

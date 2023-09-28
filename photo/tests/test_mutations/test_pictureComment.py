@@ -1,0 +1,70 @@
+import pytest
+from django.test import TestCase
+
+from photo.schema import schema
+from photo.tests.factories import PictureCommentFactory, PictureFactory, UserFactory
+from .mutation_file import (
+    picture_comment_creation_mutation,
+    picture_comment_update_mutation,
+)
+
+
+class PictureCommentTest(TestCase):
+    def setUp(self):
+        self.newUser = UserFactory(user_profile_picture=True)
+        self.newPicture = PictureFactory()
+
+    @pytest.mark.asyncio
+    async def test_create_one(self):
+        mutation = picture_comment_creation_mutation
+        newUser = self.newUser
+        newPicture = self.newPicture
+        newPictureComment = {
+            "user": str(newUser.id),
+            "picture": newPicture.id,
+            "text": "Random text",
+        }
+
+        result = await schema.execute(
+            mutation,
+            variable_values={"pictureComment": newPictureComment},
+        )
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["create_pictureComment"]["user"]["id"], str(newUser.id)
+        )
+        self.assertEqual(
+            result.data["create_pictureComment"]["picture"]["id"],
+            newPicture.id,
+        )
+        self.assertEqual(
+            result.data["create_pictureComment"]["text"], newPictureComment["text"]
+        )
+
+    def test_update(self):
+        mutation = picture_comment_update_mutation
+
+        newPictureComment = PictureCommentFactory()
+        updatedPictureComment = {
+            "id": newPictureComment.id,
+            "text": "test text",
+        }
+
+        result = schema.execute_sync(
+            mutation,
+            variable_values={
+                "pictureComment": updatedPictureComment,
+            },
+        )
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["update_pictureComment"]["user"]["id"],
+            str(newPictureComment.user.id),
+        )
+        self.assertEqual(
+            result.data["update_pictureComment"]["picture"]["id"],
+            newPictureComment.picture.id,
+        )
+        self.assertEqual(
+            result.data["update_pictureComment"]["text"], updatedPictureComment["text"]
+        )

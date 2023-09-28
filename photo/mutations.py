@@ -75,7 +75,7 @@ class Mutation:
         return newPicture
 
     @strawberry.mutation
-    def like_picture(self, user: int, picture: int) -> PictureType:
+    def like_picture(self, user: str, picture: int) -> PictureType:
         picture = Picture.objects.get(id=picture)
         picture.likes.add(user)
         picture.save()

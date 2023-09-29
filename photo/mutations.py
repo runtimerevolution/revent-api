@@ -67,7 +67,7 @@ class Mutation:
             "sample.jpg", image_bytes.getvalue(), content_type="image/jpeg"
         )
 
-        user = User.objects.get(email=input.user)
+        user = User.objects.get(id=input.user)
 
         newPicture = Picture(user=user, file=image_file)
         newPicture.save()

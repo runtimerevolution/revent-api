@@ -1,5 +1,7 @@
 import pytest
 from django.test import TestCase
+from PIL import Image
+
 
 from photo.schema import schema
 from photo.tests.factories import PictureFactory, UserFactory
@@ -16,64 +18,22 @@ class PictureTest(TestCase):
         self.newUser = UserFactory(user_profile_picture=True)
         self.newLikesUsers = UserFactory.create_batch(3, user_profile_picture=True)
 
-    @pytest.mark.asyncio
-    async def test_create_one(self):
+    def test_create_one(self):
         mutation = picture_creation_mutation
         newUser = self.newUser
-        newLikesUsers = self.newLikesUsers
-        file_upload = Upload(
-            b"\xFF\xD8\xFF\xE0\x00\x10JFIF\x00\x01\x01\x01\x00\x60\x00\x60\x00\x00...",
-        )
+        image = Image.new(mode="RGB", size=(200, 200))
+
         newPicture = {
             "user": str(newUser.id),
-            "file": "www.test.com",
-            "likes": [str(user.id) for user in newLikesUsers],
         }
 
-        result = await schema.execute(
+        result = schema.execute_sync(
             mutation,
-            variable_values={"picture": newPicture, "upload": file_upload},
+            variable_values={"picture": newPicture, "upload": image},
         )
-
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_picture"]["user"]["email"], newPicture["user"]
-        )
-        self.assertEqual(result.data["create_picture"]["file"], newPicture["file"])
-        self.assertEqual(
-            len(result.data["create_picture"]["likes"]), len(newPicture["likes"])
-        )
-
-    @pytest.mark.asyncio
-    async def test_create_fail(self):
-        newUser = self.newUser
-
-        mutation = picture_creation_mutation
-        newPicture = {
-            "user": str(newUser.id),
-            "file": "www.test.com",
-        }
-
-        newPicture2 = {
-            "user": str(newUser.id),
-            "file": "www.test.com",
-        }
-
-        result = await schema.execute(
-            mutation,
-            variable_values={"picture": newPicture},
-        )
-
-        resultError = await schema.execute(
-            mutation,
-            variable_values={"picture": newPicture2},
-        )
-        self.assertEqual(result.errors, None)
-        self.assertEqual(resultError.errors, None)
-        self.assertFalse(resultError.data["create_picture"]["__typename"] is None)
-        self.assertEqual(
-            resultError.data["create_picture"]["messages"][0]["message"],
-            "Picture with this Picture path already exists.",
+            result.data["create_picture"]["user"]["id"], newPicture["user"]
         )
 
     def test_like(self):

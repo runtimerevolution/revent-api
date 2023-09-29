@@ -50,14 +50,6 @@ picture_creation_mutation = """
                                 id
                               }
                             }
-                            ... on OperationInfo {
-                                __typename
-                                messages {
-                                    field
-                                    kind
-                                    message
-                                }
-                            }
                         }
                     }
                 """

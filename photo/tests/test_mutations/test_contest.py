@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from photo.schema import schema
 from photo.tests.factories import ContestFactory, PictureFactory, UserFactory
-from .mutation_file import (
+from .graphql_mutations import (
     contest_close_mutation,
     contest_creation_mutation,
     contest_update_mutation,
@@ -15,97 +15,89 @@ from .mutation_file import (
 
 class ContestTest(TestCase):
     def setUp(self):
-        self.newUser = UserFactory(user_profile_picture=True)
-        self.newPicture = PictureFactory()
+        self.user = UserFactory(user_profile_picture=True)
+        self.picture = PictureFactory()
 
     @pytest.mark.asyncio
-    async def test_create_one(self):
-        mutation = contest_creation_mutation
-        newUser = self.newUser
-        newPicture = self.newPicture
-
-        newContest = {
+    async def test_create(self):
+        contest = {
             "title": "Best contest",
             "description": "Epic pictures.",
             "prize": "Money.",
-            "created_by": str(newUser.id),
-            "cover_picture": newPicture.id,
+            "created_by": str(self.user.id),
+            "cover_picture": self.picture.id,
         }
 
         result = await schema.execute(
-            mutation,
-            variable_values={"contest": newContest},
+            contest_creation_mutation,
+            variable_values={"contest": contest},
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_contest"]["created_by"]["email"], newUser.email
+            result.data["create_contest"]["created_by"]["email"], self.user.email
         )
         self.assertEqual(
             result.data["create_contest"]["cover_picture"]["id"],
-            newPicture.id,
+            self.picture.id,
         )
-        self.assertEqual(result.data["create_contest"]["title"], newContest["title"])
+        self.assertEqual(result.data["create_contest"]["title"], contest["title"])
         self.assertEqual(
-            result.data["create_contest"]["description"], newContest["description"]
+            result.data["create_contest"]["description"], contest["description"]
         )
-        self.assertEqual(result.data["create_contest"]["prize"], newContest["prize"])
+        self.assertEqual(result.data["create_contest"]["prize"], contest["prize"])
 
     def test_close(self):
-        mutation = contest_close_mutation
-
-        newContest = ContestFactory()
+        contest = ContestFactory()
 
         result = schema.execute_sync(
-            mutation,
+            contest_close_mutation,
             variable_values={
-                "contest": newContest.id,
+                "contest": contest.id,
             },
         )
 
         self.assertEqual(result.errors, None)
 
     def test_update(self):
-        mutation = contest_update_mutation
+        user = UserFactory()
+        contest = ContestFactory(created_by=user)
+        picture = PictureFactory(user=user, file="www.test.com")
 
-        newUser = UserFactory()
-        newContest = ContestFactory(created_by=newUser)
-        newPicture = PictureFactory(user=newUser, file="www.test.com")
-
-        updatedContest = {
-            "id": newContest.id,
+        updated_contest = {
+            "id": contest.id,
             "title": "Title test",
             "description": "Description test",
-            "cover_picture": newPicture.id,
+            "cover_picture": picture.id,
             "prize": "Prize test",
             "upload_phase_end": str(timezone.now() + timedelta(1)),
             "voting_phase_end": str(timezone.now() + timedelta(2)),
         }
 
         result = schema.execute_sync(
-            mutation,
+            contest_update_mutation,
             variable_values={
-                "contest": updatedContest,
+                "contest": updated_contest,
             },
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["update_contest"]["title"], updatedContest["title"]
+            result.data["update_contest"]["title"], updated_contest["title"]
         )
         self.assertEqual(
-            result.data["update_contest"]["description"], updatedContest["description"]
+            result.data["update_contest"]["description"], updated_contest["description"]
         )
         self.assertEqual(
-            result.data["update_contest"]["prize"], updatedContest["prize"]
+            result.data["update_contest"]["prize"], updated_contest["prize"]
         )
         self.assertEqual(
             result.data["update_contest"]["cover_picture"]["id"],
-            updatedContest["cover_picture"],
+            updated_contest["cover_picture"],
         )
         self.assertEqual(
             result.data["update_contest"]["upload_phase_end"],
-            str(updatedContest["upload_phase_end"]).replace(" ", "T"),
+            str(updated_contest["upload_phase_end"]).replace(" ", "T"),
         )
         self.assertEqual(
             result.data["update_contest"]["voting_phase_end"],
-            str(updatedContest["voting_phase_end"]).replace(" ", "T"),
+            str(updated_contest["voting_phase_end"]).replace(" ", "T"),
         )

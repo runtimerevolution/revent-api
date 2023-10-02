@@ -9,7 +9,7 @@ from photo.tests.factories import (
     PictureFactory,
     UserFactory,
 )
-from .mutation_file import (
+from .graphql_mutations import (
     contest_submission_creation_mutation,
     contest_submission_update_mutation,
     contest_submission_vote_mutation,
@@ -18,91 +18,83 @@ from .mutation_file import (
 
 class ContestSubmissionTest(TestCase):
     def setUp(self):
-        self.newPicture = PictureFactory()
-        self.newContest = ContestFactory()
+        self.picture = PictureFactory()
+        self.contest = ContestFactory()
 
     @pytest.mark.asyncio
-    async def test_create_one(self):
-        mutation = contest_submission_creation_mutation
-        newPicture = self.newPicture
-        newContest = self.newContest
-
-        newContestSubmission = {
-            "picture": newPicture.id,
-            "contest": newContest.id,
+    async def test_create(self):
+        contest_submission = {
+            "picture": self.picture.id,
+            "contest": self.contest.id,
         }
 
         result = await schema.execute(
-            mutation,
-            variable_values={"contestSubmission": newContestSubmission},
+            contest_submission_creation_mutation,
+            variable_values={"contestSubmission": contest_submission},
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
             result.data["create_contestSubmission"]["picture"]["user"]["email"],
-            newPicture.user.email,
+            self.picture.user.email,
         )
         self.assertEqual(
             result.data["create_contestSubmission"]["picture"]["id"],
-            newPicture.id,
+            self.picture.id,
         )
         self.assertEqual(
-            result.data["create_contestSubmission"]["contest"]["id"], newContest.id
+            result.data["create_contestSubmission"]["contest"]["id"], self.contest.id
         )
 
     def test_vote(self):
-        mutation = contest_submission_vote_mutation
-
-        newContestSubmission = ContestSubmissionFactory()
-        newUserVote = UserFactory()
+        contest_submission = ContestSubmissionFactory()
+        user_vote = UserFactory()
 
         result = schema.execute_sync(
-            mutation,
+            contest_submission_vote_mutation,
             variable_values={
-                "contestSubmission": newContestSubmission.id,
-                "user": str(newUserVote.id),
+                "contestSubmission": contest_submission.id,
+                "user": str(user_vote.id),
             },
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
             result.data["contest_submission_add_vote"]["votes"][0]["email"],
-            newUserVote.email,
+            user_vote.email,
         )
 
     def test_update(self):
-        mutation = contest_submission_update_mutation
+        contest = ContestFactory()
 
-        newContest = ContestFactory()
-
-        newUser = UserFactory()
-        originalPicture = PictureFactory(user=newUser, file="www.original.com")
+        user = UserFactory()
+        original_picture = PictureFactory(user=user, file="www.original.com")
         newContestSubmission = ContestSubmissionFactory(
-            contest=newContest, picture=originalPicture
+            contest=contest, picture=original_picture
         )
 
-        self.assertEqual(newContestSubmission.picture.file, originalPicture.file)
+        self.assertEqual(newContestSubmission.picture.file, original_picture.file)
 
-        newPicture = PictureFactory(user=newUser, file="www.test.com")
+        newPicture = PictureFactory(user=user, file="www.test.com")
 
-        updatedContestSubmission = {
+        updated_contest_submission = {
             "id": newContestSubmission.id,
             "picture": newPicture.id,
             "submission_date": str(timezone.now()),
         }
 
         result = schema.execute_sync(
-            mutation,
+            contest_submission_update_mutation,
             variable_values={
-                "contestSubmission": updatedContestSubmission,
+                "contestSubmission": updated_contest_submission,
             },
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
             result.data["update_contestSubmission"]["picture"]["id"],
-            updatedContestSubmission["picture"],
+            updated_contest_submission["picture"],
         )
         self.assertEqual(
             result.data["update_contestSubmission"]["submission_date"],
-            str(updatedContestSubmission["submission_date"]).replace(" ", "T"),
+            str(updated_contest_submission["submission_date"]).replace(" ", "T"),
         )

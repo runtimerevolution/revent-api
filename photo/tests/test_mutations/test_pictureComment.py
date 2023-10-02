@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from photo.schema import schema
 from photo.tests.factories import PictureCommentFactory, PictureFactory, UserFactory
-from .mutation_file import (
+from .graphql_mutations import (
     picture_comment_creation_mutation,
     picture_comment_update_mutation,
 )
@@ -11,60 +11,56 @@ from .mutation_file import (
 
 class PictureCommentTest(TestCase):
     def setUp(self):
-        self.newUser = UserFactory(user_profile_picture=True)
-        self.newPicture = PictureFactory()
+        self.user = UserFactory(user_profile_picture=True)
+        self.picture = PictureFactory()
 
     @pytest.mark.asyncio
-    async def test_create_one(self):
-        mutation = picture_comment_creation_mutation
-        newUser = self.newUser
-        newPicture = self.newPicture
-        newPictureComment = {
-            "user": str(newUser.id),
-            "picture": newPicture.id,
+    async def test_create(self):
+        picture_comment = {
+            "user": str(self.user.id),
+            "picture": self.picture.id,
             "text": "Random text",
         }
 
         result = await schema.execute(
-            mutation,
-            variable_values={"pictureComment": newPictureComment},
+            picture_comment_creation_mutation,
+            variable_values={"pictureComment": picture_comment},
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_pictureComment"]["user"]["id"], str(newUser.id)
+            result.data["create_pictureComment"]["user"]["id"], str(self.user.id)
         )
         self.assertEqual(
             result.data["create_pictureComment"]["picture"]["id"],
-            newPicture.id,
+            self.picture.id,
         )
         self.assertEqual(
-            result.data["create_pictureComment"]["text"], newPictureComment["text"]
+            result.data["create_pictureComment"]["text"], picture_comment["text"]
         )
 
     def test_update(self):
-        mutation = picture_comment_update_mutation
-
-        newPictureComment = PictureCommentFactory()
-        updatedPictureComment = {
-            "id": newPictureComment.id,
+        picture_comment = PictureCommentFactory()
+        updated_picture_comment = {
+            "id": picture_comment.id,
             "text": "test text",
         }
 
         result = schema.execute_sync(
-            mutation,
+            picture_comment_update_mutation,
             variable_values={
-                "pictureComment": updatedPictureComment,
+                "pictureComment": updated_picture_comment,
             },
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
             result.data["update_pictureComment"]["user"]["id"],
-            str(newPictureComment.user.id),
+            str(picture_comment.user.id),
         )
         self.assertEqual(
             result.data["update_pictureComment"]["picture"]["id"],
-            newPictureComment.picture.id,
+            picture_comment.picture.id,
         )
         self.assertEqual(
-            result.data["update_pictureComment"]["text"], updatedPictureComment["text"]
+            result.data["update_pictureComment"]["text"],
+            updated_picture_comment["text"],
         )

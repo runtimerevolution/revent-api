@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from photo.schema import schema
 from photo.tests.factories import CollectionFactory, PictureFactory, UserFactory
-from .mutation_file import (
+from .graphql_mutations import (
     collection_add_picture_mutation,
     collection_creation_mutation,
     collection_update_mutation,
@@ -12,69 +12,55 @@ from .mutation_file import (
 
 class CollectionTest(TestCase):
     def setUp(self):
-        self.newUser = UserFactory(user_profile_picture=True)
-        self.newPictures = PictureFactory.create_batch(10, user=self.newUser)
+        self.user = UserFactory(user_profile_picture=True)
+        self.pictures = PictureFactory.create_batch(10, user=self.user)
 
     @pytest.mark.asyncio
-    async def test_create_one(self):
-        mutation = collection_creation_mutation
-        newUser = self.newUser
-
-        newCollection = {
-            "user": str(newUser.id),
+    async def test_create(self):
+        collection = {
+            "user": str(self.user.id),
             "name": "Best collection",
-            "pictures": [picture.id for picture in self.newPictures],
+            "pictures": [picture.id for picture in self.pictures],
         }
 
         result = await schema.execute(
-            mutation,
-            variable_values={"collection": newCollection},
+            collection_creation_mutation,
+            variable_values={"collection": collection},
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_collection"]["user"]["id"], str(newUser.id)
+            result.data["create_collection"]["user"]["id"], str(self.user.id)
         )
         self.assertEqual(
-            len(result.data["create_collection"]["pictures"]), len(self.newPictures)
+            len(result.data["create_collection"]["pictures"]), len(self.pictures)
         )
         for picture in result.data["create_collection"]["pictures"]:
-            self.assertTrue(picture["id"] in newCollection["pictures"])
-        self.assertEqual(
-            result.data["create_collection"]["name"], newCollection["name"]
-        )
+            self.assertTrue(picture["id"] in collection["pictures"])
+        self.assertEqual(result.data["create_collection"]["name"], collection["name"])
 
     @pytest.mark.asyncio
     async def test_create_fail(self):
-        mutation = collection_creation_mutation
-        newUser = self.newUser
-
-        newCollection = {
-            "user": str(newUser.id),
+        collection = {
+            "user": str(self.user.id),
             "name": "Best collection",
-            "pictures": [picture.id for picture in self.newPictures],
-        }
-
-        newCollection2 = {
-            "user": str(newUser.id),
-            "name": "Best collection",
-            "pictures": [picture.id for picture in self.newPictures],
+            "pictures": [picture.id for picture in self.pictures],
         }
 
         result = await schema.execute(
-            mutation,
-            variable_values={"collection": newCollection},
+            collection_creation_mutation,
+            variable_values={"collection": collection},
         )
 
-        resultError = await schema.execute(
-            mutation,
-            variable_values={"collection": newCollection2},
+        result_error = await schema.execute(
+            collection_creation_mutation,
+            variable_values={"collection": collection},
         )
         self.assertEqual(result.errors, None)
-        self.assertEqual(resultError.errors, None)
-        self.assertFalse(resultError.data["create_collection"]["__typename"] is None)
+        self.assertEqual(result_error.errors, None)
+        self.assertFalse(result_error.data["create_collection"]["__typename"] is None)
         self.assertEqual(
-            resultError.data["create_collection"]["messages"][0],
+            result_error.data["create_collection"]["messages"][0],
             {
                 "field": None,
                 "kind": "VALIDATION",
@@ -83,52 +69,48 @@ class CollectionTest(TestCase):
         )
 
     def test_add_picture(self):
-        mutation = collection_add_picture_mutation
-
-        newCollection = CollectionFactory()
-        newPicture = PictureFactory(file="www.test.com")
+        collection = CollectionFactory()
+        picture = PictureFactory(file="www.test.com")
 
         result = schema.execute_sync(
-            mutation,
+            collection_add_picture_mutation,
             variable_values={
-                "collection": newCollection.id,
-                "picture": newPicture.id,
+                "collection": collection.id,
+                "picture": picture.id,
             },
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
             result.data["collection_add_picture"]["pictures"][0]["id"],
-            newPicture.id,
+            picture.id,
         )
 
     def test_update(self):
-        mutation = collection_update_mutation
+        user = UserFactory()
+        old_pictures = PictureFactory.create_batch(5, user=user)
+        collection = CollectionFactory(user=user, collection_pictures=old_pictures)
+        new_pictures = PictureFactory.create_batch(10, user=user)
 
-        newUser = UserFactory()
-        oldPictures = PictureFactory.create_batch(5, user=newUser)
-        newCollection = CollectionFactory(user=newUser, collection_pictures=oldPictures)
-        newPictures = PictureFactory.create_batch(10, user=newUser)
-
-        pictures = [picture.id for picture in newPictures]
-        updatedCollection = {
-            "id": newCollection.id,
+        pictures = [picture.id for picture in new_pictures]
+        update_collection = {
+            "id": collection.id,
             "name": "test name",
             "pictures": pictures,
         }
 
         result = schema.execute_sync(
-            mutation,
+            collection_update_mutation,
             variable_values={
-                "collection": updatedCollection,
+                "collection": update_collection,
             },
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["update_collection"]["name"], updatedCollection["name"]
+            result.data["update_collection"]["name"], update_collection["name"]
         )
         self.assertEqual(
-            len(result.data["update_collection"]["pictures"]), len(newPictures)
+            len(result.data["update_collection"]["pictures"]), len(new_pictures)
         )
         for picture in result.data["update_collection"]["pictures"]:
             self.assertTrue(picture["id"] in pictures)

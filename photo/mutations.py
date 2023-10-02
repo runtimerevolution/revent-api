@@ -95,8 +95,9 @@ class Mutation:
         self, contestSubmission: int, user: str
     ) -> ContestSubmissionType:
         contestSubmission = ContestSubmission.objects.get(id=contestSubmission)
-        contestSubmission.votes.add(user)
-        contestSubmission.save()
+        if user not in contestSubmission.votes.all():
+            contestSubmission.votes.add(user)
+            contestSubmission.save()
 
         return contestSubmission
 

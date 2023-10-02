@@ -1,6 +1,8 @@
+import factory
 import pytest
 from django.test import TestCase
 from django.utils import timezone
+import pytz
 
 from photo.schema import schema
 from photo.tests.factories import (
@@ -98,3 +100,46 @@ class ContestSubmissionTest(TestCase):
             result.data["update_contestSubmission"]["submission_date"],
             str(updated_contest_submission["submission_date"]).replace(" ", "T"),
         )
+
+    def test_repeat_vote(self):
+        contest_submission = ContestSubmissionFactory()
+        user_vote = UserFactory()
+
+        result = schema.execute_sync(
+            contest_submission_vote_mutation,
+            variable_values={
+                "contestSubmission": contest_submission.id,
+                "user": str(user_vote.id),
+            },
+        )
+
+        result_error = schema.execute_sync(
+            contest_submission_vote_mutation,
+            variable_values={
+                "contestSubmission": contest_submission.id,
+                "user": str(user_vote.id),
+            },
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["contest_submission_add_vote"]["votes"][0]["email"],
+            user_vote.email,
+        )
+        self.assertEqual(result_error.errors, None)
+        self.assertEqual(len(contest_submission.votes.all()), 1)
+
+    def test_outdate_submission(self):
+        contest = ContestFactory(
+            upload_phase_end=factory.Faker("date_time", tzinfo=pytz.UTC)
+        )
+        contest_submission = ContestSubmissionFactory(contest=contest)
+        user_vote = UserFactory()
+        result = schema.execute_sync(
+            contest_submission_vote_mutation,
+            variable_values={
+                "contestSubmission": contest_submission.id,
+                "user": str(user_vote.id),
+            },
+        )
+        self.assertEqual(result.errors, None)

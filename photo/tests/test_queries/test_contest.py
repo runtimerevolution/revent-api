@@ -6,7 +6,7 @@ from django.utils import timezone
 from photo.models import Contest
 from photo.schema import schema
 from photo.tests.factories import ContestFactory, UserFactory
-from photo.tests.test_queries.query_file import (
+from photo.tests.test_queries.graphql_queries import (
     contest_query_all,
     contest_query_creator,
     contest_query_one,

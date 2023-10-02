@@ -3,7 +3,7 @@ from django.test import TestCase
 from photo.models import User
 from photo.schema import schema
 from photo.tests.factories import UserFactory
-from photo.tests.test_queries.query_file import (
+from photo.tests.test_queries.graphql_queries import (
     user_query_all,
     user_query_email,
     user_query_one,

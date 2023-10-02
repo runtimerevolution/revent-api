@@ -3,7 +3,7 @@ from django.test import TestCase
 from photo.models import PictureComment
 from photo.schema import schema
 from photo.tests.factories import PictureCommentFactory, PictureFactory, UserFactory
-from photo.tests.test_queries.query_file import (
+from photo.tests.test_queries.graphql_queries import (
     picture_comment_query_all,
     picture_comment_query_one,
     picture_comment_query_picture,

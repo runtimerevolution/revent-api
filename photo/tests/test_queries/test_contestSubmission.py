@@ -8,7 +8,7 @@ from photo.tests.factories import (
     PictureFactory,
     UserFactory,
 )
-from photo.tests.test_queries.query_file import (
+from photo.tests.test_queries.graphql_queries import (
     contest_submission_query_all,
     contest_submission_query_contest,
     contest_submission_query_one,

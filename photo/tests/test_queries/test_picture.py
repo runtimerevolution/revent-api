@@ -3,7 +3,10 @@ from django.test import TestCase
 from photo.models import Picture
 from photo.schema import schema
 from photo.tests.factories import PictureFactory, UserFactory
-from photo.tests.test_queries.query_file import picture_query_all, picture_query_one
+from photo.tests.test_queries.graphql_queries import (
+    picture_query_all,
+    picture_query_one,
+)
 
 
 class PictureTest(TestCase):

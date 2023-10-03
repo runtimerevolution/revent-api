@@ -131,7 +131,7 @@ class ContestSubmission(models.Model):
             raise ValidationError("Each user can only submit one picture per contest")
 
         if user_vote.exists() and self._state.adding:
-            raise ValidationError("Each user can only vote once per contest")
+            raise ValidationError("Each user can only vote once per submission")
 
     def save(self, *args, **kwargs):
         if self.contest.upload_phase_end is not None and (

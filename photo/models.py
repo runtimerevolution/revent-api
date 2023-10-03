@@ -123,17 +123,18 @@ class ContestSubmission(models.Model):
             contest=self.contest, picture__user=self.picture.user
         )
 
+        if qs.exists() and self._state.adding:
+            raise ValidationError("Each user can only submit one picture per contest")
+
+    def validate_vote(self):
         user_vote = ContestSubmission.objects.filter(
             contest=self.contest, votes=self.picture.user
         )
 
-        if qs.exists() and self._state.adding:
-            raise ValidationError("Each user can only submit one picture per contest")
-
         if user_vote.exists() and self._state.adding:
             raise ValidationError("Each user can only vote once per submission")
 
-    def save(self, *args, **kwargs):
+    def validate_submission_date(self):
         if self.contest.upload_phase_end is not None and (
             not (
                 self.contest.upload_phase_start
@@ -144,5 +145,9 @@ class ContestSubmission(models.Model):
             raise ValidationError(
                 "Submissions can only me made when the contest is open"
             )
+
+    def save(self, *args, **kwargs):
         self.validate_unique()
+        self.validate_vote()
+        self.validate_submission_date()
         super(ContestSubmission, self).save(*args, **kwargs)

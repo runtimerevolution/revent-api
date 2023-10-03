@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "photo",
     "storages",
-    "django_filters",
 ]
 
 MIDDLEWARE = [

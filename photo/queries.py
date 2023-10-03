@@ -6,7 +6,14 @@ import strawberry_django
 from django.contrib.postgres.search import SearchVector
 
 from photo.filters import PictureFilter
-from photo.models import Collection, Contest, ContestSubmission, PictureComment, User
+from photo.models import (
+    Collection,
+    Contest,
+    ContestSubmission,
+    Picture,
+    PictureComment,
+    User,
+)
 from photo.types import (
     CollectionType,
     ContestSubmissionType,
@@ -27,7 +34,7 @@ class Query:
     def pictures(
         self, filters: Optional[PictureFilter] = strawberry.UNSET
     ) -> List[PictureType]:
-        queryset = User.objects.all()
+        queryset = Picture.objects.all()
         queryset = strawberry_django.filters.apply(filters, queryset)
         return queryset.order_by("pk").values_list("pk", flat=True)
 

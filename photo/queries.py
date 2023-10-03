@@ -1,18 +1,13 @@
 import uuid
-from typing import List
+from typing import List, Optional
 
 import strawberry
+import strawberry_django
 from django.contrib.postgres.search import SearchVector
 
-from .models import (
-    Collection,
-    Contest,
-    ContestSubmission,
-    Picture,
-    PictureComment,
-    User,
-)
-from .types import (
+from photo.filters import PictureFilter
+from photo.models import Collection, Contest, ContestSubmission, PictureComment, User
+from photo.types import (
     CollectionType,
     ContestSubmissionType,
     ContestType,
@@ -25,18 +20,16 @@ from .types import (
 @strawberry.type
 class Query:
     @strawberry.field
-    def users(self, user: uuid.UUID = None, email: str = None) -> List[UserType]:
-        if user:
-            return User.objects.filter(id=user)
-        if email:
-            return User.objects.filter(email=email)
-        return User.objects.all()
+    def users(self, user: uuid.UUID = None) -> List[UserType]:
+        return User.objects.filter(id=user)
 
     @strawberry.field
-    def pictures(self, picture: int = None) -> List[PictureType]:
-        if picture:
-            return Picture.objects.filter(id=picture)
-        return Picture.objects.all()
+    def pictures(
+        self, filters: Optional[PictureFilter] = strawberry.UNSET
+    ) -> List[PictureType]:
+        queryset = User.objects.all()
+        queryset = strawberry_django.filters.apply(filters, queryset)
+        return queryset.order_by("pk").values_list("pk", flat=True)
 
     @strawberry.field
     def picture_comments(

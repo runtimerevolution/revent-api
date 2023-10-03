@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 import factory
 import pytest
 from django.test import TestCase
@@ -133,13 +134,10 @@ class ContestSubmissionTest(TestCase):
         contest = ContestFactory(
             upload_phase_end=factory.Faker("date_time", tzinfo=pytz.UTC)
         )
-        contest_submission = ContestSubmissionFactory(contest=contest)
-        user_vote = UserFactory()
-        result = schema.execute_sync(
-            contest_submission_vote_mutation,
-            variable_values={
-                "contestSubmission": contest_submission.id,
-                "user": str(user_vote.id),
-            },
+        with self.assertRaises(ValidationError) as cm:
+            ContestSubmissionFactory(contest=contest)
+
+        exception = cm.exception
+        self.assertIn(
+            "Submissions can only me made when the contest is open", exception.messages
         )
-        self.assertEqual(result.errors, None)

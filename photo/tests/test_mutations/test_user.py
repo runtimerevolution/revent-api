@@ -50,7 +50,7 @@ class UserTest(TestCase):
         )
 
         result_error = await schema.execute(
-            mutation,
+            user_creation_mutation,
             variable_values={"user": user_two},
         )
 

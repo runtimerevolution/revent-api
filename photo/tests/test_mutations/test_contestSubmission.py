@@ -134,10 +134,10 @@ class ContestSubmissionTest(TestCase):
         contest = ContestFactory(
             upload_phase_end=factory.Faker("date_time", tzinfo=pytz.UTC)
         )
-        with self.assertRaises(ValidationError) as cm:
+        with self.assertRaises(ValidationError) as e:
             ContestSubmissionFactory(contest=contest)
 
-        exception = cm.exception
+        exception = e.exception
         self.assertIn(
             "Submissions can only me made when the contest is open", exception.messages
         )

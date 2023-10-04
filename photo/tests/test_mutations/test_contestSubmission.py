@@ -4,6 +4,7 @@ import pytest
 from django.test import TestCase
 from django.utils import timezone
 import pytz
+from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE
 
 from photo.schema import schema
 from photo.tests.factories import (
@@ -138,6 +139,4 @@ class ContestSubmissionTest(TestCase):
             ContestSubmissionFactory(contest=contest)
 
         exception = e.exception
-        self.assertIn(
-            "Submissions can only me made when the contest is open", exception.messages
-        )
+        self.assertIn(OUTDATED_SUBMISSION_ERROR_MESSAGE, exception.messages)

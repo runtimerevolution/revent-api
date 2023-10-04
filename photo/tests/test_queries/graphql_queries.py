@@ -15,9 +15,10 @@ collections_query_all = """
                             }
                         """
 
-collections_query_one = """
-                    query TestQuery($id: Int!) {
-                        collections(id: $id) {
+
+collections_query_filter = """
+                    query TestQuery($filters: CollectionFilter!) {
+                        collections(filters: $filters) {
                             id
                             name
                             user {
@@ -30,50 +31,6 @@ collections_query_one = """
                     }
                 """
 
-collections_query_user_name = """
-                    query TestQuery($user: UUID!, $name: String!) {
-                        collections(user: $user, name: $name) {
-                            id
-                            name
-                            user {
-                                id
-                            }
-                            pictures {
-                                id
-                            }
-                        }
-                    }
-                """
-
-collections_query_user = """
-                    query TestQuery($user: UUID!) {
-                        collections(user: $user) {
-                            id
-                            name
-                            user {
-                                id
-                            }
-                            pictures {
-                                id
-                            }
-                        }
-                    }
-                """
-
-collections_query_name = """
-                    query TestQuery($name: String!) {
-                        collections(name: $name) {
-                            id
-                            name
-                            user {
-                                id
-                            }
-                            pictures {
-                                id
-                            }
-                        }
-                    }
-                """
 
 contest_query_all = """
                     query TestQuery {
@@ -100,34 +57,10 @@ contest_query_all = """
                     }
                 """
 
-contest_query_one = """
-                    query TestQuery($id: Int!) {
-                        contests(id: $id) {
-                            id
-                            title
-                            description
-                            created_by {
-                                id
-                            }
-                            cover_picture {
-                                id
-                            }
-                            prize
-                            automated_dates
-                            upload_phase_start
-                            upload_phase_end
-                            voting_phase_end
-                            winners {
-                                id
-                            }
-                            status
-                        }
-                    }
-                """
 
-contest_query_creator = """
-                    query TestQuery($user: UUID!) {
-                        contests(user: $user) {
+contest_query_filters = """
+                    query TestQuery($filters: ContestFilter!) {
+                        contests(filters: $filters) {
                             id
                             title
                             description
@@ -182,51 +115,10 @@ contest_submission_query_all = """
                     }
                 """
 
-contest_submission_query_one = """
-                    query TestQuery($id: Int!) {
-                        contest_submissions(id: $id) {
-                            id
-                            contest {
-                                id
-                            }
-                            picture {
-                                id
-                                user {
-                                    id
-                                }
-                            }
-                            submission_date
-                            votes {
-                                email
-                            }
-                        }
-                    }
-                """
 
-contest_submission_query_user = """
-                    query TestQuery($user: UUID!) {
-                        contest_submissions(user: $user) {
-                            id
-                            contest {
-                                id
-                            }
-                            picture {
-                                id
-                                user {
-                                    id
-                                }
-                            }
-                            submission_date
-                            votes {
-                                email
-                            }
-                        }
-                    }
-                """
-
-contest_submission_query_contest = """
-                    query TestQuery($contest: Int!) {
-                        contest_submissions(contest: $contest) {
+contest_submission_query_filters = """
+                    query TestQuery($filters: ContestSubmissionFilter!) {
+                        contest_submissions(filters: $filters) {
                             id
                             contest {
                                 id
@@ -250,7 +142,7 @@ picture_query_all = """
                         pictures {
                             id
                             user {
-                                email
+                                id
                             }
                             file
                             likes {
@@ -260,12 +152,12 @@ picture_query_all = """
                     }
                 """
 
-picture_query_one = """
-                    query TestQuery($picture: Int!) {
-                        pictures(picture: $picture) {
+picture_query_filters = """
+                    query TestQuery($filters: PictureFilter!) {
+                        pictures(filters: $filters) {
                             id
                             user {
-                                email
+                                id
                             }
                             file
                             likes {
@@ -291,12 +183,12 @@ picture_comment_query_all = """
                     }
                 """
 
-picture_comment_query_one = """
-                    query TestQuery($id: Int!) {
-                        picture_comments(id: $id) {
+picture_comment_query_filters = """
+                    query TestQuery($filters: PictureCommentFilter!) {
+                        picture_comments(filters: $filters) {
                             id
                             user {
-                                email
+                                id
                             }
                             picture {
                                 id
@@ -307,66 +199,11 @@ picture_comment_query_one = """
                     }
                 """
 
-picture_comment_query_user = """
-                    query TestQuery($user: UUID!) {
-                        picture_comments(user: $user) {
-                            id
-                            user {
-                                email
-                            }
-                            picture {
-                                id
-                            }
-                            text
-                            created_at
-                        }
-                    }
-                """
-
-picture_comment_query_picture = """
-                    query TestQuery($picture_id: Int!) {
-                        picture_comments(picture_id: $picture_id) {
-                            id
-                            user {
-                                email
-                            }
-                            picture {
-                                id
-                            }
-                            text
-                            created_at
-                        }
-                    }
-                """
-
-user_query_all = """
-                    query TestQuery {
-                        users {
-                            id
-                            email
-                            name_first
-                            name_last
-                            profile_picture {
-                                id
-                            }
-                            profile_picture_updated_at
-                            user_handle
-                        }
-                    }
-                """
 
 user_query_one = """
                     query TestQuery($user: UUID!) {
                         users(user: $user) {
                             email
-                        }
-                    }
-                """
-
-user_query_email = """
-                    query TestQuery($email: String!) {
-                        users(email: $email) {
-                            id
                         }
                     }
                 """

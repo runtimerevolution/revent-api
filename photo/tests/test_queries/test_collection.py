@@ -5,10 +5,7 @@ from photo.schema import schema
 from photo.tests.factories import CollectionFactory, PictureFactory, UserFactory
 from photo.tests.test_queries.graphql_queries import (
     collections_query_all,
-    collections_query_name,
-    collections_query_one,
-    collections_query_user,
-    collections_query_user_name,
+    collections_query_filter,
 )
 
 
@@ -22,10 +19,8 @@ class CollectionTest(TestCase):
         )
 
     def test_query_all(self):
-        query = collections_query_all
-
         result = schema.execute_sync(
-            query,
+            collections_query_all,
             variable_values={},
         )
 
@@ -49,12 +44,10 @@ class CollectionTest(TestCase):
         pictures = PictureFactory.create_batch(3, user=user)
         collection = CollectionFactory.create(collection_pictures=pictures)
 
-        query = collections_query_one
-
         result = schema.execute_sync(
-            query,
+            collections_query_filter,
             variable_values={
-                "id": collection.id,
+                "filters": {"id": collection.id},
             },
         )
 
@@ -71,13 +64,13 @@ class CollectionTest(TestCase):
         pictures = PictureFactory.create_batch(3, user=user)
         collection = CollectionFactory.create(collection_pictures=pictures)
 
-        query = collections_query_user_name
-
         result = schema.execute_sync(
-            query,
+            collections_query_filter,
             variable_values={
-                "user": str(collection.user.id),
-                "name": collection.name,
+                "filters": {
+                    "user": {"id": str(collection.user.id)},
+                    "name": collection.name,
+                }
             },
         )
 
@@ -94,11 +87,9 @@ class CollectionTest(TestCase):
         pictures = PictureFactory.create_batch(3, user=user)
         collection = CollectionFactory.create(collection_pictures=pictures)
 
-        query = collections_query_name
-
         result = schema.execute_sync(
-            query,
-            variable_values={"name": str(collection.name)},
+            collections_query_filter,
+            variable_values={"filters": {"name": str(collection.name)}},
         )
 
         self.assertEqual(result.errors, None)
@@ -113,11 +104,9 @@ class CollectionTest(TestCase):
         user = UserFactory(user_profile_picture=True)
         collections = CollectionFactory.create_batch(3, user=user)
 
-        query = collections_query_user
-
         result = schema.execute_sync(
-            query,
-            variable_values={"user": str(user.id)},
+            collections_query_filter,
+            variable_values={"filters": {"user": {"id": str(user.id)}}},
         )
 
         self.assertEqual(result.errors, None)

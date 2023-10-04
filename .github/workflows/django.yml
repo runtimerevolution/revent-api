@@ -85,7 +85,7 @@ jobs:
 
       - name: Run Tests
         env:
-          DJANGO_SETTINGS_MODULE: revent.settings
+          DJANGO_SETTINGS_MODULE: config.settings
           AWS_S3_ENDPOINT_URL: http://localhost.localstack.cloud:4566/
           AWS_DEFAULT_REGION: us-west-1
           AWS_STORAGE_BUCKET_NAME: revent-media

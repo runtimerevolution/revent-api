@@ -10,15 +10,15 @@ from photo.tests.factories import CollectionFactory, PictureFactory, UserFactory
 class CollectionTest(TransactionTestCase):
     def setUp(self):
         self.batch = random.randint(0, 10)
-        self.newUser = UserFactory.create(user_profile_picture=True)
-        self.newPictures = PictureFactory.create_batch(self.batch, user=self.newUser)
-        self.newCollection = CollectionFactory(
-            collection_pictures=self.newPictures, user=self.newUser
+        self.user = UserFactory.create(user_profile_picture=True)
+        self.pictures = PictureFactory.create_batch(self.batch, user=self.user)
+        self.collection = CollectionFactory(
+            collection_pictures=self.pictures, user=self.user
         )
 
     def test_factory(self):
         self.assertEqual(Collection.objects.count(), 1)
-        self.assertEqual(Collection.objects.first(), self.newCollection)
+        self.assertEqual(Collection.objects.first(), self.collection)
         self.assertEqual(Picture.objects.count(), self.batch)
         self.assertEqual(User.objects.count(), 1)
 
@@ -30,6 +30,4 @@ class CollectionTest(TransactionTestCase):
 
     def test_factory_pk(self):
         with self.assertRaises(IntegrityError):
-            CollectionFactory(
-                user=self.newCollection.user, name=self.newCollection.name
-            )
+            CollectionFactory(user=self.collection.user, name=self.collection.name)

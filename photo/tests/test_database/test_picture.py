@@ -13,24 +13,20 @@ from photo.tests.factories import PictureFactory, UserFactory
 
 class PictureTest(TransactionTestCase):
     def setUp(self):
-        self.newUser = UserFactory.create()
-        self.likesbatch = random.randint(0, 5)
-        self.likeUsers = UserFactory.create_batch(self.likesbatch)
-        self.newPicture = PictureFactory.create(
-            user_likes=self.likeUsers, user=self.newUser
-        )
+        self.user = UserFactory.create()
+        self.likes_batch = random.randint(0, 5)
+        self.like_users = UserFactory.create_batch(self.likes_batch)
+        self.picture = PictureFactory.create(user_likes=self.like_users, user=self.user)
 
     def test_factory(self):
         # One picture is created by the factory and another is created by the User subFactory
         self.assertEqual(Picture.objects.count(), (1 + User.objects.count()))
         self.assertEqual(
-            Picture.objects.filter(file=self.newPicture.file).first(),
-            self.newPicture,
+            Picture.objects.filter(file=self.picture.file).first(),
+            self.picture,
         )
-        self.assertEqual(
-            User.objects.count(), (1 + self.newPicture.likes.all().count())
-        )
-        for like in self.newPicture.likes.all():
+        self.assertEqual(User.objects.count(), (1 + self.picture.likes.all().count()))
+        for like in self.picture.likes.all():
             self.assertTrue(User.objects.filter(email=like.email).exists())
 
 

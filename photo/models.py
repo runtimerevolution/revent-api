@@ -104,6 +104,10 @@ class Contest(models.Model):
         ):
             raise ValidationError(VALID_USER_ERROR_MESSAGE)
 
+    def close_contest(self):
+        self.voting_phase_end = timezone.now()
+        return self
+
     def save(self, *args, **kwargs):
         if self._state.adding:
             self.validate_user()
@@ -153,3 +157,9 @@ class ContestSubmission(models.Model):
         self.validate_vote()
         self.validate_submission_date()
         super(ContestSubmission, self).save(*args, **kwargs)
+
+    def add_vote(self, user):
+        if user not in self.votes.all():
+            self.votes.add(user)
+            self.save()
+        return self

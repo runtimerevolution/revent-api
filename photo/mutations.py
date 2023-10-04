@@ -5,6 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
+from photo.fixtures import NO_CONTEST_FOUND, NO_SUBMISSION_FOUND
 
 from photo.models import User
 
@@ -29,6 +30,7 @@ from .types import (
     ContestType,
     PictureCommentType,
     PictureType,
+    RessourceNotFound,
     UserType,
 )
 
@@ -94,18 +96,14 @@ class Mutation:
     def contest_submission_add_vote(
         self, contestSubmission: int, user: str
     ) -> ContestSubmissionType:
-        contestSubmission = ContestSubmission.objects.get(id=contestSubmission)
-        if user not in contestSubmission.votes.all():
-            contestSubmission.votes.add(user)
-            contestSubmission.save()
+        if submission := ContestSubmission.objects.filter(id=contestSubmission):
+            return submission.add_vote(user)
 
-        return contestSubmission
+        return RessourceNotFound(message=NO_SUBMISSION_FOUND)
 
     @strawberry.mutation
     def contest_close(self, contest: int) -> ContestType:
-        contest = Contest.objects.get(id=contest)
-        contest.voting_phase_end = timezone.now()
-        contest.status = "closed"
-        contest.save()
+        if contest := Contest.objects.filter(id=contest):
+            return contest.close_contest()
 
-        return contest
+        return RessourceNotFound(message=NO_CONTEST_FOUND)

@@ -88,3 +88,8 @@ class ContestSubmissionType:
     picture: "PictureType"
     submission_date: strawberry.auto
     votes: List[UserType]
+
+
+@strawberry.type
+class RessourceNotFound:
+    message: str

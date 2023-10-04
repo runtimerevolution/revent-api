@@ -55,7 +55,6 @@ class ContestTest(TestCase):
                 "contest": contest.id,
             },
         )
-
         self.assertEqual(result.errors, None)
 
     def test_update(self):

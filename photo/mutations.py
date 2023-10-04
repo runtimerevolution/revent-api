@@ -96,14 +96,14 @@ class Mutation:
     def contest_submission_add_vote(
         self, contestSubmission: int, user: str
     ) -> ContestSubmissionType:
-        if submission := ContestSubmission.objects.filter(id=contestSubmission):
+        if submission := ContestSubmission.objects.filter(id=contestSubmission).first():
             return submission.add_vote(user)
 
         return RessourceNotFound(message=NO_SUBMISSION_FOUND)
 
     @strawberry.mutation
     def contest_close(self, contest: int) -> ContestType:
-        if contest := Contest.objects.filter(id=contest):
+        if contest := Contest.objects.filter(id=contest).first():
             return contest.close_contest()
 
         return RessourceNotFound(message=NO_CONTEST_FOUND)

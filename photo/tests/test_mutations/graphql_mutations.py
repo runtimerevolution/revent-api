@@ -239,9 +239,13 @@ contest_update_mutation = """
 contest_close_mutation = """
                     mutation TestMutation($contest: Int!) {
                         contest_close(contest: $contest) {
-                            ... on ContestType {
-                              id
-                              voting_phase_end
+                            ... on CloseContestMutationResponse {
+                              success
+                              results{
+                                id
+                                voting_phase_end
+                              }
+                              error
                             }
                         }
                     }
@@ -292,11 +296,15 @@ contest_submission_update_mutation = """
 contest_submission_vote_mutation = """
                     mutation TestMutation($contestSubmission: Int!, $user: String!) {
                         contest_submission_add_vote(contestSubmission: $contestSubmission, user: $user) {
-                            ... on ContestSubmissionType {
-                              id
-                              votes {
-                                email
+                            ... on AddVoteMutationResponse {
+                              success
+                              results{
+                                id
+                                votes {
+                                  email
+                                }
                               }
+                              error
                             }
                         }
                     }

@@ -53,7 +53,6 @@ class ContestSubmissionTest(TestCase):
     def test_vote(self):
         contest_submission = ContestSubmissionFactory()
         user_vote = UserFactory()
-
         result = schema.execute_sync(
             contest_submission_vote_mutation,
             variable_values={
@@ -63,7 +62,7 @@ class ContestSubmissionTest(TestCase):
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["contest_submission_add_vote"]["votes"][0]["email"],
+            result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
             user_vote.email,
         )
 
@@ -122,10 +121,9 @@ class ContestSubmissionTest(TestCase):
                 "user": str(user_vote.id),
             },
         )
-
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["contest_submission_add_vote"]["votes"][0]["email"],
+            result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
             user_vote.email,
         )
         self.assertEqual(result_error.errors, None)

@@ -25,12 +25,13 @@ from .inputs import (
 )
 from .models import Collection, Contest, ContestSubmission, Picture
 from .types import (
+    AddVoteMutationResponse,
+    CloseContestMutationResponse,
     CollectionType,
     ContestSubmissionType,
     ContestType,
     PictureCommentType,
     PictureType,
-    RessourceNotFound,
     UserType,
 )
 
@@ -95,15 +96,20 @@ class Mutation:
     @strawberry.mutation
     def contest_submission_add_vote(
         self, contestSubmission: int, user: str
-    ) -> ContestSubmissionType:
+    ) -> AddVoteMutationResponse:
         if submission := ContestSubmission.objects.filter(id=contestSubmission).first():
-            return submission.add_vote(user)
+            return AddVoteMutationResponse(
+                success=True, results=submission.add_vote(user), error=""
+            )
 
-        return RessourceNotFound(message=NO_SUBMISSION_FOUND)
+        return AddVoteMutationResponse(error=NO_SUBMISSION_FOUND)
 
     @strawberry.mutation
-    def contest_close(self, contest: int) -> ContestType:
+    def contest_close(self, contest: int) -> CloseContestMutationResponse:
         if contest := Contest.objects.filter(id=contest).first():
-            return contest.close_contest()
+            results = contest.close_contest()
+            return CloseContestMutationResponse(success=True, results=results, error="")
 
-        return RessourceNotFound(message=NO_CONTEST_FOUND)
+        return CloseContestMutationResponse(
+            success=False, results={}, error=NO_CONTEST_FOUND
+        )

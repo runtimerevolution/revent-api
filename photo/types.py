@@ -91,5 +91,14 @@ class ContestSubmissionType:
 
 
 @strawberry.type
-class RessourceNotFound:
-    message: str
+class AddVoteMutationResponse:
+    success: bool
+    results: ContestSubmissionType
+    error: str
+
+
+@strawberry.type
+class CloseContestMutationResponse:
+    success: bool
+    results: ContestType
+    error: str

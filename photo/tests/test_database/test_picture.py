@@ -45,7 +45,7 @@ class PictureUploadTest(TestCase):
         user = UserFactory()
         picture = Picture.objects.create(user=user, file=self.image_file)
 
-        self.assertEqual(picture.file.name, f"pictures/{user.email}/test_image.jpg")
+        self.assertEqual(picture.file.name, f"pictures/{user.id}/test_image.jpg")
 
         s3_object = self.client.get_object(
             bucket=settings.AWS_STORAGE_BUCKET_NAME, key=picture.file.name

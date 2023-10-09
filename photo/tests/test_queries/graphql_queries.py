@@ -58,7 +58,7 @@ contest_query_all = """
                 """
 
 
-contest_query_filters = """
+contest_query_filter_by = """
                     query TestQuery($filters: ContestFilter!) {
                         contests(filters: $filters) {
                             id
@@ -134,7 +134,7 @@ contest_submission_query_all = """
                 """
 
 
-contest_submission_query_filters = """
+contest_submission_query_filter_by = """
                     query TestQuery($filters: ContestSubmissionFilter!) {
                         contest_submissions(filters: $filters) {
                             id
@@ -170,7 +170,7 @@ picture_query_all = """
                     }
                 """
 
-picture_query_filters = """
+picture_query_filter_by = """
                     query TestQuery($filters: PictureFilter!) {
                         pictures(filters: $filters) {
                             id
@@ -201,7 +201,7 @@ picture_comment_query_all = """
                     }
                 """
 
-picture_comment_query_filters = """
+picture_comment_query_filter_by = """
                     query TestQuery($filters: PictureCommentFilter!) {
                         picture_comments(filters: $filters) {
                             id

@@ -10,7 +10,7 @@ class UserTest(TestCase):
         self.batch_size = 10
         self.new_users = UserFactory.create_batch(self.batch_size)
 
-    def test_query_one(self):
+    def test_query_by_id(self):
         user = UserFactory.create()
         query = user_query_one
 

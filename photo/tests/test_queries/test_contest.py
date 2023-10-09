@@ -8,7 +8,7 @@ from photo.schema import schema
 from photo.tests.factories import ContestFactory, UserFactory
 from photo.tests.test_queries.graphql_queries import (
     contest_query_all,
-    contest_query_filters,
+    contest_query_filter_by,
     contest_query_search,
     contest_query_status,
     contest_query_time,
@@ -20,7 +20,7 @@ class ContestTest(TestCase):
         self.batch_size = 10
         self.contests = ContestFactory.create_batch(self.batch_size)
 
-    def test_query_all(self):
+    def test_query_success(self):
         result = schema.execute_sync(
             contest_query_all,
             variable_values={},
@@ -39,11 +39,11 @@ class ContestTest(TestCase):
             ),
         )
 
-    def test_query_one(self):
+    def test_query_filter_by_id(self):
         contest = ContestFactory.create()
 
         result = schema.execute_sync(
-            contest_query_filters,
+            contest_query_filter_by,
             variable_values={"filters": {"id": contest.id}},
         )
 
@@ -51,12 +51,12 @@ class ContestTest(TestCase):
         self.assertEqual(len(result.data["contests"]), 1)
         self.assertEqual(result.data["contests"][0]["id"], contest.id)
 
-    def test_query_by_creator(self):
+    def test_query_filter_by_creator(self):
         user = UserFactory()
         contests = ContestFactory.create_batch(3, created_by=user)
 
         result = schema.execute_sync(
-            contest_query_filters,
+            contest_query_filter_by,
             variable_values={"filters": {"created_by": {"id": str(user.id)}}},
         )
 
@@ -100,7 +100,7 @@ class ContestTest(TestCase):
         }
 
         result = schema.execute_sync(
-            contest_query_filters,
+            contest_query_filter_by,
             variable_values={"filters": {"created_by": {"id": str(user.id)}}},
         )
 
@@ -110,7 +110,7 @@ class ContestTest(TestCase):
 
 
 class ContestFilterTest(TestCase):
-    def test_query_filter_search(self):
+    def test_query_filter_by_search(self):
         test_text = "This is a text with a weird word 1234Test1234."
 
         contest_title = ContestFactory(
@@ -138,7 +138,7 @@ class ContestFilterTest(TestCase):
         for contest in result.data["contests"]:
             self.assertTrue(contest["id"] in contest_IDs)
 
-    def test_query_filter_time(self):
+    def test_query_filter_by_time(self):
         time = timezone.now().replace(year=2020, month=4)
 
         ContestFactory(
@@ -192,7 +192,7 @@ class ContestFilterTest(TestCase):
         self.assertEqual(len(result_month.data["contests"]), 1)
         self.assertEqual(len(result_year.data["contests"]), 2)
 
-    def test_query_filter_status(self):
+    def test_query_filter_by_status(self):
         time = timezone.now()
 
         contest_voting = ContestFactory(
@@ -210,3 +210,14 @@ class ContestFilterTest(TestCase):
         self.assertEqual(len(result.data["contests"]), 1)
         self.assertEqual(result.data["contests"][0]["id"], contest_voting.id)
         self.assertEqual(result.data["contests"][0]["status"], "voting")
+
+
+class ContestTestWithoutData(TestCase):
+    def test_query_without_data(self):
+        result = schema.execute_sync(
+            contest_query_all,
+            variable_values={},
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(len(result.data["contests"]), 0)

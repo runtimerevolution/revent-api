@@ -18,7 +18,7 @@ class CollectionTest(TestCase):
             self.batch_size, collection_pictures=self.pictures
         )
 
-    def test_query_all(self):
+    def test_query_success(self):
         result = schema.execute_sync(
             collections_query_all,
             variable_values={},
@@ -41,7 +41,7 @@ class CollectionTest(TestCase):
             ),
         )
 
-    def test_query_one(self):
+    def test_query_filter_by_id(self):
         user = UserFactory(user_profile_picture=True)
         pictures = PictureFactory.create_batch(3, user=user)
         collection = CollectionFactory.create(collection_pictures=pictures)
@@ -61,7 +61,7 @@ class CollectionTest(TestCase):
         )
         self.assertEqual(len(result.data["collections"][0]["pictures"]), len(pictures))
 
-    def test_query_user_name(self):
+    def test_query_filter_by_user_name(self):
         user = UserFactory(user_profile_picture=True)
         pictures = PictureFactory.create_batch(3, user=user)
         collection = CollectionFactory.create(collection_pictures=pictures)
@@ -84,7 +84,7 @@ class CollectionTest(TestCase):
         )
         self.assertEqual(len(result.data["collections"][0]["pictures"]), len(pictures))
 
-    def test_query_by_name(self):
+    def test_query_filter_by_name(self):
         user = UserFactory(user_profile_picture=True)
         pictures = PictureFactory.create_batch(3, user=user)
         collection = CollectionFactory.create(collection_pictures=pictures)
@@ -102,7 +102,7 @@ class CollectionTest(TestCase):
         )
         self.assertEqual(len(result.data["collections"][0]["pictures"]), len(pictures))
 
-    def test_query_by_user(self):
+    def test_query_filter_by_user(self):
         user = UserFactory(user_profile_picture=True)
         collections = CollectionFactory.create_batch(3, user=user)
 
@@ -115,3 +115,14 @@ class CollectionTest(TestCase):
         self.assertEqual(len(result.data["collections"]), len(collections))
         for collection in result.data["collections"]:
             self.assertEqual(collection["user"]["id"], str(user.id))
+
+
+class CollectionWithoutData(TestCase):
+    def test_query_without_data(self):
+        result = schema.execute_sync(
+            collections_query_all,
+            variable_values={},
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(len(result.data["collections"]), 0)

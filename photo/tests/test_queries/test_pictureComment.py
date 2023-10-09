@@ -5,7 +5,7 @@ from photo.schema import schema
 from photo.tests.factories import PictureCommentFactory, PictureFactory
 from photo.tests.test_queries.graphql_queries import (
     picture_comment_query_all,
-    picture_comment_query_filters,
+    picture_comment_query_filter_by,
 )
 
 
@@ -14,7 +14,7 @@ class PictureCommentTest(TestCase):
         self.batch_size = 10
         self.new_pictures = PictureCommentFactory.create_batch(self.batch_size)
 
-    def test_query_all(self):
+    def test_query_success(self):
         result = schema.execute_sync(
             picture_comment_query_all,
             variable_values={},
@@ -27,11 +27,11 @@ class PictureCommentTest(TestCase):
             sorted([field.name for field in PictureComment._meta.fields]),
         )
 
-    def test_query_filters_id(self):
+    def test_query_filter_by_id(self):
         picture_comment = PictureCommentFactory.create()
 
         result = schema.execute_sync(
-            picture_comment_query_filters,
+            picture_comment_query_filter_by,
             variable_values={"filters": {"id": picture_comment.id}},
         )
 
@@ -42,12 +42,12 @@ class PictureCommentTest(TestCase):
             result.data["picture_comments"][0]["text"], picture_comment.text
         )
 
-    def test_query_filters_picture(self):
+    def test_query_filter_by_picture(self):
         picture = PictureFactory()
         picture_comments = PictureCommentFactory.create_batch(3, picture=picture)
 
         result = schema.execute_sync(
-            picture_comment_query_filters,
+            picture_comment_query_filter_by,
             variable_values={"filters": {"picture": {"id": picture.id}}},
         )
 
@@ -57,3 +57,14 @@ class PictureCommentTest(TestCase):
             picture.id,
         )
         self.assertEqual(len(result.data["picture_comments"]), len(picture_comments))
+
+
+class PictureCommentTestWithoutData(TestCase):
+    def test_query_without_data(self):
+        result = schema.execute_sync(
+            picture_comment_query_all,
+            variable_values={},
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(len(result.data["picture_comments"]), 0)

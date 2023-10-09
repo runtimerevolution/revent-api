@@ -4,8 +4,8 @@ from photo.models import PictureComment
 from photo.schema import schema
 from photo.tests.factories import PictureCommentFactory, PictureFactory
 from photo.tests.test_queries.graphql_queries import (
+    picture_comment_filter_by,
     picture_comment_query_all,
-    picture_comment_query_filter_by,
 )
 
 
@@ -27,11 +27,11 @@ class PictureCommentTest(TestCase):
             sorted([field.name for field in PictureComment._meta.fields]),
         )
 
-    def test_query_filter_by_id(self):
+    def test_filter_by_id(self):
         picture_comment = PictureCommentFactory.create()
 
         result = schema.execute_sync(
-            picture_comment_query_filter_by,
+            picture_comment_filter_by,
             variable_values={"filters": {"id": picture_comment.id}},
         )
 
@@ -42,12 +42,12 @@ class PictureCommentTest(TestCase):
             result.data["picture_comments"][0]["text"], picture_comment.text
         )
 
-    def test_query_filter_by_picture(self):
+    def test_filter_by_picture(self):
         picture = PictureFactory()
         picture_comments = PictureCommentFactory.create_batch(3, picture=picture)
 
         result = schema.execute_sync(
-            picture_comment_query_filter_by,
+            picture_comment_filter_by,
             variable_values={"filters": {"picture": {"id": picture.id}}},
         )
 

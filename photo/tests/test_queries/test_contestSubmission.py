@@ -9,8 +9,8 @@ from photo.tests.factories import (
     UserFactory,
 )
 from photo.tests.test_queries.graphql_queries import (
+    contest_submission_filter_by,
     contest_submission_query_all,
-    contest_submission_query_filter_by,
 )
 
 
@@ -42,11 +42,11 @@ class ContestSubmissionTest(TestCase):
             ),
         )
 
-    def test_query_filter_by_id(self):
+    def test_filter_by_id(self):
         contest_submission = ContestSubmissionFactory.create()
 
         result = schema.execute_sync(
-            contest_submission_query_filter_by,
+            contest_submission_filter_by,
             variable_values={"filters": {"id": contest_submission.id}},
         )
 
@@ -60,13 +60,13 @@ class ContestSubmissionTest(TestCase):
             contest_submission.picture.id,
         )
 
-    def test_query_filter_by_user(self):
+    def test_filter_by_user(self):
         user = UserFactory()
         picture = PictureFactory(user=user)
         contest_submissions = ContestSubmissionFactory.create_batch(3, picture=picture)
 
         result = schema.execute_sync(
-            contest_submission_query_filter_by,
+            contest_submission_filter_by,
             variable_values={"filters": {"picture": {"user": {"id": str(user.id)}}}},
         )
 
@@ -83,12 +83,12 @@ class ContestSubmissionTest(TestCase):
             len(result.data["contest_submissions"]), len(contest_submissions)
         )
 
-    def test_query_filter_by_contest(self):
+    def test_filter_by_contest(self):
         contest = ContestFactory()
         contest_submissions = ContestSubmissionFactory.create_batch(3, contest=contest)
 
         result = schema.execute_sync(
-            contest_submission_query_filter_by,
+            contest_submission_filter_by,
             variable_values={"filters": {"contest": {"id": contest.id}}},
         )
 

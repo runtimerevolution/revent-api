@@ -4,8 +4,8 @@ from photo.models import Picture
 from photo.schema import schema
 from photo.tests.factories import PictureFactory, UserFactory
 from photo.tests.test_queries.graphql_queries import (
+    picture_filter_by,
     picture_query_all,
-    picture_query_filter_by,
 )
 
 
@@ -38,13 +38,13 @@ class PictureTest(TestCase):
             ),
         )
 
-    def test_query_filter_by_id(self):
+    def test_filter_by_id(self):
         likes_users = UserFactory.create_batch(3, user_profile_picture=True)
         user = UserFactory(user_profile_picture=True)
         picture = PictureFactory.create(user=user, user_likes=likes_users)
 
         result = schema.execute_sync(
-            picture_query_filter_by,
+            picture_filter_by,
             variable_values={"filters": {"id": picture.id}},
         )
 
@@ -54,13 +54,13 @@ class PictureTest(TestCase):
         self.assertEqual(result.data["pictures"][0]["file"], picture.file)
         self.assertEqual(len(result.data["pictures"][0]["likes"]), len(likes_users))
 
-    def test_query_filter_by_user(self):
+    def test_filter_by_user(self):
         number_pictures = 5
         user = UserFactory(user_profile_picture=True)
         PictureFactory.create_batch(number_pictures, user=user)
 
         result = schema.execute_sync(
-            picture_query_filter_by,
+            picture_filter_by,
             variable_values={"filters": {"user": {"id": str(user.id)}}},
         )
 

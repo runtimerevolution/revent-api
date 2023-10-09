@@ -41,7 +41,7 @@ class CollectionTest(TestCase):
             ),
         )
 
-    def test_query_filter_by_id(self):
+    def test_filter_by_id(self):
         user = UserFactory(user_profile_picture=True)
         pictures = PictureFactory.create_batch(3, user=user)
         collection = CollectionFactory.create(collection_pictures=pictures)
@@ -61,7 +61,7 @@ class CollectionTest(TestCase):
         )
         self.assertEqual(len(result.data["collections"][0]["pictures"]), len(pictures))
 
-    def test_query_filter_by_user_name(self):
+    def test_filter_by_user_name(self):
         user = UserFactory(user_profile_picture=True)
         pictures = PictureFactory.create_batch(3, user=user)
         collection = CollectionFactory.create(collection_pictures=pictures)
@@ -84,7 +84,7 @@ class CollectionTest(TestCase):
         )
         self.assertEqual(len(result.data["collections"][0]["pictures"]), len(pictures))
 
-    def test_query_filter_by_name(self):
+    def test_filter_by_name(self):
         user = UserFactory(user_profile_picture=True)
         pictures = PictureFactory.create_batch(3, user=user)
         collection = CollectionFactory.create(collection_pictures=pictures)
@@ -102,7 +102,7 @@ class CollectionTest(TestCase):
         )
         self.assertEqual(len(result.data["collections"][0]["pictures"]), len(pictures))
 
-    def test_query_filter_by_user(self):
+    def test_filter_by_user(self):
         user = UserFactory(user_profile_picture=True)
         collections = CollectionFactory.create_batch(3, user=user)
 

@@ -11,10 +11,10 @@ from photo.tests.test_queries.graphql_queries import (
 
 class PictureTest(TestCase):
     def setUp(self):
-        self.batch = 10
+        self.batch_size = 10
         user = UserFactory(user_profile_picture=True)
         self.new_pictures = PictureFactory.create_batch(
-            self.batch,
+            self.batch_size,
             user=user,
             user_likes=UserFactory.create_batch(2, user_profile_picture=True),
         )
@@ -26,7 +26,7 @@ class PictureTest(TestCase):
         )
 
         self.assertEqual(result.errors, None)
-        self.assertEqual(len(result.data["pictures"]), self.batch)
+        self.assertEqual(len(result.data["pictures"]), self.batch_size)
         self.assertEqual(len(result.data["pictures"][0]["likes"]), 2)
         self.assertEqual(
             sorted([key for key in result.data["pictures"][0].keys()]),

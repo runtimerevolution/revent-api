@@ -17,8 +17,8 @@ from photo.tests.test_queries.graphql_queries import (
 
 class ContestTest(TestCase):
     def setUp(self):
-        self.batch = 10
-        self.contests = ContestFactory.create_batch(self.batch)
+        self.batch_size = 10
+        self.contests = ContestFactory.create_batch(self.batch_size)
 
     def test_query_all(self):
         result = schema.execute_sync(
@@ -27,7 +27,7 @@ class ContestTest(TestCase):
         )
 
         self.assertEqual(result.errors, None)
-        self.assertEqual(len(result.data["contests"]), self.batch)
+        self.assertEqual(len(result.data["contests"]), self.batch_size)
         self.assertEqual(
             sorted([key for key in result.data["contests"][0].keys()]),
             sorted(

@@ -7,8 +7,8 @@ from photo.tests.test_queries.graphql_queries import user_query_one
 
 class UserTest(TestCase):
     def setUp(self):
-        self.batch = 10
-        self.new_users = UserFactory.create_batch(self.batch)
+        self.batch_size = 10
+        self.new_users = UserFactory.create_batch(self.batch_size)
 
     def test_query_one(self):
         user = UserFactory.create()

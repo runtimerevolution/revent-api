@@ -11,8 +11,8 @@ from photo.tests.test_queries.graphql_queries import (
 
 class PictureCommentTest(TestCase):
     def setUp(self):
-        self.batch = 10
-        self.new_pictures = PictureCommentFactory.create_batch(self.batch)
+        self.batch_size = 10
+        self.new_pictures = PictureCommentFactory.create_batch(self.batch_size)
 
     def test_query_all(self):
         result = schema.execute_sync(
@@ -21,7 +21,7 @@ class PictureCommentTest(TestCase):
         )
 
         self.assertEqual(result.errors, None)
-        self.assertEqual(len(result.data["picture_comments"]), self.batch)
+        self.assertEqual(len(result.data["picture_comments"]), self.batch_size)
         self.assertEqual(
             sorted([key for key in result.data["picture_comments"][0].keys()]),
             sorted([field.name for field in PictureComment._meta.fields]),

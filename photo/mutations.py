@@ -67,15 +67,15 @@ class Mutation:
         picture.save(image_bytes, format="JPEG")
         image_bytes.seek(0)
         image_file = SimpleUploadedFile(
-            "sample.jpg", image_bytes.getvalue(), content_type="image/jpeg"
+            input.name, image_bytes.getvalue(), content_type="image/jpeg"
         )
 
         user = User.objects.get(id=input.user)
 
-        new_picture = Picture(user=user, file=image_file)
-        new_picture.save()
+        picture = Picture(user=user, file=image_file)
+        picture.save()
 
-        return new_picture
+        return picture
 
     @strawberry.mutation
     def like_picture(self, user: str, picture: int) -> PictureType:

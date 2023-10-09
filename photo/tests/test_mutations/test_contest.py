@@ -60,7 +60,7 @@ class ContestTest(TestCase):
     def test_update(self):
         user = UserFactory()
         contest = ContestFactory(created_by=user)
-        picture = PictureFactory(user=user, file="www.test.com")
+        picture = PictureFactory(user=user)
 
         updated_contest = {
             "id": contest.id,

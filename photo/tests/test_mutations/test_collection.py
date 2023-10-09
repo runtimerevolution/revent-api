@@ -70,7 +70,7 @@ class CollectionTest(TestCase):
 
     def test_add_picture(self):
         collection = CollectionFactory()
-        picture = PictureFactory(file="www.test.com")
+        picture = PictureFactory()
 
         result = schema.execute_sync(
             collection_add_picture_mutation,

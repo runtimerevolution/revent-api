@@ -53,7 +53,7 @@ class PictureTest(TestCase):
 
     def test_update(self):
         user = UserFactory()
-        picture = PictureFactory(user=user, file="www.test.com")
+        picture = PictureFactory(user=user)
         user_like = UserFactory.create_batch(3)
         likes = [str(user.id) for user in user_like]
         updatedPicture = {

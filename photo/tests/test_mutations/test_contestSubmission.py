@@ -70,14 +70,14 @@ class ContestSubmissionTest(TestCase):
         contest = ContestFactory()
 
         user = UserFactory()
-        original_picture = PictureFactory(user=user, file="www.original.com")
+        original_picture = PictureFactory(user=user)
         newContestSubmission = ContestSubmissionFactory(
             contest=contest, picture=original_picture
         )
 
         self.assertEqual(newContestSubmission.picture.file, original_picture.file)
 
-        newPicture = PictureFactory(user=user, file="www.test.com")
+        newPicture = PictureFactory(user=user)
 
         updated_contest_submission = {
             "id": newContestSubmission.id,

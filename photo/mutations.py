@@ -102,7 +102,9 @@ class Mutation:
                 success=True, results=submission.add_vote(user), error=""
             )
 
-        return AddVoteMutationResponse(error=NO_SUBMISSION_FOUND)
+        return AddVoteMutationResponse(
+            success=False, results={}, error=NO_SUBMISSION_FOUND
+        )
 
     @strawberry.mutation
     def contest_close(self, contest: int) -> CloseContestMutationResponse:

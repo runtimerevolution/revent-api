@@ -40,6 +40,7 @@ class Picture(models.Model):
     user = models.ForeignKey(
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
+    name = models.TextField(blank=True, null=True)
     file = models.FileField(
         storage=PublicMediaStorage(),
         upload_to=picture_path,

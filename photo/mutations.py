@@ -63,6 +63,7 @@ class Mutation:
         image_bytes = BytesIO()
         picture.save(image_bytes, format="JPEG")
         image_bytes.seek(0)
+        breakpoint()
         image_file = SimpleUploadedFile(
             "sample.jpg", image_bytes.getvalue(), content_type="image/jpeg"
         )

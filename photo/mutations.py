@@ -64,15 +64,15 @@ class Mutation:
         picture.save(image_bytes, format="JPEG")
         image_bytes.seek(0)
         image_file = SimpleUploadedFile(
-            "sample.jpg", image_bytes.getvalue(), content_type="image/jpeg"
+            input.name, image_bytes.getvalue(), content_type="image/jpeg"
         )
 
         user = User.objects.get(email=input.user)
 
-        newPicture = Picture(user=user, file=image_file)
-        newPicture.save()
+        picture = Picture(user=user, file=image_file)
+        picture.save()
 
-        return newPicture
+        return picture
 
     @strawberry.mutation
     def like_picture(self, user: int, picture: int) -> PictureType:
@@ -92,13 +92,13 @@ class Mutation:
 
     @strawberry.mutation
     def contest_submission_add_vote(
-        self, contestSubmission: int, user: str
+        self, contest_submission: int, user: str
     ) -> ContestSubmissionType:
-        contestSubmission = ContestSubmission.objects.get(id=contestSubmission)
-        contestSubmission.votes.add(user)
-        contestSubmission.save()
+        contest_submission = ContestSubmission.objects.get(id=contest_submission)
+        contest_submission.votes.add(user)
+        contest_submission.save()
 
-        return contestSubmission
+        return contest_submission
 
     @strawberry.mutation
     def contest_close(self, contest: int) -> ContestType:

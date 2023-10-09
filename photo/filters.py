@@ -40,6 +40,9 @@ class CollectionFilter:
 class ContestFilter:
     id: int
     created_by: UserFilter
+    status: str
+    search: str
+    upload_phase_start: strawberry.auto
 
 
 @strawberry.django.filters.filter(ContestSubmission, lookups=True)

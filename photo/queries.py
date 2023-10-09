@@ -62,6 +62,10 @@ class Query:
         self, filters: Optional[ContestFilter] = strawberry.UNSET
     ) -> List[ContestType]:
         queryset = Contest.objects.all()
+        if getattr(filters, "search", strawberry.UNSET):
+            queryset = Contest.objects.annotate(
+                search=SearchVector("title", "description", "prize"),
+            ).filter(search__icontains=filters.search)
         return strawberry_django.filters.apply(filters, queryset)
 
     @strawberry.field
@@ -70,11 +74,3 @@ class Query:
     ) -> List[ContestSubmissionType]:
         queryset = ContestSubmission.objects.all()
         return strawberry_django.filters.apply(filters, queryset)
-
-    @strawberry.field
-    def contest_search(self, search: str) -> List[ContestType]:
-        contests = Contest.objects.annotate(
-            search=SearchVector("title", "description", "prize"),
-        ).filter(search=search)
-
-        return contests

@@ -84,12 +84,30 @@ contest_query_filters = """
                 """
 
 contest_query_search = """
-                    query TestQuery($search: String!) {
-                        contest_search(search: $search) {
+                    query TestQuery($filters: ContestFilter!) {
+                        contests(filters: $filters) {
                             id
                             title
                             description
                             prize
+                        }
+                    }
+                """
+
+contest_query_status = """
+                    query TestQuery($filters: ContestFilter!) {
+                        contests(filters: $filters) {
+                            id
+                            status
+                        }
+                    }
+                """
+
+contest_query_time = """
+                    query TestQuery($filters: ContestFilter!) {
+                        contests(filters: $filters) {
+                            id
+                            upload_phase_start
                         }
                     }
                 """

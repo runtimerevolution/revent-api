@@ -90,7 +90,7 @@ picture_update_mutation = """
 
 picture_comment_creation_mutation = """
                     mutation TestMutation($pictureComment: PictureCommentInput!) {
-                        create_pictureComment(input: $pictureComment) {
+                        create_picture_comment(input: $pictureComment) {
                             ... on PictureCommentType {
                               user {
                                 id
@@ -115,7 +115,7 @@ picture_comment_creation_mutation = """
 
 picture_comment_update_mutation = """
                     mutation TestMutation($pictureComment: PictureCommentInputPartial!) {
-                        update_pictureComment(input: $pictureComment) {
+                        update_picture_comment(input: $pictureComment) {
                             ... on PictureCommentType {
                               id
                               user {
@@ -253,7 +253,7 @@ contest_close_mutation = """
 
 contest_submission_creation_mutation = """
                     mutation TestMutation($contestSubmission: ContestSubmissionInput!) {
-                        create_contestSubmission(input: $contestSubmission) {
+                        create_contest_submission(input: $contestSubmission) {
                             ... on ContestSubmissionType {
                                 contest {
                                     id
@@ -281,7 +281,7 @@ contest_submission_creation_mutation = """
 
 contest_submission_update_mutation = """
                     mutation TestMutation($contestSubmission: ContestSubmissionInputPartial!) {
-                        update_contestSubmission(input: $contestSubmission) {
+                        update_contest_submission(input: $contestSubmission) {
                             ... on ContestSubmissionType {
                               id
                               picture {

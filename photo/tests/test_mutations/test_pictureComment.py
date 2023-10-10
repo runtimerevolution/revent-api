@@ -28,14 +28,14 @@ class PictureCommentTest(TestCase):
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_pictureComment"]["user"]["id"], str(self.user.id)
+            result.data["create_picture_comment"]["user"]["id"], str(self.user.id)
         )
         self.assertEqual(
-            result.data["create_pictureComment"]["picture"]["id"],
+            result.data["create_picture_comment"]["picture"]["id"],
             self.picture.id,
         )
         self.assertEqual(
-            result.data["create_pictureComment"]["text"], picture_comment["text"]
+            result.data["create_picture_comment"]["text"], picture_comment["text"]
         )
 
     def test_update(self):
@@ -53,14 +53,14 @@ class PictureCommentTest(TestCase):
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["update_pictureComment"]["user"]["id"],
+            result.data["update_picture_comment"]["user"]["id"],
             str(picture_comment.user.id),
         )
         self.assertEqual(
-            result.data["update_pictureComment"]["picture"]["id"],
+            result.data["update_picture_comment"]["picture"]["id"],
             picture_comment.picture.id,
         )
         self.assertEqual(
-            result.data["update_pictureComment"]["text"],
+            result.data["update_picture_comment"]["text"],
             updated_picture_comment["text"],
         )

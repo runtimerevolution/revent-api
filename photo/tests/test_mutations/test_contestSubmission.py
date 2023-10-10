@@ -39,15 +39,15 @@ class ContestSubmissionTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_contestSubmission"]["picture"]["user"]["email"],
+            result.data["create_contest_submission"]["picture"]["user"]["email"],
             self.picture.user.email,
         )
         self.assertEqual(
-            result.data["create_contestSubmission"]["picture"]["id"],
+            result.data["create_contest_submission"]["picture"]["id"],
             self.picture.id,
         )
         self.assertEqual(
-            result.data["create_contestSubmission"]["contest"]["id"], self.contest.id
+            result.data["create_contest_submission"]["contest"]["id"], self.contest.id
         )
 
     def test_vote(self):
@@ -94,11 +94,11 @@ class ContestSubmissionTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["update_contestSubmission"]["picture"]["id"],
+            result.data["update_contest_submission"]["picture"]["id"],
             updated_contest_submission["picture"],
         )
         self.assertEqual(
-            result.data["update_contestSubmission"]["submission_date"],
+            result.data["update_contest_submission"]["submission_date"],
             str(updated_contest_submission["submission_date"]).replace(" ", "T"),
         )
 

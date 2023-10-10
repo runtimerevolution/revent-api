@@ -159,7 +159,7 @@ class ContestSubmission(models.Model):
         super(ContestSubmission, self).save(*args, **kwargs)
 
     def add_vote(self, user):
-        if user not in self.votes.all():
+        if user not in self.votes.filter(id=user):
             self.votes.add(user)
             self.save()
         return self

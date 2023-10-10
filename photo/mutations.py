@@ -40,24 +40,24 @@ from .types import (
 class Mutation:
     create_user: UserType = gql.django.create_mutation(UserInput)
     create_picture: PictureType = gql.django.create_mutation(PictureInput)
-    create_pictureComment: PictureCommentType = gql.django.create_mutation(
+    create_picture_comment: PictureCommentType = gql.django.create_mutation(
         PictureCommentInput
     )
     create_collection: CollectionType = gql.django.create_mutation(CollectionInput)
     create_contest: ContestType = gql.django.create_mutation(ContestInput)
-    create_contestSubmission: ContestSubmissionType = gql.django.create_mutation(
+    create_contest_submission: ContestSubmissionType = gql.django.create_mutation(
         ContestSubmissionInput
     )
     update_user: UserType = gql.django.update_mutation(UserInputPartial)
     update_picture: PictureType = gql.django.update_mutation(PictureInputPartial)
-    update_pictureComment: PictureCommentType = gql.django.update_mutation(
+    update_picture_comment: PictureCommentType = gql.django.update_mutation(
         PictureCommentInputPartial
     )
     update_collection: CollectionType = gql.django.update_mutation(
         CollectionInputPartial
     )
     update_contest: ContestType = gql.django.update_mutation(ContestInputPartial)
-    update_contestSubmission: ContestSubmissionType = gql.django.update_mutation(
+    update_contest_submission: ContestSubmissionType = gql.django.update_mutation(
         ContestSubmissionInputPartial
     )
 
@@ -72,10 +72,10 @@ class Mutation:
 
         user = User.objects.get(id=input.user)
 
-        newPicture = Picture(user=user, file=image_file)
-        newPicture.save()
+        new_picture = Picture(user=user, file=image_file)
+        new_picture.save()
 
-        return newPicture
+        return new_picture
 
     @strawberry.mutation
     def like_picture(self, user: str, picture: int) -> PictureType:

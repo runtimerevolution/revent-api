@@ -63,14 +63,17 @@ class Mutation:
         image_bytes = BytesIO()
         picture.save(image_bytes, format="JPEG")
         image_bytes.seek(0)
+
+        user = User.objects.get(id=input.user)
+
+        picture_object = Picture(user=user)
+        picture_object.save()
+
         image_file = SimpleUploadedFile(
-            input.name, image_bytes.getvalue(), content_type="image/jpeg"
+            picture_object.id, image_bytes.getvalue(), content_type="image/jpeg"
         )
-
-        user = User.objects.get(email=input.user)
-
-        picture = Picture(user=user, file=image_file)
-        picture.save()
+        picture_object.file = image_file
+        picture_object.save()
 
         return picture
 

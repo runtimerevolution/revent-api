@@ -7,13 +7,13 @@ from photo.tests.factories import PictureCommentFactory
 
 class PictureCommentTest(TransactionTestCase):
     def setUp(self):
-        self.newPictureComment = PictureCommentFactory.create()
+        self.picture_comment = PictureCommentFactory.create()
 
     def test_factory_create(self):
         self.assertEqual(PictureComment.objects.count(), 1)
-        self.assertEqual(PictureComment.objects.first(), self.newPictureComment)
+        self.assertEqual(PictureComment.objects.first(), self.picture_comment)
         self.assertEqual(Picture.objects.count(), 1)
-        self.assertEqual(Picture.objects.first(), self.newPictureComment.picture)
+        self.assertEqual(Picture.objects.first(), self.picture_comment.picture)
         self.assertEqual(User.objects.count(), 2)
 
     def test_factory_null(self):
@@ -24,4 +24,4 @@ class PictureCommentTest(TransactionTestCase):
 
     def test_factory_pk(self):
         with self.assertRaises(IntegrityError):
-            PictureCommentFactory(id=self.newPictureComment.id)
+            PictureCommentFactory(id=self.picture_comment.id)

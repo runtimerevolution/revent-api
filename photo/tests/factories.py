@@ -17,6 +17,7 @@ from photo.models import (
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
+        skip_postgeneration_save = True
 
     user_handle = factory.Faker("name")
     email = factory.Sequence(lambda n: "user{0}@email.com".format(n))
@@ -36,6 +37,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 class PictureFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Picture
+        skip_postgeneration_save = True
 
     user = factory.SubFactory(UserFactory)
     file = factory.LazyAttributeSequence(
@@ -71,6 +73,7 @@ class PictureCommentFactory(factory.django.DjangoModelFactory):
 class CollectionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Collection
+        skip_postgeneration_save = True
 
     name = factory.Faker("name")
     user = factory.SubFactory(UserFactory)
@@ -89,6 +92,7 @@ class CollectionFactory(factory.django.DjangoModelFactory):
 class ContestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Contest
+        skip_postgeneration_save = True
 
     title = factory.Faker("name")
     description = factory.Faker("sentence")
@@ -131,6 +135,7 @@ class ContestFactory(factory.django.DjangoModelFactory):
 class ContestSubmissionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ContestSubmission
+        skip_postgeneration_save = True
 
     contest = factory.SubFactory(ContestFactory)
     picture = factory.SubFactory(

@@ -92,9 +92,9 @@ class Mutation:
 
     @strawberry.mutation
     def contest_submission_add_vote(
-        self, contestSubmission: int, user: str
+        self, contest_submission: int, user: str
     ) -> ContestSubmissionType:
-        contest_submission = ContestSubmission.objects.get(id=contestSubmission)
+        contest_submission = ContestSubmission.objects.get(id=contest_submission)
         contest_submission.votes.add(user)
         contest_submission.save()
 

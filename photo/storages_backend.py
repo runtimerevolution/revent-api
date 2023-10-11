@@ -7,4 +7,4 @@ class PublicMediaStorage(S3Boto3Storage):
 
 
 def picture_path(instance, filename):
-    return "media/{0}/{1}.jpg".format(instance.user.id, filename)
+    return "pictures/{0}/{1}.jpg".format(instance.user.email, filename)

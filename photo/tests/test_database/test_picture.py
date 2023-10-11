@@ -37,7 +37,7 @@ class PictureUploadTest(TestCase):
         image.save(image_bytes, format="JPEG")
         image_bytes.seek(0)
         self.image_file = SimpleUploadedFile(
-            "test_image", image_bytes.getvalue(), content_type="image/jpeg"
+            "test_image.jpg", image_bytes.getvalue(), content_type="image/jpeg"
         )
         self.client = Client()
 

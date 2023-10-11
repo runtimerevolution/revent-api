@@ -7,11 +7,11 @@ from photo.tests.factories import UserFactory
 
 class UserTest(TransactionTestCase):
     def setUp(self):
-        self.newUser = UserFactory()
+        self.user = UserFactory()
 
     def test_factory(self):
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.first(), self.newUser)
+        self.assertEqual(User.objects.first(), self.user)
         self.assertEqual(Picture.objects.count(), 1)
 
     def test_integity(self):
@@ -25,4 +25,4 @@ class UserTest(TransactionTestCase):
 
     def test_factory_pk(self):
         with self.assertRaises(IntegrityError):
-            UserFactory(id=self.newUser.id)
+            UserFactory(id=self.user.id)

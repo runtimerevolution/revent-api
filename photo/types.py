@@ -1,3 +1,4 @@
+import uuid
 from typing import List
 
 import strawberry
@@ -15,7 +16,7 @@ from .models import (
 
 @strawberry.django.type(User)
 class UserType:
-    id: str
+    id: uuid.UUID
     email: str
     name_first: str
     name_last: str

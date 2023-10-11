@@ -15,6 +15,7 @@ from .models import (
 
 @strawberry.django.type(User)
 class UserType:
+    id: str
     email: str
     name_first: str
     name_last: str

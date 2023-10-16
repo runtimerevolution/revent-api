@@ -163,6 +163,7 @@ picture_query_all = """
                                 id
                             }
                             file
+                            name
                             likes {
                                 email
                             }

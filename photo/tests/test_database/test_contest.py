@@ -10,16 +10,18 @@ from photo.tests.factories import ContestFactory, UserFactory
 
 class ContestTest(TransactionTestCase):
     def setUp(self):
-        self.batch = random.randint(0, 3)
-        self.winners = UserFactory.create_batch(self.batch, user_profile_picture=True)
-        self.newContest = ContestFactory.create(contest_winners=self.winners)
+        self.batch_size = random.randint(0, 3)
+        self.winners = UserFactory.create_batch(
+            self.batch_size, user_profile_picture=True
+        )
+        self.contest = ContestFactory.create(contest_winners=self.winners)
 
     def test_factory(self):
         self.assertEqual(Contest.objects.count(), 1)
-        self.assertEqual(Contest.objects.first(), self.newContest)
+        self.assertEqual(Contest.objects.first(), self.contest)
         self.assertEqual(Picture.objects.count(), 1)
-        self.assertEqual(User.objects.count(), 1 + self.batch)
-        for winner in self.newContest.winners.all():
+        self.assertEqual(User.objects.count(), 1 + self.batch_size)
+        for winner in self.contest.winners.all():
             self.assertTrue(User.objects.filter(email=winner.email).exists())
 
     def test_factory_null(self):
@@ -32,4 +34,4 @@ class ContestTest(TransactionTestCase):
 
     def test_factory_pk(self):
         with self.assertRaises(IntegrityError):
-            ContestFactory(id=self.newContest.id)
+            ContestFactory(id=self.contest.id)

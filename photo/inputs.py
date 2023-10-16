@@ -26,6 +26,7 @@ class UserInput:
 @gql.django.partial(User)
 class UserInputPartial:
     pk: str
+    email: str
     name_first: str
     name_last: str
     profile_picture: int
@@ -35,7 +36,6 @@ class UserInputPartial:
 @strawberry.django.input(Picture)
 class PictureInput:
     user: str
-    likes: List[str]
 
 
 @gql.django.partial(Picture)

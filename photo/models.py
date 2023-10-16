@@ -2,6 +2,12 @@ import uuid
 from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
+from photo.fixtures import (
+    OUTDATED_SUBMISSION_ERROR_MESSAGE,
+    REPEATED_VOTE_ERROR_MESSAGE,
+    UNIQUE_SUBMISSION_ERROR_MESSAGE,
+    VALID_USER_ERROR_MESSAGE,
+)
 
 from photo.storages_backend import PublicMediaStorage, picture_path
 
@@ -97,9 +103,11 @@ class Contest(models.Model):
             self.created_by
             and User.objects.filter(email=self.created_by.email).exists()
         ):
-            raise ValidationError(
-                "The contest must be created by a valid user (created_by can not be null)."
-            )
+            raise ValidationError(VALID_USER_ERROR_MESSAGE)
+
+    def close_contest(self):
+        self.voting_phase_end = timezone.now()
+        return self
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -123,9 +131,36 @@ class ContestSubmission(models.Model):
         qs = ContestSubmission.objects.filter(
             contest=self.contest, picture__user=self.picture.user
         )
+
         if qs.exists() and self._state.adding:
-            raise ValidationError("Each user can only submit one picture per contest")
+            raise ValidationError(UNIQUE_SUBMISSION_ERROR_MESSAGE)
+
+    def validate_vote(self):
+        user_vote = ContestSubmission.objects.filter(
+            contest=self.contest, votes=self.picture.user
+        )
+
+        if user_vote.exists() and self._state.adding:
+            raise ValidationError(REPEATED_VOTE_ERROR_MESSAGE)
+
+    def validate_submission_date(self):
+        if self.contest.upload_phase_end is not None and (
+            not (
+                self.contest.upload_phase_start
+                <= self.submission_date
+                <= self.contest.upload_phase_end
+            )
+        ):
+            raise ValidationError(OUTDATED_SUBMISSION_ERROR_MESSAGE)
 
     def save(self, *args, **kwargs):
         self.validate_unique()
+        self.validate_vote()
+        self.validate_submission_date()
         super(ContestSubmission, self).save(*args, **kwargs)
+
+    def add_vote(self, user):
+        if user not in self.votes.filter(id=user):
+            self.votes.add(user)
+            self.save()
+        return self

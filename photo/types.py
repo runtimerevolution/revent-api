@@ -90,3 +90,17 @@ class ContestSubmissionType:
     picture: "PictureType"
     submission_date: strawberry.auto
     votes: List[UserType]
+
+
+@strawberry.type
+class AddVoteMutationResponse:
+    success: bool
+    results: ContestSubmissionType
+    error: str
+
+
+@strawberry.type
+class CloseContestMutationResponse:
+    success: bool
+    results: ContestType
+    error: str

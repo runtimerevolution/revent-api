@@ -29,6 +29,7 @@ class UserType:
 class PictureType:
     id: int
     user: "UserType"
+    name: str
     file: str
     likes: List[UserType]
 

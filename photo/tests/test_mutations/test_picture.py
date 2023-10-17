@@ -32,7 +32,7 @@ class PictureTest(TestCase):
         picture_object = Picture.objects.get(user__id=picture["user"])
         self.assertEqual(
             result.data["create_picture"]["file"],
-            "media/{0}/{1}.jpg".format(picture["user"], picture_object.id),
+            "media/{0}/{1}".format(picture["user"], picture_object.id),
         )
 
         s3_object = self.client.get_object(

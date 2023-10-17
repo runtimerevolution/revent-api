@@ -1,4 +1,5 @@
 import uuid
+
 from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
@@ -40,7 +41,7 @@ class Picture(models.Model):
     user = models.ForeignKey(
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
-    file = models.FileField(
+    file = models.ImageField(
         storage=PublicMediaStorage(),
         upload_to=picture_path,
     )

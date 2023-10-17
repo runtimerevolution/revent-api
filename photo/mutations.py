@@ -68,10 +68,12 @@ class Mutation:
         picture_object.save()
 
         image_bytes = BytesIO()
-        picture.save(image_bytes, format="JPEG")
+        picture.save(image_bytes, format=picture.format)
         image_bytes.seek(0)
+        format = "image/{0}".format(getattr(picture, "format", "jpeg").lower())
+
         image_file = SimpleUploadedFile(
-            str(picture_object.id), image_bytes.getvalue(), content_type="image/jpeg"
+            str(picture_object.id), image_bytes.getvalue(), content_type=format
         )
 
         picture_object.file = image_file

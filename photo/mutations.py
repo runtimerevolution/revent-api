@@ -68,17 +68,15 @@ class Mutation:
 
         picture_object = Picture(user=user)
         picture_object.save()
-        picture_format = getattr(picture, "format")
-        picture_format = picture_format.lower() if picture_format else "jpeg"
 
         image_bytes = BytesIO()
-        picture.save(image_bytes, format=picture_format)
+        picture.save(image_bytes, format="webp")
         image_bytes.seek(0)
 
         image_file = SimpleUploadedFile(
             str(picture_object.id),
             image_bytes.getvalue(),
-            content_type="image/{0}".format(picture_format),
+            content_type="image/webp",
         )
 
         picture_object.file = image_file

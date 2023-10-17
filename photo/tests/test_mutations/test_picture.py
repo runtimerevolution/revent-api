@@ -37,14 +37,14 @@ class PictureTest(TestCase):
         picture_object = Picture.objects.get(user__id=picture["user"])
         self.assertEqual(
             result.data["create_picture"]["file"],
-            "media/{0}/{1}".format(picture["user"], picture_object.id),
+            "media/{0}/{1}.webp".format(picture["user"], picture_object.id),
         )
 
         s3_object = self.client.get_object(
             bucket=settings.AWS_STORAGE_BUCKET_NAME, key=picture_object.file.name
         )
 
-        self.assertEqual(s3_object["ContentType"], "image/jpeg")
+        self.assertEqual(s3_object["ContentType"], "image/webp")
 
     def test_like(self):
         user = UserFactory()

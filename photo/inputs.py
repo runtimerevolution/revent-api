@@ -26,6 +26,7 @@ class UserInput:
 @gql.django.partial(User)
 class UserInputPartial:
     pk: str
+    email: str
     name_first: str
     name_last: str
     profile_picture: int

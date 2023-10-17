@@ -3,10 +3,10 @@ from io import BytesIO
 import strawberry
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import transaction
-from django.utils import timezone
 from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
 
+from photo.fixtures import NO_CONTEST_FOUND, NO_SUBMISSION_FOUND
 from photo.models import User
 
 from .inputs import (
@@ -25,6 +25,8 @@ from .inputs import (
 )
 from .models import Collection, Contest, ContestSubmission, Picture
 from .types import (
+    AddVoteMutationResponse,
+    CloseContestMutationResponse,
     CollectionType,
     ContestSubmissionType,
     ContestType,
@@ -82,7 +84,7 @@ class Mutation:
         return picture_object
 
     @strawberry.mutation
-    def like_picture(self, user: int, picture: int) -> PictureType:
+    def like_picture(self, user: str, picture: int) -> PictureType:
         picture = Picture.objects.get(id=picture)
         picture.likes.add(user)
         picture.save()
@@ -99,19 +101,23 @@ class Mutation:
 
     @strawberry.mutation
     def contest_submission_add_vote(
-        self, contest_submission: int, user: str
-    ) -> ContestSubmissionType:
-        contest_submission = ContestSubmission.objects.get(id=contest_submission)
-        contest_submission.votes.add(user)
-        contest_submission.save()
+        self, contestSubmission: int, user: str
+    ) -> AddVoteMutationResponse:
+        if submission := ContestSubmission.objects.filter(id=contestSubmission).first():
+            return AddVoteMutationResponse(
+                success=True, results=submission.add_vote(user), error=""
+            )
 
-        return contest_submission
+        return AddVoteMutationResponse(
+            success=False, results={}, error=NO_SUBMISSION_FOUND
+        )
 
     @strawberry.mutation
-    def contest_close(self, contest: int) -> ContestType:
-        contest = Contest.objects.get(id=contest)
-        contest.voting_phase_end = timezone.now()
-        contest.status = "closed"
-        contest.save()
+    def contest_close(self, contest: int) -> CloseContestMutationResponse:
+        if contest := Contest.objects.filter(id=contest).first():
+            results = contest.close_contest()
+            return CloseContestMutationResponse(success=True, results=results, error="")
 
-        return contest
+        return CloseContestMutationResponse(
+            success=False, results={}, error=NO_CONTEST_FOUND
+        )

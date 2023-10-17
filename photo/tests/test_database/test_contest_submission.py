@@ -10,8 +10,10 @@ from photo.tests.factories import ContestSubmissionFactory, PictureFactory, User
 
 class ContestSubmissionTest(TransactionTestCase):
     def setUp(self):
-        self.batch = random.randint(0, 3)
-        self.votes = UserFactory.create_batch(self.batch, user_profile_picture=True)
+        self.batch_size = random.randint(0, 3)
+        self.votes = UserFactory.create_batch(
+            self.batch_size, user_profile_picture=True
+        )
         self.contest_submission = ContestSubmissionFactory(submission_votes=self.votes)
 
     def test_factory_create(self):
@@ -19,7 +21,7 @@ class ContestSubmissionTest(TransactionTestCase):
         self.assertEqual(ContestSubmission.objects.first(), self.contest_submission)
         # 1 picture for the submission another for the contest cover picture
         self.assertEqual(Picture.objects.count(), 1 + 1)
-        self.assertEqual(User.objects.count(), 2 + self.batch)
+        self.assertEqual(User.objects.count(), 2 + self.batch_size)
 
     def test_factory_null(self):
         with self.assertRaises(Contest.DoesNotExist):

@@ -1,3 +1,4 @@
+import uuid
 from typing import List
 
 import strawberry
@@ -15,7 +16,7 @@ from .models import (
 
 @strawberry.django.type(User)
 class UserType:
-    id: str
+    id: uuid.UUID
     email: str
     name_first: str
     name_last: str
@@ -28,6 +29,7 @@ class UserType:
 class PictureType:
     id: int
     user: "UserType"
+    name: str
     file: str
     likes: List[UserType]
 
@@ -88,3 +90,17 @@ class ContestSubmissionType:
     picture: "PictureType"
     submission_date: strawberry.auto
     votes: List[UserType]
+
+
+@strawberry.type
+class AddVoteMutationResponse:
+    success: bool
+    results: ContestSubmissionType
+    error: str
+
+
+@strawberry.type
+class CloseContestMutationResponse:
+    success: bool
+    results: ContestType
+    error: str

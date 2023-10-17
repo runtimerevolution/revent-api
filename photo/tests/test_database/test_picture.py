@@ -34,10 +34,10 @@ class PictureUploadTest(TestCase):
     def setUp(self):
         image = Image.new(mode="RGB", size=(200, 200))
         image_bytes = BytesIO()
-        image.save(image_bytes, format="JPEG")
+        image.save(image_bytes, format="webp")
         image_bytes.seek(0)
         self.image_file = SimpleUploadedFile(
-            "test_image", image_bytes.getvalue(), content_type="image/jpeg"
+            "test_image", image_bytes.getvalue(), content_type="image/webp"
         )
         self.client = Client()
 
@@ -51,4 +51,4 @@ class PictureUploadTest(TestCase):
             bucket=settings.AWS_STORAGE_BUCKET_NAME, key=picture.file.name
         )
 
-        self.assertEqual(s3_object["ContentType"], "image/jpeg")
+        self.assertEqual(s3_object["ContentType"], "image/webp")

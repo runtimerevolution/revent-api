@@ -1,11 +1,11 @@
-from django.forms import ValidationError
 import factory
 import pytest
+import pytz
+from django.forms import ValidationError
 from django.test import TestCase
 from django.utils import timezone
-import pytz
-from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE
 
+from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE
 from photo.schema import schema
 from photo.tests.factories import (
     ContestFactory,
@@ -13,6 +13,7 @@ from photo.tests.factories import (
     PictureFactory,
     UserFactory,
 )
+
 from .graphql_mutations import (
     contest_submission_creation_mutation,
     contest_submission_update_mutation,

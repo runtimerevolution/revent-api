@@ -1,14 +1,15 @@
 import uuid
+
 from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
+
 from photo.fixtures import (
     OUTDATED_SUBMISSION_ERROR_MESSAGE,
     REPEATED_VOTE_ERROR_MESSAGE,
     UNIQUE_SUBMISSION_ERROR_MESSAGE,
     VALID_USER_ERROR_MESSAGE,
 )
-
 from photo.storages_backend import PublicMediaStorage, picture_path
 
 
@@ -47,7 +48,7 @@ class Picture(models.Model):
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
     name = models.TextField(blank=True, null=True)
-    file = models.FileField(
+    file = models.ImageField(
         storage=PublicMediaStorage(),
         upload_to=picture_path,
     )

@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from photo.schema import schema
 from photo.tests.factories import PictureCommentFactory, PictureFactory, UserFactory
+
 from .graphql_mutations import (
     picture_comment_creation_mutation,
     picture_comment_update_mutation,

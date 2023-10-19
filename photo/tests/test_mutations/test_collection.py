@@ -1,11 +1,14 @@
 import pytest
 from django.test import TestCase
 
+from photo.models import Collection
 from photo.schema import schema
 from photo.tests.factories import CollectionFactory, PictureFactory, UserFactory
+
 from .graphql_mutations import (
     collection_add_picture_mutation,
     collection_creation_mutation,
+    collection_delete_mutation,
     collection_update_mutation,
 )
 
@@ -114,3 +117,22 @@ class CollectionTest(TestCase):
         )
         for picture in result.data["update_collection"]["pictures"]:
             self.assertTrue(picture["id"] in pictures)
+
+    def test_delete_success(self):
+        collection = CollectionFactory()
+
+        result = schema.execute_sync(
+            collection_delete_mutation,
+            variable_values={
+                "collection": {"id": collection.id},
+            },
+        )
+
+        queryset_undeleted = Collection.objects.filter(id=collection.id)
+        queryset_all = Collection.all_objects.filter(id=collection.id)
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(result.data["delete_collection"]["id"], collection.id)
+        self.assertEqual(queryset_undeleted.count(), 0)
+        self.assertEqual(queryset_all.count(), 1)
+        self.assertEqual(queryset_all[0].id, collection.id)

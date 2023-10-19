@@ -2,6 +2,7 @@ from io import BytesIO
 
 import strawberry
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db import transaction
 from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
 
@@ -79,20 +80,27 @@ class Mutation:
     )
 
     @strawberry.mutation
+    @transaction.atomic
     def create_picture(self, input: PictureInput, picture: Upload) -> PictureType:
-        image_bytes = BytesIO()
-        picture.save(image_bytes, format="JPEG")
-        image_bytes.seek(0)
-        image_file = SimpleUploadedFile(
-            input.name, image_bytes.getvalue(), content_type="image/jpeg"
-        )
-
         user = User.objects.get(id=input.user)
 
-        picture = Picture(user=user, file=image_file)
-        picture.save()
+        picture_object = Picture(user=user)
+        picture_object.save()
 
-        return picture
+        image_bytes = BytesIO()
+        picture.save(image_bytes, format="webp")
+        image_bytes.seek(0)
+
+        image_file = SimpleUploadedFile(
+            str(picture_object.id),
+            image_bytes.getvalue(),
+            content_type="image/webp",
+        )
+
+        picture_object.file = image_file
+        picture_object.save()
+
+        return picture_object
 
     @strawberry.mutation
     def like_picture(self, user: str, picture: int) -> PictureType:

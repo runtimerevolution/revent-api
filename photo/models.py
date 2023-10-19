@@ -75,7 +75,7 @@ class Picture(SoftDeleteModel):
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
     name = models.TextField(blank=True, null=True)
-    file = models.FileField(
+    file = models.ImageField(
         storage=PublicMediaStorage(),
         upload_to=picture_path,
     )

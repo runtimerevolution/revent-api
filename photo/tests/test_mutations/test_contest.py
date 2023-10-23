@@ -4,11 +4,14 @@ import pytest
 from django.test import TestCase
 from django.utils import timezone
 
+from photo.models import Contest
 from photo.schema import schema
 from photo.tests.factories import ContestFactory, PictureFactory, UserFactory
+
 from .graphql_mutations import (
     contest_close_mutation,
     contest_creation_mutation,
+    contest_delete_mutation,
     contest_update_mutation,
 )
 
@@ -100,3 +103,22 @@ class ContestTest(TestCase):
             result.data["update_contest"]["voting_phase_end"],
             str(updated_contest["voting_phase_end"]).replace(" ", "T"),
         )
+
+    def test_delete_success(self):
+        contest = ContestFactory()
+
+        result = schema.execute_sync(
+            contest_delete_mutation,
+            variable_values={
+                "contest": {"id": contest.id},
+            },
+        )
+
+        queryset_undeleted = Contest.objects.filter(id=contest.id)
+        queryset_all = Contest.all_objects.filter(id=contest.id)
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(result.data["delete_contest"]["id"], contest.id)
+        self.assertEqual(queryset_undeleted.count(), 0)
+        self.assertEqual(queryset_all.count(), 1)
+        self.assertEqual(queryset_all[0].id, contest.id)

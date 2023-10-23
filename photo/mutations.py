@@ -6,6 +6,14 @@ from django.db import transaction
 from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
 
+from photo.filters import (
+    CollectionFilter,
+    ContestFilter,
+    ContestSubmissionFilter,
+    PictureCommentFilter,
+    PictureFilter,
+    UserFilter,
+)
 from photo.fixtures import NO_CONTEST_FOUND, NO_SUBMISSION_FOUND
 from photo.models import User
 
@@ -59,6 +67,16 @@ class Mutation:
     update_contest: ContestType = gql.django.update_mutation(ContestInputPartial)
     update_contest_submission: ContestSubmissionType = gql.django.update_mutation(
         ContestSubmissionInputPartial
+    )
+    delete_user: UserType = gql.django.delete_mutation(UserFilter)
+    delete_picture: PictureType = gql.django.delete_mutation(PictureFilter)
+    delete_picture_comment: PictureCommentType = gql.django.delete_mutation(
+        PictureCommentFilter
+    )
+    delete_collection: CollectionType = gql.django.delete_mutation(CollectionFilter)
+    delete_contest: ContestType = gql.django.delete_mutation(ContestFilter)
+    delete_contest_submission: ContestSubmissionType = gql.django.delete_mutation(
+        ContestSubmissionFilter
     )
 
     @strawberry.mutation

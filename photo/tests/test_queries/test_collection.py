@@ -30,7 +30,9 @@ class CollectionTest(TestCase):
             len(result.data["collections"][0]["pictures"]), self.batch_size
         )
         self.assertEqual(
-            sorted([key for key in result.data["collections"][0].keys()]),
+            sorted(
+                [key for key in result.data["collections"][0].keys()] + ["is_deleted"]
+            ),
             sorted(
                 [
                     field.name

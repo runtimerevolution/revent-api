@@ -10,10 +10,28 @@ from photo.fixtures import (
     UNIQUE_SUBMISSION_ERROR_MESSAGE,
     VALID_USER_ERROR_MESSAGE,
 )
+from photo.manager import SoftDeleteManager
 from photo.storages_backend import PublicMediaStorage, picture_path
 
 
-class User(models.Model):
+class SoftDeleteModel(models.Model):
+    is_deleted = models.BooleanField(default=False)
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
+
+    def delete(self):
+        self.is_deleted = True
+        self.save()
+
+    def restore(self):
+        self.is_deleted = False
+        self.save()
+
+    class Meta:
+        abstract = True
+
+
+class User(SoftDeleteModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     email = models.TextField(unique=True)
     name_first = models.TextField(blank=True, null=True)
@@ -27,6 +45,15 @@ class User(models.Model):
     )
     profile_picture_updated_at = models.DateTimeField(blank=True, null=True)
     user_handle = models.TextField(unique=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["email"],
+                condition=models.Q(is_deleted="False"),
+                name="user_email",
+            )
+        ]
 
     def validate_profile_picture(self):
         if not self._state.adding:
@@ -43,7 +70,7 @@ class User(models.Model):
         super(User, self).save(*args, **kwargs)
 
 
-class Picture(models.Model):
+class Picture(SoftDeleteModel):
     user = models.ForeignKey(
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
@@ -55,7 +82,7 @@ class Picture(models.Model):
     likes = models.ManyToManyField(User, related_name="picture_likes")
 
 
-class PictureComment(models.Model):
+class PictureComment(SoftDeleteModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     picture = models.ForeignKey(
         "Picture",
@@ -65,7 +92,7 @@ class PictureComment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Collection(models.Model):
+class Collection(SoftDeleteModel):
     name = models.TextField()
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     pictures = models.ManyToManyField(Picture, related_name="collection_pictures")
@@ -76,7 +103,7 @@ class Collection(models.Model):
         ]
 
 
-class Contest(models.Model):
+class Contest(SoftDeleteModel):
     title = models.TextField()
     description = models.TextField()
     cover_picture = models.ForeignKey(
@@ -116,7 +143,7 @@ class Contest(models.Model):
         super(Contest, self).save(*args, **kwargs)
 
 
-class ContestSubmission(models.Model):
+class ContestSubmission(SoftDeleteModel):
     contest = models.ForeignKey(
         "Contest",
         on_delete=models.CASCADE,

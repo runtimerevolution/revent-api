@@ -6,6 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE
+from photo.models import ContestSubmission
 from photo.schema import schema
 from photo.tests.factories import (
     ContestFactory,
@@ -16,6 +17,7 @@ from photo.tests.factories import (
 
 from .graphql_mutations import (
     contest_submission_creation_mutation,
+    contest_submission_delete_mutation,
     contest_submission_update_mutation,
     contest_submission_vote_mutation,
 )
@@ -139,3 +141,24 @@ class ContestSubmissionTest(TestCase):
 
         exception = e.exception
         self.assertIn(OUTDATED_SUBMISSION_ERROR_MESSAGE, exception.messages)
+
+    def test_delete_success(self):
+        contest_submission = ContestSubmissionFactory()
+
+        result = schema.execute_sync(
+            contest_submission_delete_mutation,
+            variable_values={
+                "contest_submission": {"id": contest_submission.id},
+            },
+        )
+
+        queryset_undeleted = ContestSubmission.objects.filter(id=contest_submission.id)
+        queryset_all = ContestSubmission.all_objects.filter(id=contest_submission.id)
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["delete_contest_submission"]["id"], contest_submission.id
+        )
+        self.assertEqual(queryset_undeleted.count(), 0)
+        self.assertEqual(queryset_all.count(), 1)
+        self.assertEqual(queryset_all[0].id, contest_submission.id)

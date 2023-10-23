@@ -9,6 +9,7 @@ from photo.tests.factories import PictureFactory, UserFactory
 
 from .graphql_mutations import (
     picture_creation_mutation,
+    picture_delete_mutation,
     picture_like_mutation,
     picture_update_mutation,
 )
@@ -87,3 +88,22 @@ class PictureTest(TestCase):
         self.assertEqual(len(result.data["update_picture"]["likes"]), len(user_like))
         for like in result.data["update_picture"]["likes"]:
             self.assertTrue(like["id"] in likes)
+
+    def test_delete_success(self):
+        picture = PictureFactory()
+
+        result = schema.execute_sync(
+            picture_delete_mutation,
+            variable_values={
+                "picture": {"id": picture.id},
+            },
+        )
+
+        queryset_undeleted = Picture.objects.filter(id=picture.id)
+        queryset_all = Picture.all_objects.filter(id=picture.id)
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(result.data["delete_picture"]["id"], picture.id)
+        self.assertEqual(queryset_undeleted.count(), 0)
+        self.assertEqual(queryset_all.count(), 1)
+        self.assertEqual(queryset_all[0].id, picture.id)

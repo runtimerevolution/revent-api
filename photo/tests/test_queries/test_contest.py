@@ -29,7 +29,7 @@ class ContestTest(TestCase):
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["contests"]), self.batch_size)
         self.assertEqual(
-            sorted([key for key in result.data["contests"][0].keys()]),
+            sorted([key for key in result.data["contests"][0].keys()] + ["is_deleted"]),
             sorted(
                 [
                     field.name

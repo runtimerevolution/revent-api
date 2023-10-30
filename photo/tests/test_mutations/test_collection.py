@@ -84,7 +84,7 @@ class CollectionTest(TestCase):
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["collection_add_picture"]["pictures"][0]["id"],
+            result.data["collection_add_picture"]["results"]["pictures"][0]["id"],
             picture.id,
         )
 

@@ -33,11 +33,13 @@ class PictureTest(TestCase):
             variable_values={"picture": picture, "upload": image},
         )
         self.assertEqual(result.errors, None)
-        self.assertEqual(result.data["create_picture"]["user"]["id"], picture["user"])
+        self.assertEqual(
+            result.data["create_picture"]["results"]["user"]["id"], picture["user"]
+        )
 
         picture_object = Picture.objects.get(user__id=picture["user"])
         self.assertEqual(
-            result.data["create_picture"]["file"],
+            result.data["create_picture"]["results"]["file"],
             "media/{0}/{1}.webp".format(picture["user"], picture_object.id),
         )
 
@@ -61,10 +63,10 @@ class PictureTest(TestCase):
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["like_picture"]["user"]["id"], str(picture.user.id)
+            result.data["like_picture"]["results"]["user"]["id"], str(picture.user.id)
         )
         self.assertEqual(
-            result.data["like_picture"]["likes"][0]["id"], str(user_like.id)
+            result.data["like_picture"]["results"]["likes"][0]["id"], str(user_like.id)
         )
 
     def test_update(self):

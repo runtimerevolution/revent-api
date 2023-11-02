@@ -1,8 +1,10 @@
 from io import BytesIO
 
 import strawberry
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import DatabaseError, transaction
+from django.forms import ValidationError
 from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
 
@@ -20,6 +22,8 @@ from photo.fixtures import (
     NO_CONTEST_FOUND,
     NO_PICTURE_FOUND,
     NO_SUBMISSION_FOUND,
+    NO_USER_FOUND,
+    PICTURE_SIZE_ERROR,
 )
 from photo.models import User
 
@@ -105,13 +109,16 @@ class Mutation:
     ) -> CreatePictureMutationResponse:
         try:
             with transaction.atomic():
-                user = User.objects.get(id=input.user)
+                if not (user := User.objects.filter(id=input.user).first()):
+                    raise ValidationError(message=NO_USER_FOUND)
 
                 picture_object = Picture(user=user)
                 picture_object.save()
 
                 image_bytes = BytesIO()
                 picture.save(image_bytes, format="webp")
+                if image_bytes.tell() > int(settings.MAX_PICTURE_SIZE):
+                    raise ValidationError(message=PICTURE_SIZE_ERROR)
                 image_bytes.seek(0)
 
                 image_file = SimpleUploadedFile(
@@ -126,6 +133,10 @@ class Mutation:
                 return CreatePictureMutationResponse(
                     success=True, results=picture_object, errors=""
                 )
+        except ValidationError as e:
+            return CreatePictureMutationResponse(
+                success=False, results={}, errors=e.message
+            )
         except DatabaseError:
             return CreatePictureMutationResponse(
                 success=False, results={}, errors=CREATE_PICTURE_ERROR

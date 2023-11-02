@@ -30,7 +30,7 @@ class PictureTest(TestCase):
 
         result = schema.execute_sync(
             picture_creation_mutation,
-            variable_values={"picture": picture, "upload": image},
+            variable_values={"input": picture, "upload": image},
         )
         self.assertEqual(result.errors, None)
         self.assertEqual(

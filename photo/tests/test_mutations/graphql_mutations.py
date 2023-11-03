@@ -56,17 +56,21 @@ user_delete_mutation = """
                 """
 
 picture_creation_mutation = """
-                    mutation TestMutation($picture: PictureInput!, $upload: Upload!) {
-                        create_picture(input: $picture, picture: $upload) {
-                            ... on PictureType {
-                              id
-                              user {
+                    mutation TestMutation($input: PictureInput!, $upload: Upload!) {
+                        create_picture(input: $input, picture: $upload) {
+                            ... on CreatePictureMutationResponse {
+                              success
+                              results {
                                 id
+                                user {
+                                  id
+                                }
+                                file
+                                likes {
+                                  id
+                                }
                               }
-                              file
-                              likes {
-                                id
-                              }
+                              errors
                             }
                         }
                     }
@@ -75,15 +79,19 @@ picture_creation_mutation = """
 picture_like_mutation = """
                     mutation TestMutation($user: String!, $picture: Int!) {
                         like_picture(user: $user, picture: $picture) {
-                            ... on PictureType {
-                              id
-                              user {
+                            ... on AddLikeMutationResponse {
+                              success
+                              results {
                                 id
+                                user {
+                                  id
+                                }
+                                file
+                                likes {
+                                  id
+                                }
                               }
-                              file
-                              likes {
-                                id
-                              }
+                              errors
                             }
                         }
                     }
@@ -211,14 +219,18 @@ collection_creation_mutation = """
 collection_add_picture_mutation = """
                     mutation TestMutation($collection: Int!, $picture: Int!) {
                         collection_add_picture(collection: $collection, picture: $picture) {
-                            ... on CollectionType {
-                              user {
-                                email
+                            ... on CollectionAddPictureMutationResponse {
+                              success
+                              results {
+                                user {
+                                  email
+                                }
+                                name
+                                pictures {
+                                  id
+                                }
                               }
-                              name
-                              pictures {
-                                id
-                              }
+                              errors
                             }
                         }
                     }
@@ -313,11 +325,11 @@ contest_close_mutation = """
                         contest_close(contest: $contest) {
                             ... on CloseContestMutationResponse {
                               success
-                              results{
+                              results {
                                 id
                                 voting_phase_end
                               }
-                              error
+                              errors
                             }
                         }
                     }
@@ -388,13 +400,13 @@ contest_submission_vote_mutation = """
                         contest_submission_add_vote(contestSubmission: $contestSubmission, user: $user) {
                             ... on AddVoteMutationResponse {
                               success
-                              results{
+                              results {
                                 id
                                 votes {
                                   email
                                 }
                               }
-                              error
+                              errors
                             }
                         }
                     }

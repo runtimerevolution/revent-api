@@ -10,6 +10,16 @@ VALID_USER_ERROR_MESSAGE = (
     "The contest must be created by a valid user (created_by can not be null)."
 )
 
+NO_USER_FOUND = "User was not found"
+
+NO_PICTURE_FOUND = "No picture was found"
+
 NO_CONTEST_FOUND = "No contest was found"
 
+NO_COLLECTION_FOUND = "No collection was found"
+
 NO_SUBMISSION_FOUND = "No submission was found"
+
+PICTURE_SIZE_ERROR = "Picture could not be uploaded"
+
+CREATE_PICTURE_ERROR = "Picture could not be uploaded"

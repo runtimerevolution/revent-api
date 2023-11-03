@@ -81,6 +81,12 @@ class Picture(SoftDeleteModel):
     )
     likes = models.ManyToManyField(User, related_name="picture_likes")
 
+    def like_picture(self, user):
+        if user not in self.likes.filter(id=user):
+            self.likes.add(user)
+            self.save()
+        return self
+
 
 class PictureComment(SoftDeleteModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
@@ -101,6 +107,12 @@ class Collection(SoftDeleteModel):
         constraints = [
             models.UniqueConstraint(fields=["name", "user"], name="collection_pk")
         ]
+
+    def add_picture(self, picture):
+        if picture not in self.pictures.filter(id=picture):
+            self.pictures.add(picture)
+            self.save()
+        return self
 
 
 class Contest(SoftDeleteModel):
@@ -135,6 +147,7 @@ class Contest(SoftDeleteModel):
 
     def close_contest(self):
         self.voting_phase_end = timezone.now()
+        self.save()
         return self
 
     def save(self, *args, **kwargs):

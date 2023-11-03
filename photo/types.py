@@ -96,11 +96,32 @@ class ContestSubmissionType:
 class AddVoteMutationResponse:
     success: bool
     results: ContestSubmissionType
-    error: str
+    errors: str
+
+
+@strawberry.type
+class CreatePictureMutationResponse:
+    success: bool
+    results: PictureType
+    errors: str
+
+
+@strawberry.type
+class AddLikeMutationResponse:
+    success: bool
+    results: PictureType
+    errors: str
+
+
+@strawberry.type
+class CollectionAddPictureMutationResponse:
+    success: bool
+    results: CollectionType
+    errors: str
 
 
 @strawberry.type
 class CloseContestMutationResponse:
     success: bool
     results: ContestType
-    error: str
+    errors: str

@@ -10,9 +10,10 @@ from photo.fixtures import (
 )
 
 from photo.storages_backend import PublicMediaStorage, picture_path
+from django.contrib.auth.models import AbstractBaseUser
 
 
-class User(models.Model):
+class User(AbstractBaseUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     email = models.TextField(unique=True)
     name_first = models.TextField(blank=True, null=True)
@@ -26,6 +27,9 @@ class User(models.Model):
     )
     profile_picture_updated_at = models.DateTimeField(blank=True, null=True)
     user_handle = models.TextField(unique=True, null=True)
+
+    USERNAME_FIELD = "email"
+    EMAIL_FIELD = "email"
 
     def validate_profile_picture(self):
         if not self._state.adding:

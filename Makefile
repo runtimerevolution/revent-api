@@ -43,3 +43,9 @@ setup: up install migrate
 coverage:
 	coverage erase && coverage run manage.py test && coverage html --skip-empty --skip-covered
 	open htmlcov/index.html
+
+shell:
+	python manage.py shell
+
+urls:
+	python manage.py show_urls

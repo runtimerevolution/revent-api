@@ -46,10 +46,9 @@ INSTALLED_APPS = [
     "corsheaders",
     "photo",
     "storages",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
+    "django.contrib.sites",
+    "rest_framework",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -61,15 +60,42 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+CORS_ALLOW_CREDENTIALS = True
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        "APP": {"client_id": "123", "secret": "456", "key": ""},
+        # These are provider-specific settings that can only be
+        # listed here:
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    }
+}
+
+SITE_ID = 1
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
             "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
             "secret": os.environ.get("GOOGLE_CLIENT_SECRET"),
-            "key": "",
         },
         "SCOPE": [
             "profile",
@@ -87,6 +113,8 @@ CORS_ALLOWED_ORIGINS = [
 
 ROOT_URLCONF = "config.urls"
 
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -98,6 +126,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -106,11 +135,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
+    "utils.helper.ReventModelBackend",
 ]
 
-
+AUTH_USER_MODEL = "photo.User"
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -181,3 +210,7 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+GOOGLE_OAUTH2_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+BASE_BACKEND_URL = "http://127.0.0.1:8000/"

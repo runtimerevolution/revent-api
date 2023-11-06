@@ -10,7 +10,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("graphql/", csrf_exempt(GraphQLView.as_view(schema=schema))),
     path(
-        "auth/google-redirect/",
+        "auth/google/",
         GoogleLoginRedirectApi.as_view(),
     ),
     path("auth/login/callback/", GoogleLoginApi.as_view()),

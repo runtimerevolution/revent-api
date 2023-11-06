@@ -23,7 +23,7 @@ class GoogleAccessTokens:
 
 
 class GoogleRawLoginFlowService:
-    API_URI = "auth/login/callback/"
+    API_URI = "auth/google/login/callback/"
 
     GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/auth"
     GOOGLE_ACCESS_TOKEN_OBTAIN_URL = "https://oauth2.googleapis.com/token"

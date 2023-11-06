@@ -13,5 +13,5 @@ urlpatterns = [
         "auth/google/",
         GoogleLoginRedirectApi.as_view(),
     ),
-    path("auth/login/callback/", GoogleLoginApi.as_view()),
+    path("auth/google/login/callback/", GoogleLoginApi.as_view()),
 ]

@@ -10,12 +10,47 @@ from photo.fixtures import (
 )
 
 from photo.storages_backend import PublicMediaStorage, picture_path
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 
-class User(AbstractBaseUser):
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def _create_super_user(
+        self, email, password, **extra_fields
+    ):  # sourcery skip: raise-from-previous-error
+        """
+        Creates and saves a User with the given email.
+        """
+        if not email:
+            raise ValueError("The given email must be set")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, request, data, **extra_fields):
+        data["is_staff"] = False
+        data["is_superuser"] = False
+        data["is_active"] = False
+        return self._create_user(request, data)
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+
+        return self._create_super_user(email, password, **extra_fields)
+
+
+class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     email = models.TextField(unique=True)
+    username = models.CharField("username", max_length=150, null=True)
     name_first = models.TextField(blank=True, null=True)
     name_last = models.TextField(blank=True, null=True)
     profile_picture = models.ForeignKey(
@@ -30,6 +65,8 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
+    REQUIRED_FIELDS = []
+    objects = UserManager()
 
     def validate_profile_picture(self):
         if not self._state.adding:

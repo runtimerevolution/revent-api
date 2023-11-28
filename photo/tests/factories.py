@@ -20,9 +20,11 @@ class UserFactory(factory.django.DjangoModelFactory):
         skip_postgeneration_save = True
 
     user_handle = factory.Faker("name")
-    email = factory.Sequence(lambda n: "user{0}@email.com".format(n))
+    email = factory.Faker("email")
     name_first = factory.Faker("first_name")
     name_last = factory.Faker("last_name")
+    username = factory.Faker("email")
+    password = factory.Faker("password")
     profile_picture_updated_at = factory.Faker("date_time", tzinfo=pytz.UTC)
 
     @factory.post_generation

@@ -9,7 +9,7 @@ from photo.views import GoogleLogin
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("graphql/", csrf_exempt(GraphQLView.as_view(schema=schema))),
-    path("accounts/", include("allauth.urls")),
-    path("auth/", include("dj_rest_auth.urls")),
-    path("auth/google/", GoogleLogin.as_view(), name="google_login"),
+    path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls.authtoken")),
+    path("auth/", include("djoser.social.urls")),
 ]

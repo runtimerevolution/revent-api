@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "djoser",
+    "social_django",
 ]
 
 MIDDLEWARE = [
@@ -67,6 +69,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware"
+    # "utils.middleware.AuthenticatonMiddleware",
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -78,6 +82,33 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:3000",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "SOCIAL_AUTH_TOKEN_STRATEGY": "config.strategy.TokenStrategy",
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+    ],
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+    )
+}
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("GOOGLE_CLIENT_ID")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "openid",
+]
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ["first_name", "last_name"]
+SESSION_COOKIE_SAMESITE = None
 
 REST_AUTH = {"USE_JWT": True, "JWT_AUTH_COOKIE": "jwt-auth", "JWT_AUTH_HTTPONLY": False}
 
@@ -110,7 +141,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 AUTHENTICATION_BACKENDS = [
-    "utils.helper.ReventModelBackend",
+    # "utils.helper.ReventModelBackend",
+    "social_core.backends.google.GoogleOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 AUTH_USER_MODEL = "photo.User"

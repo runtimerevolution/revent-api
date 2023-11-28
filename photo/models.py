@@ -14,37 +14,26 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 
 class UserManager(BaseUserManager):
-    use_in_migrations = True
-
-    def _create_super_user(
-        self, email, password, **extra_fields
-    ):  # sourcery skip: raise-from-previous-error
-        """
-        Creates and saves a User with the given email.
-        """
+    def create_user(self, email, password=None, **kwargs):
         if not email:
-            raise ValueError("The given email must be set")
+            raise ValueError("Email not provided")
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(email=email, **kwargs)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
         return user
 
-    def create_user(self, request, data, **extra_fields):
-        data["is_staff"] = False
-        data["is_superuser"] = False
-        data["is_active"] = False
-        return self._create_user(request, data)
-
-    def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-        if extra_fields.get("is_staff") is not True:
-            raise ValueError("Superuser must have is_staff=True.")
-        if extra_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser must have is_superuser=True.")
-
-        return self._create_super_user(email, password, **extra_fields)
+    def create_superuser(self, email, password=None, **kwargs):
+        kwargs.setdefault("is_active", True)
+        kwargs.setdefault("is_staff", True)
+        kwargs.setdefault("is_superuser", True)
+        if kwargs.get("is_active") is not True:
+            raise ValueError("Superuser should be active")
+        if kwargs.get("is_staff") is not True:
+            raise ValueError("Superuser should be staff")
+        if kwargs.get("is_superuser") is not True:
+            raise ValueError("Superuser should have is_superuser=True")
+        return self.create_user(email, password, **kwargs)
 
 
 class User(AbstractUser):

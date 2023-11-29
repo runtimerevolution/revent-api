@@ -73,7 +73,7 @@ class User(AbstractUser, SoftDeleteModel):
 
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["first_name", "last_name"]
     objects = UserManager()
 
     class Meta:

@@ -49,12 +49,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_extensions",
     "rest_framework.authtoken",
-    "dj_rest_auth",
-    "allauth",
-    "allauth.account",
-    "dj_rest_auth.registration",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
     "djoser",
     "social_django",
 ]
@@ -110,13 +104,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ["first_name", "last_name"]
 SESSION_COOKIE_SAMESITE = None
 
-REST_AUTH = {"USE_JWT": True, "JWT_AUTH_COOKIE": "jwt-auth", "JWT_AUTH_HTTPONLY": False}
-
-ACCOUNT_EMAIL_VERIFICATION = "none"
-SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
-SOCIALACCOUNT_EMAIL_REQUIRED = False
-SITE_ID = 1
-
 ROOT_URLCONF = "config.urls"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
@@ -141,7 +128,6 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 AUTHENTICATION_BACKENDS = [
-    # "utils.helper.ReventModelBackend",
     "social_core.backends.google.GoogleOAuth2",
     "django.contrib.auth.backends.ModelBackend",
 ]

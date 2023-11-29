@@ -37,18 +37,40 @@ user_update_mutation = """
                     }
                 """
 
-picture_creation_mutation = """
-                    mutation TestMutation($picture: PictureInput!, $upload: Upload!) {
-                        create_picture(input: $picture, picture: $upload) {
-                            ... on PictureType {
+user_delete_mutation = """
+                    mutation TestMutation($user: UserFilter!) {
+                        delete_user(input: $user) {
+                            ... on UserType {
                               id
-                              user {
-                                id
+                            }
+                            ... on OperationInfo {
+                              __typename
+                              messages {
+                                field
+                                kind
+                                message
                               }
-                              file
-                              likes {
+                            }
+                        }
+                    }
+                """
+
+picture_creation_mutation = """
+                    mutation TestMutation($input: PictureInput!, $upload: Upload!) {
+                        create_picture(input: $input, picture: $upload) {
+                            ... on CreatePictureMutationResponse {
+                              success
+                              results {
                                 id
+                                user {
+                                  id
+                                }
+                                file
+                                likes {
+                                  id
+                                }
                               }
+                              errors
                             }
                         }
                     }
@@ -57,15 +79,19 @@ picture_creation_mutation = """
 picture_like_mutation = """
                     mutation TestMutation($user: String!, $picture: Int!) {
                         like_picture(user: $user, picture: $picture) {
-                            ... on PictureType {
-                              id
-                              user {
+                            ... on AddLikeMutationResponse {
+                              success
+                              results {
                                 id
+                                user {
+                                  id
+                                }
+                                file
+                                likes {
+                                  id
+                                }
                               }
-                              file
-                              likes {
-                                id
-                              }
+                              errors
                             }
                         }
                     }
@@ -82,6 +108,24 @@ picture_update_mutation = """
                               file
                               likes {
                                 id
+                              }
+                            }
+                        }
+                    }
+                """
+
+picture_delete_mutation = """
+                    mutation TestMutation($picture: PictureFilter!) {
+                        delete_picture(input: $picture) {
+                            ... on PictureType {
+                              id
+                            }
+                            ... on OperationInfo {
+                              __typename
+                              messages {
+                                field
+                                kind
+                                message
                               }
                             }
                         }
@@ -130,6 +174,24 @@ picture_comment_update_mutation = """
                     }
                 """
 
+picture_comment_delete_mutation = """
+                    mutation TestMutation($picture_comment: PictureCommentFilter!) {
+                        delete_picture_comment(input: $picture_comment) {
+                            ... on PictureCommentType {
+                              id
+                            }
+                            ... on OperationInfo {
+                              __typename
+                              messages {
+                                field
+                                kind
+                                message
+                              }
+                            }
+                        }
+                    }
+                """
+
 collection_creation_mutation = """
                     mutation TestMutation($collection: CollectionInput!) {
                         create_collection(input: $collection) {
@@ -157,14 +219,18 @@ collection_creation_mutation = """
 collection_add_picture_mutation = """
                     mutation TestMutation($collection: Int!, $picture: Int!) {
                         collection_add_picture(collection: $collection, picture: $picture) {
-                            ... on CollectionType {
-                              user {
-                                email
+                            ... on CollectionAddPictureMutationResponse {
+                              success
+                              results {
+                                user {
+                                  email
+                                }
+                                name
+                                pictures {
+                                  id
+                                }
                               }
-                              name
-                              pictures {
-                                id
-                              }
+                              errors
                             }
                         }
                     }
@@ -178,6 +244,24 @@ collection_update_mutation = """
                               name
                               pictures {
                                 id
+                              }
+                            }
+                        }
+                    }
+                """
+
+collection_delete_mutation = """
+                    mutation TestMutation($collection: CollectionFilter!) {
+                        delete_collection(input: $collection) {
+                            ... on CollectionType {
+                              id
+                            }
+                            ... on OperationInfo {
+                              __typename
+                              messages {
+                                field
+                                kind
+                                message
                               }
                             }
                         }
@@ -241,11 +325,29 @@ contest_close_mutation = """
                         contest_close(contest: $contest) {
                             ... on CloseContestMutationResponse {
                               success
-                              results{
+                              results {
                                 id
                                 voting_phase_end
                               }
-                              error
+                              errors
+                            }
+                        }
+                    }
+                """
+
+contest_delete_mutation = """
+                    mutation TestMutation($contest: ContestFilter!) {
+                        delete_contest(input: $contest) {
+                            ... on ContestType {
+                              id
+                            }
+                            ... on OperationInfo {
+                              __typename
+                              messages {
+                                field
+                                kind
+                                message
+                              }
                             }
                         }
                     }
@@ -298,13 +400,31 @@ contest_submission_vote_mutation = """
                         contest_submission_add_vote(contestSubmission: $contestSubmission, user: $user) {
                             ... on AddVoteMutationResponse {
                               success
-                              results{
+                              results {
                                 id
                                 votes {
                                   email
                                 }
                               }
-                              error
+                              errors
+                            }
+                        }
+                    }
+                """
+
+contest_submission_delete_mutation = """
+                    mutation TestMutation($contest_submission: ContestSubmissionFilter!) {
+                        delete_contest_submission(input: $contest_submission) {
+                            ... on ContestSubmissionType {
+                              id
+                            }
+                            ... on OperationInfo {
+                              __typename
+                              messages {
+                                field
+                                kind
+                                message
+                              }
                             }
                         }
                     }

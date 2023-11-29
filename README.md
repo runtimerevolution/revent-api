@@ -123,6 +123,16 @@ To add tests remember that the python automatic discover only works properly for
 If you want to use the vscode debugger for a particular test you can use the launch.json.example, rename it launch.json
 and place it in the .vscode folder in the root of your working directory.
 
+## Dummy data
+To generate dummy data ensure that the localstack is running and all the migrations are aplied and use the command:
+
+```bash
+    make populate
+  ```
+
+This command should only be used when the database is empty or it will probaly raise integraty errors related to duplicate
+primary keys.
+
 ### TLDR;
 
 Check what's available in the Makefile.

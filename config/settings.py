@@ -32,6 +32,9 @@ AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_QUERYSTRING_AUTH = os.environ.get("AWS_QUERYSTRING_AUTH")
 
+# Other environment variables
+MAX_PICTURE_SIZE = os.environ.get("MAX_PICTURE_SIZE", 80000000)
+
 # Application definition
 
 INSTALLED_APPS = [

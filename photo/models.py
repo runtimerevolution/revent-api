@@ -1,14 +1,16 @@
 import uuid
+
 from django.db import models
 from django.forms import ValidationError
 from django.utils import timezone
+
 from photo.fixtures import (
     OUTDATED_SUBMISSION_ERROR_MESSAGE,
     REPEATED_VOTE_ERROR_MESSAGE,
     UNIQUE_SUBMISSION_ERROR_MESSAGE,
     VALID_USER_ERROR_MESSAGE,
 )
-
+from photo.manager import SoftDeleteManager
 from photo.storages_backend import PublicMediaStorage, picture_path
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
@@ -36,7 +38,24 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **kwargs)
 
 
-class User(AbstractUser):
+class SoftDeleteModel(models.Model):
+    is_deleted = models.BooleanField(default=False)
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
+
+    def delete(self):
+        self.is_deleted = True
+        self.save()
+
+    def restore(self):
+        self.is_deleted = False
+        self.save()
+
+    class Meta:
+        abstract = True
+
+
+class User(AbstractUser, SoftDeleteModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     email = models.TextField(unique=True)
     username = models.CharField("username", max_length=150, null=True)
@@ -57,6 +76,15 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
     objects = UserManager()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["email"],
+                condition=models.Q(is_deleted="False"),
+                name="user_email",
+            )
+        ]
+
     def validate_profile_picture(self):
         if not self._state.adding:
             old_picture = User.objects.filter(email=self.email).first().profile_picture
@@ -72,19 +100,25 @@ class User(AbstractUser):
         super(User, self).save(*args, **kwargs)
 
 
-class Picture(models.Model):
+class Picture(SoftDeleteModel):
     user = models.ForeignKey(
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
     name = models.TextField(blank=True, null=True)
-    file = models.FileField(
+    file = models.ImageField(
         storage=PublicMediaStorage(),
         upload_to=picture_path,
     )
     likes = models.ManyToManyField(User, related_name="picture_likes")
 
+    def like_picture(self, user):
+        if user not in self.likes.filter(id=user):
+            self.likes.add(user)
+            self.save()
+        return self
 
-class PictureComment(models.Model):
+
+class PictureComment(SoftDeleteModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     picture = models.ForeignKey(
         "Picture",
@@ -94,7 +128,7 @@ class PictureComment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Collection(models.Model):
+class Collection(SoftDeleteModel):
     name = models.TextField()
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     pictures = models.ManyToManyField(Picture, related_name="collection_pictures")
@@ -104,8 +138,14 @@ class Collection(models.Model):
             models.UniqueConstraint(fields=["name", "user"], name="collection_pk")
         ]
 
+    def add_picture(self, picture):
+        if picture not in self.pictures.filter(id=picture):
+            self.pictures.add(picture)
+            self.save()
+        return self
 
-class Contest(models.Model):
+
+class Contest(SoftDeleteModel):
     title = models.TextField()
     description = models.TextField()
     cover_picture = models.ForeignKey(
@@ -137,6 +177,7 @@ class Contest(models.Model):
 
     def close_contest(self):
         self.voting_phase_end = timezone.now()
+        self.save()
         return self
 
     def save(self, *args, **kwargs):
@@ -145,7 +186,7 @@ class Contest(models.Model):
         super(Contest, self).save(*args, **kwargs)
 
 
-class ContestSubmission(models.Model):
+class ContestSubmission(SoftDeleteModel):
     contest = models.ForeignKey(
         "Contest",
         on_delete=models.CASCADE,

@@ -2,10 +2,13 @@ import pytest
 from django.test import TestCase
 from django.utils import timezone
 
+from photo.models import User
 from photo.schema import schema
 from photo.tests.factories import PictureFactory, UserFactory
+
 from .graphql_mutations import (
     user_creation_mutation,
+    user_delete_mutation,
     user_update_mutation,
 )
 
@@ -75,3 +78,22 @@ class UserTest(TestCase):
             result.data["update_user"]["profile_picture_updated_at"],
             str(update_profile_picture_time).replace(" ", "T"),
         )
+
+    def test_delete_success(self):
+        user = UserFactory()
+
+        result = schema.execute_sync(
+            user_delete_mutation,
+            variable_values={
+                "user": {"id": str(user.id)},
+            },
+        )
+
+        queryset_undeleted = User.objects.filter(id=user.id)
+        queryset_all = User.all_objects.filter(id=user.id)
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(result.data["delete_user"]["id"], str(user.id))
+        self.assertEqual(queryset_undeleted.count(), 0)
+        self.assertEqual(queryset_all.count(), 1)
+        self.assertEqual(queryset_all[0].id, user.id)

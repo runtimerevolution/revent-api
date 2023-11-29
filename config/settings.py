@@ -62,9 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
-    "social_django.middleware.SocialAuthExceptionMiddleware"
-    # "utils.middleware.AuthenticatonMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -203,8 +201,5 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
-
-GOOGLE_OAUTH2_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
-GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 BASE_BACKEND_URL = os.environ.get("BASE_BACKEND_URL")
 BASE_APP_URL = os.environ.get("BASE_APP_URL")

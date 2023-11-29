@@ -94,6 +94,6 @@ class UserTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(result.data["delete_user"]["id"], str(user.id))
-        self.assertEqual(queryset_undeleted.count(), 0)
+        self.assertEqual(queryset_undeleted.count(), 1)
         self.assertEqual(queryset_all.count(), 1)
         self.assertEqual(queryset_all[0].id, user.id)

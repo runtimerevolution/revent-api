@@ -4,7 +4,6 @@ from django.views.decorators.csrf import csrf_exempt
 from strawberry.django.views import GraphQLView
 
 from photo.schema import schema
-from photo.views import GoogleLogin
 
 urlpatterns = [
     path("admin/", admin.site.urls),

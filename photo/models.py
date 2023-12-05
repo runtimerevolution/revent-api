@@ -12,6 +12,30 @@ from photo.fixtures import (
 )
 from photo.manager import SoftDeleteManager
 from photo.storages_backend import PublicMediaStorage, picture_path
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+
+
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None, **kwargs):
+        if not email:
+            raise ValueError("Email not provided")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **kwargs)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, email, password=None, **kwargs):
+        kwargs.setdefault("is_active", True)
+        kwargs.setdefault("is_staff", True)
+        kwargs.setdefault("is_superuser", True)
+        if kwargs.get("is_active") is not True:
+            raise ValueError("Superuser should be active")
+        if kwargs.get("is_staff") is not True:
+            raise ValueError("Superuser should be staff")
+        if kwargs.get("is_superuser") is not True:
+            raise ValueError("Superuser should have is_superuser=True")
+        return self.create_user(email, password, **kwargs)
 
 
 class SoftDeleteModel(models.Model):
@@ -31,9 +55,10 @@ class SoftDeleteModel(models.Model):
         abstract = True
 
 
-class User(SoftDeleteModel):
+class User(AbstractUser, SoftDeleteModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     email = models.TextField(unique=True)
+    username = models.CharField("username", max_length=150, null=True)
     name_first = models.TextField(blank=True, null=True)
     name_last = models.TextField(blank=True, null=True)
     profile_picture = models.ForeignKey(
@@ -45,6 +70,11 @@ class User(SoftDeleteModel):
     )
     profile_picture_updated_at = models.DateTimeField(blank=True, null=True)
     user_handle = models.TextField(unique=True, null=True)
+
+    USERNAME_FIELD = "email"
+    EMAIL_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "last_name"]
+    objects = UserManager()
 
     class Meta:
         constraints = [

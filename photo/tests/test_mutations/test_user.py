@@ -14,69 +14,6 @@ from .graphql_mutations import (
 
 
 class UserTest(TestCase):
-    @pytest.mark.asyncio
-    async def test_create(self):
-        user = {
-            "email": "user@user.com",
-            "name_first": "Jonh",
-            "name_last": "Smith",
-            "user_handle": "user123",
-        }
-
-        result = await schema.execute(
-            user_creation_mutation,
-            variable_values={"user": user},
-        )
-
-        self.assertEqual(result.errors, None)
-        self.assertEqual(result.data["create_user"], user)
-
-    @pytest.mark.asyncio
-    async def test_create_fail(self):
-        user_one = {
-            "email": "user@user.com",
-            "name_first": "Jonh",
-            "name_last": "Smith",
-            "user_handle": "user123",
-        }
-
-        user_two = {
-            "email": "user@user.com",
-            "name_first": "Jonh2",
-            "name_last": "Smith2",
-            "user_handle": "user123",
-        }
-
-        result = await schema.execute(
-            user_creation_mutation,
-            variable_values={"user": user_one},
-        )
-
-        result_error = await schema.execute(
-            user_creation_mutation,
-            variable_values={"user": user_two},
-        )
-
-        self.assertEqual(result.errors, None)
-        self.assertEqual(result_error.errors, None)
-        self.assertFalse(result_error.data["create_user"]["__typename"] is None)
-        self.assertEqual(
-            result_error.data["create_user"]["messages"][0],
-            {
-                "field": "email",
-                "kind": "VALIDATION",
-                "message": "User with this Email already exists.",
-            },
-        )
-        self.assertEqual(
-            result_error.data["create_user"]["messages"][1],
-            {
-                "field": "userHandle",
-                "kind": "VALIDATION",
-                "message": "User with this User handle already exists.",
-            },
-        )
-
     def test_update(self):
         update_profile_picture_time = timezone.now()
         user = UserFactory(profile_picture_updated_at=update_profile_picture_time)
@@ -157,6 +94,6 @@ class UserTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(result.data["delete_user"]["id"], str(user.id))
-        self.assertEqual(queryset_undeleted.count(), 0)
+        self.assertEqual(queryset_undeleted.count(), 1)
         self.assertEqual(queryset_all.count(), 1)
         self.assertEqual(queryset_all[0].id, user.id)

@@ -48,12 +48,8 @@ Info = _Info[Context, RootValueType]
 
 @strawberry.type
 class Query:
-    @strawberry.field
-    def users(self, user: uuid.UUID = None) -> List[UserType]:
-        return User.objects.filter(id=user)
-
     @strawberry.field(permission_classes=[IsAuthenticated])
-    def get_authenticated_user(self, info: Info) -> UserType | None:
+    def users(self, info: Info) -> UserType | None:
         return info.context.user()
 
     @strawberry.field

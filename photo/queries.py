@@ -53,7 +53,7 @@ class Query:
         return User.objects.filter(id=user)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
-    def users(self, info: Info) -> UserType | None:
+    def get_authenticated_user(self, info: Info) -> UserType | None:
         return info.context.user()
 
     @strawberry.field

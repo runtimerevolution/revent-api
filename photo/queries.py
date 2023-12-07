@@ -23,7 +23,6 @@ from photo.models import (
     PictureComment,
     User,
 )
-from photo.permissions import IsAuthenticated
 from photo.types import (
     CollectionType,
     ContestSubmissionType,
@@ -51,10 +50,6 @@ class Query:
     @strawberry.field
     def users(self, user: uuid.UUID = None) -> List[UserType]:
         return User.objects.filter(id=user)
-
-    @strawberry.field(permission_classes=[IsAuthenticated])
-    def get_authenticated_user(self, info: Info) -> UserType | None:
-        return info.context.user()
 
     @strawberry.field
     def pictures(

@@ -1,4 +1,5 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+
 
 from photo.models import (
     User,
@@ -8,6 +9,7 @@ from photo.models import (
     PictureComment,
     ContestSubmission,
 )
+from utils.enums import ContestInternalStates
 
 
 @admin.register(User)
@@ -44,6 +46,17 @@ class ContestAdmin(admin.ModelAdmin):
         "upload_phase_end",
         "voting_phase_end",
     )
+
+    actions = [
+        "close_contest",
+    ]
+
+    def close_contest(self, request, queryset):
+        for contest in queryset:
+            contest.close_contest()
+            breakpoint()
+            if contest.internal_status == ContestInternalStates.DRAW:
+                messages.info(request, "DRAW PHASE END needs to be set.")
 
 
 @admin.register(PictureComment)

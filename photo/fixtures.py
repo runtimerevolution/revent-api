@@ -23,3 +23,9 @@ NO_SUBMISSION_FOUND = "No submission was found"
 PICTURE_SIZE_ERROR = "Picture could not be uploaded"
 
 CREATE_PICTURE_ERROR = "Picture could not be uploaded"
+
+DRAW_PHASE_NOT_SET = "Draw phase end date needs to be set."
+
+VOTING_PHASE_NOT_OVER = "Voting phase hasn't ended yet."
+
+UPLOAD_PHASE_NOT_OVER = "Upload phase hasn't ended yet."

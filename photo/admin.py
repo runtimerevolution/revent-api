@@ -1,4 +1,10 @@
 from django.contrib import admin, messages
+from django.utils import timezone
+from photo.fixtures import (
+    DRAW_PHASE_NOT_SET,
+    UPLOAD_PHASE_NOT_OVER,
+    VOTING_PHASE_NOT_OVER,
+)
 
 
 from photo.models import (
@@ -53,10 +59,18 @@ class ContestAdmin(admin.ModelAdmin):
 
     def close_contest(self, request, queryset):
         for contest in queryset:
+            if contest.voting_phase_end > timezone.now():
+                messages.info(request, VOTING_PHASE_NOT_OVER)
+                break
+
+            if contest.upload_phase_end > timezone.now():
+                messages.info(request, UPLOAD_PHASE_NOT_OVER)
+                break
+
             contest.close_contest()
-            breakpoint()
             if contest.internal_status == ContestInternalStates.DRAW:
-                messages.info(request, "DRAW PHASE END needs to be set.")
+                contest.upload_phase_end = ""
+                messages.info(request, DRAW_PHASE_NOT_SET)
 
 
 @admin.register(PictureComment)

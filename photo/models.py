@@ -257,7 +257,7 @@ class ContestSubmission(SoftDeleteModel):
         super(ContestSubmission, self).save(*args, **kwargs)
 
     def add_vote(self, user):
-        if user not in self.votes.filter(id=user.id):
+        if user not in self.votes.filter(id=user):
             self.votes.add(user)
             self.save()
         return self

@@ -49,6 +49,8 @@ contest_query_all = """
                             upload_phase_start
                             upload_phase_end
                             voting_phase_end
+                            voting_draw_end
+                            internal_status
                             winners {
                                 id
                             }

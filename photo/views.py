@@ -1,6 +1,7 @@
 from django.http import HttpRequest, HttpResponse
-from photo.queries import Context
 from strawberry.django.views import GraphQLView
+
+from photo.queries import Context
 
 
 class ReventGraphQLView(GraphQLView):

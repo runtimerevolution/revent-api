@@ -1,12 +1,12 @@
 from django.contrib import admin
 
 from photo.models import (
-    User,
     Collection,
     Contest,
+    ContestSubmission,
     Picture,
     PictureComment,
-    ContestSubmission,
+    User,
 )
 
 

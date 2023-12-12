@@ -1,9 +1,10 @@
 import uuid
 from typing import List, Optional
-from rest_framework.authentication import TokenAuthentication
+
 import strawberry
 import strawberry_django
 from django.contrib.postgres.search import SearchVector
+from rest_framework.authentication import TokenAuthentication
 from strawberry.fastapi import BaseContext
 from strawberry.types import Info as _Info
 from strawberry.types.info import RootValueType

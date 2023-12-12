@@ -1,4 +1,6 @@
 import uuid
+
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.db.models import Count, Max
 from django.forms import ValidationError
@@ -12,8 +14,6 @@ from photo.fixtures import (
 )
 from photo.manager import SoftDeleteManager
 from photo.storages_backend import PublicMediaStorage, picture_path
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-
 from utils.enums import ContestInternalStates
 
 

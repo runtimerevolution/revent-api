@@ -1,19 +1,18 @@
 from django.contrib import admin, messages
 from django.utils import timezone
+
 from photo.fixtures import (
     DRAW_PHASE_NOT_SET,
     UPLOAD_PHASE_NOT_OVER,
     VOTING_PHASE_NOT_OVER,
 )
-
-
 from photo.models import (
-    User,
     Collection,
     Contest,
+    ContestSubmission,
     Picture,
     PictureComment,
-    ContestSubmission,
+    User,
 )
 from utils.enums import ContestInternalStates
 

@@ -2,6 +2,7 @@ import uuid
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.db.models import Count, Max
 from django.forms import ValidationError
 from django.utils import timezone
 
@@ -13,6 +14,7 @@ from photo.fixtures import (
 )
 from photo.manager import SoftDeleteManager
 from photo.storages_backend import PublicMediaStorage, picture_path
+from utils.enums import ContestInternalStates
 
 
 class UserManager(BaseUserManager):
@@ -159,7 +161,11 @@ class Contest(SoftDeleteModel):
     upload_phase_start = models.DateTimeField(default=timezone.now)
     upload_phase_end = models.DateTimeField(null=True, blank=True)
     voting_phase_end = models.DateTimeField(null=True, blank=True)
-    winners = models.ManyToManyField(User, related_name="contest_winners")
+    voting_draw_end = models.DateTimeField(null=True, blank=True)
+    internal_status = models.TextField(
+        choices=ContestInternalStates.choices, default=ContestInternalStates.OPEN
+    )
+    winners = models.ManyToManyField(User, related_name="contest_winners", blank=True)
     created_by = models.ForeignKey(
         "User",
         on_delete=models.SET_NULL,
@@ -175,8 +181,28 @@ class Contest(SoftDeleteModel):
         ):
             raise ValidationError(VALID_USER_ERROR_MESSAGE)
 
+    def reset_votes(self):
+        for submission in ContestSubmission.objects.filter(contest=self):
+            submission.votes.clear()
+
     def close_contest(self):
         self.voting_phase_end = timezone.now()
+        max_votes = ContestSubmission.objects.annotate(
+            num_votes=Count("votes")
+        ).aggregate(max_votes=Max("num_votes"))["max_votes"]
+        submissions_with_highest_votes = ContestSubmission.objects.annotate(
+            num_votes=Count("votes")
+        ).filter(num_votes=max_votes, contest=self)
+
+        for submission in submissions_with_highest_votes:
+            self.winners.add(submission.picture.user)
+
+        if self.winners.count() > 1:
+            self.internal_status = ContestInternalStates.DRAW
+            self.reset_votes()
+        else:
+            self.internal_status = ContestInternalStates.CLOSED
+
         self.save()
         return self
 

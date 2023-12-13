@@ -4,6 +4,10 @@ from typing import List, Optional
 import strawberry
 import strawberry_django
 from django.contrib.postgres.search import SearchVector
+from rest_framework.authentication import TokenAuthentication
+from strawberry.fastapi import BaseContext
+from strawberry.types import Info as _Info
+from strawberry.types.info import RootValueType
 
 from photo.filters import (
     CollectionFilter,
@@ -20,6 +24,7 @@ from photo.models import (
     PictureComment,
     User,
 )
+from photo.permissions import IsAuthenticated
 from photo.types import (
     CollectionType,
     ContestSubmissionType,
@@ -30,11 +35,27 @@ from photo.types import (
 )
 
 
+class Context(BaseContext):
+    def user(self) -> User | None:
+        if not self.request:
+            return None
+        authenticator = TokenAuthentication()
+        user, token = authenticator.authenticate(self.request)
+        return user
+
+
+Info = _Info[Context, RootValueType]
+
+
 @strawberry.type
 class Query:
     @strawberry.field
     def users(self, user: uuid.UUID = None) -> List[UserType]:
         return User.objects.filter(id=user)
+
+    @strawberry.field(permission_classes=[IsAuthenticated])
+    def get_authenticated_user(self, info: Info) -> UserType | None:
+        return info.context.user()
 
     @strawberry.field
     def pictures(

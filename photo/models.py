@@ -7,10 +7,14 @@ from django.forms import ValidationError
 from django.utils import timezone
 
 from photo.fixtures import (
+    CANT_VOTE_SUBMISSION,
+    CONTEST_CLOSED,
     OUTDATED_SUBMISSION_ERROR_MESSAGE,
     REPEATED_VOTE_ERROR_MESSAGE,
     UNIQUE_SUBMISSION_ERROR_MESSAGE,
+    UPLOAD_PHASE_NOT_OVER,
     VALID_USER_ERROR_MESSAGE,
+    VOTING_PHASE_OVER,
 )
 from photo.manager import SoftDeleteManager
 from photo.storages_backend import PublicMediaStorage, picture_path
@@ -252,12 +256,33 @@ class ContestSubmission(SoftDeleteModel):
 
     def save(self, *args, **kwargs):
         self.validate_unique()
-        self.validate_vote()
         self.validate_submission_date()
         super(ContestSubmission, self).save(*args, **kwargs)
 
     def add_vote(self, user):
-        if user not in self.votes.filter(id=user):
-            self.votes.add(user)
-            self.save()
+        contest_submissions = ContestSubmission.objects.filter(contest=self.contest)
+        user_vote = User.objects.filter(id=user).first()
+        if self.contest.internal_status == ContestInternalStates.CLOSED:
+            raise ValidationError(CONTEST_CLOSED)
+
+        if (
+            self.contest.upload_phase_end
+            and self.contest.upload_phase_end < timezone.now()
+        ):
+            raise ValidationError(UPLOAD_PHASE_NOT_OVER)
+        if (
+            self.contest.voting_phase_end
+            and self.contest.voting_phase_end < timezone.now()
+        ):
+            raise ValidationError(VOTING_PHASE_OVER)
+        if (
+            self.contest.internal_status == ContestInternalStates.DRAW
+            and user_vote not in self.contest.winners.all()
+        ):
+            raise ValidationError(CANT_VOTE_SUBMISSION)
+        for sub in contest_submissions:
+            if user_vote in sub.votes.all():
+                sub.votes.remove(user_vote)
+        self.votes.add(user)
+        self.save()
         return self

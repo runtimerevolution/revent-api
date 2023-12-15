@@ -88,8 +88,8 @@ class ContestType:
 @strawberry.django.type(ContestSubmission)
 class ContestSubmissionType:
     id: int
-    contest: "ContestType"
-    picture: "PictureType"
+    contest: ContestType
+    picture: PictureType
     submission_date: strawberry.auto
     votes: List[UserType]
 
@@ -97,7 +97,7 @@ class ContestSubmissionType:
 @strawberry.type
 class AddVoteMutationResponse:
     success: bool
-    results: ContestSubmissionType
+    results: ContestSubmissionType | None
     errors: str
 
 

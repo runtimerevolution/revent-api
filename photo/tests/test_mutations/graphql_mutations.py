@@ -56,8 +56,8 @@ user_delete_mutation = """
                 """
 
 picture_creation_mutation = """
-                    mutation TestMutation($input: PictureInput!, $upload: Upload!) {
-                        create_picture(input: $input, picture: $upload) {
+                    mutation TestMutation($input: PictureInput!) {
+                        create_picture(input: $input) {
                             ... on CreatePictureMutationResponse {
                               success
                               results {

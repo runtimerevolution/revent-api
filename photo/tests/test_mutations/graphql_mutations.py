@@ -397,18 +397,17 @@ contest_submission_update_mutation = """
 
 contest_submission_vote_mutation = """
                     mutation TestMutation($contestSubmission: Int!, $user: String!) {
-                        contest_submission_add_vote(contestSubmission: $contestSubmission, user: $user) {
-                            ... on AddVoteMutationResponse {
-                              success
-                              results {
-                                id
-                                votes {
-                                  email
-                                }
-                              }
-                              errors
-                            }
+                      contest_submission_add_vote(contestSubmission: $contestSubmission, user: $user) {
+                        errors
+                        success
+                        results {
+                          submission_date
+                          id
+                          votes {
+                            email
+                          }
                         }
+                      }
                     }
                 """
 

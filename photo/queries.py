@@ -40,8 +40,7 @@ class Context(BaseContext):
         if not self.request:
             return None
         authenticator = TokenAuthentication()
-        user, token = authenticator.authenticate(self.request)
-        return user
+        return authenticator.authenticate(self.request)
 
 
 Info = _Info[Context, RootValueType]

@@ -1,9 +1,8 @@
 import factory
-import pytest
 import pytz
 from django.forms import ValidationError
 from django.test import TestCase
-from django.utils import timezone
+from PIL import Image
 
 from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE
 from photo.models import ContestSubmission
@@ -25,32 +24,35 @@ from .graphql_mutations import (
 
 class ContestSubmissionTest(TestCase):
     def setUp(self):
-        self.picture = PictureFactory()
+        self.user = UserFactory()
         self.contest = ContestFactory()
 
-    @pytest.mark.asyncio
-    async def test_create(self):
+    def test_create(self):
+        image = Image.new(mode="RGB", size=(200, 200))
         contest_submission = {
-            "picture": self.picture.id,
-            "contest": self.contest.id,
+            "picture": {
+                "user": str(self.user.id),
+                "file": image,
+            },
+            "contest": int(self.contest.id),
         }
 
-        result = await schema.execute(
+        result = schema.execute_sync(
             contest_submission_creation_mutation,
             variable_values={"contestSubmission": contest_submission},
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_contest_submission"]["picture"]["user"]["email"],
-            self.picture.user.email,
+            result.data["create_contest_submission"]["results"]["picture"]["user"][
+                "email"
+            ],
+            self.user.email,
         )
+
         self.assertEqual(
-            result.data["create_contest_submission"]["picture"]["id"],
-            self.picture.id,
-        )
-        self.assertEqual(
-            result.data["create_contest_submission"]["contest"]["id"], self.contest.id
+            result.data["create_contest_submission"]["results"]["contest"]["id"],
+            self.contest.id,
         )
 
     def test_vote(self):
@@ -80,12 +82,14 @@ class ContestSubmissionTest(TestCase):
 
         self.assertEqual(newContestSubmission.picture.file, original_picture.file)
 
-        newPicture = PictureFactory(user=user)
+        newPicture = {
+            "user": str(user.id),
+            "file": Image.new(mode="RGB", size=(200, 200)),
+        }
 
         updated_contest_submission = {
             "id": newContestSubmission.id,
-            "picture": newPicture.id,
-            "submission_date": str(timezone.now()),
+            "picture": newPicture,
         }
 
         result = schema.execute_sync(
@@ -96,13 +100,9 @@ class ContestSubmissionTest(TestCase):
         )
 
         self.assertEqual(result.errors, None)
-        self.assertEqual(
-            result.data["update_contest_submission"]["picture"]["id"],
-            updated_contest_submission["picture"],
-        )
-        self.assertEqual(
-            result.data["update_contest_submission"]["submission_date"],
-            str(updated_contest_submission["submission_date"]).replace(" ", "T"),
+        self.assertFalse(
+            result.data["update_contest_submission"]["results"]["picture"]["id"]
+            == str(original_picture.id)
         )
 
     def test_repeat_vote(self):

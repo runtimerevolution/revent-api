@@ -110,5 +110,5 @@ class ContestSubmissionInput:
 @gql.django.partial(ContestSubmission)
 class ContestSubmissionInputPartial:
     id: int
-    picture: int
+    picture: PictureInput
     submission_date: strawberry.auto

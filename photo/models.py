@@ -264,10 +264,9 @@ class ContestSubmission(SoftDeleteModel):
         user_vote = User.objects.filter(id=user).first()
         if self.contest.internal_status == ContestInternalStates.CLOSED:
             raise ValidationError(CONTEST_CLOSED)
-
         if (
             self.contest.upload_phase_end
-            and self.contest.upload_phase_end < timezone.now()
+            and self.contest.upload_phase_end > timezone.now()
         ):
             raise ValidationError(UPLOAD_PHASE_NOT_OVER)
         if (

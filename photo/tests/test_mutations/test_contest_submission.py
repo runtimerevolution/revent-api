@@ -1,7 +1,8 @@
-import factory
-import pytz
+from datetime import timedelta
+
 from django.forms import ValidationError
 from django.test import TestCase
+from django.utils import timezone
 from PIL import Image
 
 from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE
@@ -133,9 +134,7 @@ class ContestSubmissionTest(TestCase):
         self.assertEqual(len(contest_submission.votes.all()), 1)
 
     def test_outdate_submission(self):
-        contest = ContestFactory(
-            upload_phase_end=factory.Faker("date_time", tzinfo=pytz.UTC)
-        )
+        contest = ContestFactory(upload_phase_end=timezone.now() - timedelta(days=3))
         with self.assertRaises(ValidationError) as e:
             ContestSubmissionFactory(contest=contest)
 

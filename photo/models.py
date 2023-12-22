@@ -241,10 +241,13 @@ class ContestSubmission(SoftDeleteModel):
             raise ValidationError(REPEATED_VOTE_ERROR_MESSAGE)
 
     def validate_submission_date(self):
+        submission_date = (
+            self.submission_date if self.submission_date else timezone.now()
+        )
         if self.contest.upload_phase_end is not None and (
             not (
                 self.contest.upload_phase_start
-                <= self.submission_date
+                <= submission_date
                 <= self.contest.upload_phase_end
             )
         ):

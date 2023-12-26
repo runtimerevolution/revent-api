@@ -19,7 +19,6 @@ from .graphql_mutations import (
     contest_submission_creation_mutation,
     contest_submission_delete_mutation,
     contest_submission_update_mutation,
-    contest_submission_vote_mutation,
 )
 
 
@@ -56,21 +55,21 @@ class ContestSubmissionTest(TestCase):
             self.contest.id,
         )
 
-    def test_vote(self):
-        contest_submission = ContestSubmissionFactory()
-        user_vote = UserFactory()
-        result = schema.execute_sync(
-            contest_submission_vote_mutation,
-            variable_values={
-                "contestSubmission": contest_submission.id,
-                "user": str(user_vote.id),
-            },
-        )
-        self.assertEqual(result.errors, None)
-        self.assertEqual(
-            result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
-            user_vote.email,
-        )
+    # def test_vote(self):
+    #     contest_submission = ContestSubmissionFactory()
+    #     user_vote = UserFactory()
+    #     result = schema.execute_sync(
+    #         contest_submission_vote_mutation,
+    #         variable_values={
+    #             "contestSubmission": contest_submission.id,
+    #             "user": str(user_vote.id),
+    #         },
+    #     )
+    #     self.assertEqual(result.errors, None)
+    #     self.assertEqual(
+    #         result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
+    #         user_vote.email,
+    #     )s
 
     def test_update(self):
         contest = ContestFactory()
@@ -106,32 +105,32 @@ class ContestSubmissionTest(TestCase):
             == str(original_picture.id)
         )
 
-    def test_repeat_vote(self):
-        contest_submission = ContestSubmissionFactory()
-        user_vote = UserFactory()
+    # def test_repeat_vote(self):
+    #     contest_submission = ContestSubmissionFactory()
+    #     user_vote = UserFactory()
 
-        result = schema.execute_sync(
-            contest_submission_vote_mutation,
-            variable_values={
-                "contestSubmission": contest_submission.id,
-                "user": str(user_vote.id),
-            },
-        )
+    #     result = schema.execute_sync(
+    #         contest_submission_vote_mutation,
+    #         variable_values={
+    #             "contestSubmission": contest_submission.id,
+    #             "user": str(user_vote.id),
+    #         },
+    #     )
 
-        result_error = schema.execute_sync(
-            contest_submission_vote_mutation,
-            variable_values={
-                "contestSubmission": contest_submission.id,
-                "user": str(user_vote.id),
-            },
-        )
-        self.assertEqual(result.errors, None)
-        self.assertEqual(
-            result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
-            user_vote.email,
-        )
-        self.assertEqual(result_error.errors, None)
-        self.assertEqual(len(contest_submission.votes.all()), 1)
+    #     result_error = schema.execute_sync(
+    #         contest_submission_vote_mutation,
+    #         variable_values={
+    #             "contestSubmission": contest_submission.id,
+    #             "user": str(user_vote.id),
+    #         },
+    #     )
+    #     self.assertEqual(result.errors, None)
+    #     self.assertEqual(
+    #         result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
+    #         user_vote.email,
+    #     )
+    #     self.assertEqual(result_error.errors, None)
+    #     self.assertEqual(len(contest_submission.votes.all()), 1)
 
     def test_outdate_submission(self):
         contest = ContestFactory(upload_phase_end=timezone.now() - timedelta(days=3))

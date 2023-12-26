@@ -31,3 +31,11 @@ DRAW_PHASE_NOT_SET = "Draw phase end date needs to be set."
 VOTING_PHASE_NOT_OVER = "Voting phase hasn't ended yet."
 
 UPLOAD_PHASE_NOT_OVER = "Upload phase hasn't ended yet."
+
+VOTING_PHASE_OVER = "Voting phase is over"
+
+CANT_VOTE_SUBMISSION = "Can't vote on this submission."
+
+CONTEST_CLOSED = "Contest is closed."
+
+UPLOAD_PHASE_NOT_OVER = "Can't vote while upload phase isn't over."

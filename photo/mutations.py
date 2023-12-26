@@ -26,6 +26,8 @@ from photo.fixtures import (
     PICTURE_SIZE_ERROR,
 )
 from photo.models import User
+from photo.permissions import IsAuthenticated
+from photo.queries import Info
 
 from .inputs import (
     CollectionInput,
@@ -262,18 +264,25 @@ class Mutation:
             success=False, results={}, errors=NO_COLLECTION_FOUND
         )
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     def contest_submission_add_vote(
-        self, contestSubmission: int, user: str
-    ) -> AddVoteMutationResponse:
-        if submission := ContestSubmission.objects.filter(id=contestSubmission).first():
+        self, info: Info, contestSubmission: int, user: str
+    ) -> AddVoteMutationResponse | None:
+        try:
+            submission = ContestSubmission.objects.filter(id=contestSubmission).first()
+            if not submission:
+                return AddVoteMutationResponse(
+                    success=False, results=None, errors=NO_SUBMISSION_FOUND
+                )
+
             return AddVoteMutationResponse(
                 success=True, results=submission.add_vote(user), errors=""
             )
 
-        return AddVoteMutationResponse(
-            success=False, results={}, errors=NO_SUBMISSION_FOUND
-        )
+        except Exception as e:
+            return AddVoteMutationResponse(
+                success=False, results=None, errors=e.message
+            )
 
     @strawberry.mutation
     def contest_close(self, contest: int) -> CloseContestMutationResponse:

@@ -3,6 +3,7 @@ from datetime import timedelta
 import factory
 import pytz
 from django.core.files.base import ContentFile
+from django.utils import timezone
 
 from photo.models import (
     Collection,
@@ -20,12 +21,12 @@ class UserFactory(factory.django.DjangoModelFactory):
         skip_postgeneration_save = True
 
     user_handle = factory.Faker("name")
-    email = factory.Faker("email")
+    email = factory.Sequence(lambda n: "user{0}@email.com".format(n))
     name_first = factory.Faker("first_name")
     name_last = factory.Faker("last_name")
-    username = factory.Faker("email")
-    password = factory.Faker("password")
-    profile_picture_updated_at = factory.Faker("date_time", tzinfo=pytz.UTC)
+    username = factory.Sequence(lambda n: "user{0}".format(n))
+    password = factory.Sequence(lambda n: "user{0}password".format(n))
+    profile_picture_updated_at = timezone.now()
 
     @factory.post_generation
     def user_profile_picture(self, create, nullPicture=False):
@@ -102,7 +103,7 @@ class ContestFactory(factory.django.DjangoModelFactory):
     created_by = factory.SubFactory(UserFactory, user_profile_picture=True)
     prize = factory.Faker("sentence")
     automated_dates = True
-    upload_phase_start = factory.Faker("date_time", tzinfo=pytz.UTC)
+    upload_phase_start = timezone.now() - timedelta(days=3)
     upload_phase_end = None
     voting_phase_end = None
 
@@ -112,9 +113,9 @@ class ContestFactory(factory.django.DjangoModelFactory):
             self.automated_dates = False
             return
         if not self.upload_phase_end:
-            self.upload_phase_end = self.upload_phase_start + timedelta(15)
+            self.upload_phase_end = self.upload_phase_start + timedelta(days=15)
             if not self.voting_phase_end:
-                self.voting_phase_end = self.upload_phase_end + timedelta(15)
+                self.voting_phase_end = self.upload_phase_end + timedelta(days=15)
 
     @factory.post_generation
     def contest_cover_picture(self, create, nullPicture=False):
@@ -144,7 +145,7 @@ class ContestSubmissionFactory(factory.django.DjangoModelFactory):
     picture = factory.SubFactory(
         PictureFactory, user=factory.SubFactory(UserFactory, user_profile_picture=True)
     )
-    submission_date = factory.Faker("date_time", tzinfo=pytz.UTC)
+    submission_date = timezone.now()
 
     @factory.post_generation
     def submission_votes(self, create, extracted, **kwargs):

@@ -56,8 +56,8 @@ user_delete_mutation = """
                 """
 
 picture_creation_mutation = """
-                    mutation TestMutation($input: PictureInput!, $upload: Upload!) {
-                        create_picture(input: $input, picture: $upload) {
+                    mutation TestMutation($input: PictureInput!) {
+                        create_picture(input: $input) {
                             ... on CreatePictureMutationResponse {
                               success
                               results {
@@ -356,26 +356,22 @@ contest_delete_mutation = """
 contest_submission_creation_mutation = """
                     mutation TestMutation($contestSubmission: ContestSubmissionInput!) {
                         create_contest_submission(input: $contestSubmission) {
-                            ... on ContestSubmissionType {
-                                contest {
-                                    id
+                            ... on CreateContestSubmissiomMutationResponse {
+                                success
+                                results {
+                                  contest {
+                                      id
+                                  }
+                                  picture {
+                                      id
+                                      file
+                                      user {
+                                          email
+                                      }
+                                  }
+                                  submission_date
                                 }
-                                picture {
-                                    id
-                                    file
-                                    user {
-                                        email
-                                    }
-                                }
-                                submission_date
-                            }
-                            ... on OperationInfo {
-                                __typename
-                                messages {
-                                    field
-                                    kind
-                                    message
-                                }
+                                errors
                             }
                         }
                     }
@@ -384,12 +380,22 @@ contest_submission_creation_mutation = """
 contest_submission_update_mutation = """
                     mutation TestMutation($contestSubmission: ContestSubmissionInputPartial!) {
                         update_contest_submission(input: $contestSubmission) {
-                            ... on ContestSubmissionType {
-                              id
-                              picture {
-                                id
-                              }
-                              submission_date
+                            ... on CreateContestSubmissiomMutationResponse {
+                                success
+                                results {
+                                  contest {
+                                      id
+                                  }
+                                  picture {
+                                      id
+                                      file
+                                      user {
+                                          email
+                                      }
+                                  }
+                                  submission_date
+                                }
+                                errors
                             }
                         }
                     }

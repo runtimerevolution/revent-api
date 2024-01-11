@@ -1,7 +1,7 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Count, Max
 from django.forms import ValidationError
 from django.utils import timezone
@@ -49,6 +49,7 @@ class SoftDeleteModel(models.Model):
     objects = SoftDeleteManager()
     all_objects = models.Manager()
 
+    @transaction.atomic
     def delete(self):
         self.is_deleted = True
         self.save()

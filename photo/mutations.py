@@ -2,9 +2,10 @@ from io import BytesIO
 
 import strawberry
 from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from django.db import DatabaseError, transaction
 from django.forms import ValidationError
+from PIL import Image
 from strawberry_django_plus import gql
 
 from photo.filters import (
@@ -94,9 +95,18 @@ def picture_creation(input: PictureInput) -> CreatePictureMutationResponse:
             picture_object.save()
 
             image_bytes = BytesIO()
-            input.file.save(image_bytes, format="webp")
-            if image_bytes.tell() > int(settings.MAX_PICTURE_SIZE):
-                raise ValidationError(message=PICTURE_SIZE_ERROR)
+            file = input.file
+            filename = None
+            if type(input.file) == InMemoryUploadedFile:
+                if input.file.size > int(settings.MAX_PICTURE_SIZE):
+                    raise ValidationError(message=PICTURE_SIZE_ERROR)
+                image = Image.open(input.file)
+                filename = str(input.file.name).rsplit(".", 1)[0]
+                image.save(image_bytes, format="webp", optimize=True)
+            else:
+                file.save(image_bytes, format="webp")
+                if image_bytes.tell() > int(settings.MAX_PICTURE_SIZE):
+                    raise ValidationError(message=PICTURE_SIZE_ERROR)
             image_bytes.seek(0)
 
             image_file = SimpleUploadedFile(
@@ -106,6 +116,7 @@ def picture_creation(input: PictureInput) -> CreatePictureMutationResponse:
             )
 
             picture_object.file = image_file
+            picture_object.name = filename if filename else picture_object.id
             picture_object.save()
 
             return CreatePictureMutationResponse(

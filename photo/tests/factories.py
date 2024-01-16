@@ -13,6 +13,7 @@ from photo.models import (
     PictureComment,
     User,
 )
+from utils.enums import ContestInternalStates
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -106,6 +107,7 @@ class ContestFactory(factory.django.DjangoModelFactory):
     upload_phase_start = timezone.now() - timedelta(days=3)
     upload_phase_end = None
     voting_phase_end = None
+    internal_status = ContestInternalStates.OPEN
 
     @factory.post_generation
     def contest_auto_dates(self, create, auto_dates=True):
@@ -116,6 +118,8 @@ class ContestFactory(factory.django.DjangoModelFactory):
             self.upload_phase_end = self.upload_phase_start + timedelta(days=15)
             if not self.voting_phase_end:
                 self.voting_phase_end = self.upload_phase_end + timedelta(days=15)
+        if self.voting_phase_end < timezone.now():
+            self.internal_status = ContestInternalStates.CLOSED
 
     @factory.post_generation
     def contest_cover_picture(self, create, nullPicture=False):

@@ -33,6 +33,7 @@ from photo.types import (
     PictureType,
     UserType,
 )
+from utils.enums import ContestInternalStates
 
 
 class Context(BaseContext):
@@ -92,5 +93,15 @@ class Query:
     def contest_submissions(
         self, filters: Optional[ContestSubmissionFilter] = strawberry.UNSET
     ) -> List[ContestSubmissionType]:
-        queryset = ContestSubmission.objects.all()
+        queryset = []
+        if filters.draw and filters.contest:
+            contest = Contest.objects.filter(
+                id=filters.contest.id, internal_status=ContestInternalStates.DRAW
+            ).first()
+            contest_winners = [user.id for user in contest.winners.all()]
+            queryset = ContestSubmission.objects.filter(
+                picture__user__id__in=contest_winners
+            )
+        else:
+            queryset = ContestSubmission.objects.all()
         return strawberry_django.filters.apply(filters, queryset)

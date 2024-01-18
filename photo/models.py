@@ -14,6 +14,7 @@ from photo.fixtures import (
     UNIQUE_SUBMISSION_ERROR_MESSAGE,
     UPLOAD_PHASE_NOT_OVER,
     VALID_USER_ERROR_MESSAGE,
+    VOTING_DRAW_PHASE_OVER,
     VOTING_PHASE_OVER,
 )
 from photo.manager import SoftDeleteManager
@@ -266,23 +267,27 @@ class ContestSubmission(SoftDeleteModel):
     def add_vote(self, user):
         contest_submissions = ContestSubmission.objects.filter(contest=self.contest)
         user_vote = User.objects.filter(id=user).first()
+
         if self.contest.internal_status == ContestInternalStates.CLOSED:
             raise ValidationError(CONTEST_CLOSED)
-        if (
-            self.contest.upload_phase_end
-            and self.contest.upload_phase_end > timezone.now()
-        ):
-            raise ValidationError(UPLOAD_PHASE_NOT_OVER)
-        if (
-            self.contest.voting_phase_end
-            and self.contest.voting_phase_end < timezone.now()
-        ):
-            raise ValidationError(VOTING_PHASE_OVER)
-        if (
-            self.contest.internal_status == ContestInternalStates.DRAW
-            and user_vote not in self.contest.winners.all()
-        ):
-            raise ValidationError(CANT_VOTE_SUBMISSION)
+
+        if self.contest.internal_status == ContestInternalStates.DRAW:
+            if self.contest.voting_draw_end < timezone.now():
+                raise ValidationError(VOTING_DRAW_PHASE_OVER)
+            if self.picture.user not in self.contest.winners.all():
+                raise ValidationError(CANT_VOTE_SUBMISSION)
+        else:
+            if (
+                self.contest.upload_phase_end
+                and self.contest.upload_phase_end > timezone.now()
+            ):
+                raise ValidationError(UPLOAD_PHASE_NOT_OVER)
+            if (
+                self.contest.voting_phase_end
+                and self.contest.voting_phase_end < timezone.now()
+            ):
+                raise ValidationError(VOTING_PHASE_OVER)
+
         for sub in contest_submissions:
             if user_vote in sub.votes.all():
                 sub.votes.remove(user_vote)

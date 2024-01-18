@@ -94,13 +94,13 @@ class Query:
         self, filters: Optional[ContestSubmissionFilter] = strawberry.UNSET
     ) -> List[ContestSubmissionType]:
         queryset = ContestSubmission.objects.all()
-        if filters:
-            if filters.draw and filters.contest:
-                contest = Contest.objects.filter(
-                    id=filters.contest.id, internal_status=ContestInternalStates.DRAW
-                ).first()
-                contest_winners = [user.id for user in contest.winners.all()]
-                queryset = ContestSubmission.objects.filter(
-                    picture__user__id__in=contest_winners
-                )
+
+        if filters and filters.draw and filters.contest:
+            contest = Contest.objects.filter(
+                id=filters.contest.id, internal_status=ContestInternalStates.DRAW
+            ).first()
+            contest_winners = [user.id for user in contest.winners.all()]
+            queryset = ContestSubmission.objects.filter(
+                picture__user__id__in=contest_winners
+            )
         return strawberry_django.filters.apply(filters, queryset)

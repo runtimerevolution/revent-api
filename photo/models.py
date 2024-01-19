@@ -261,7 +261,8 @@ class ContestSubmission(SoftDeleteModel):
 
     def save(self, *args, **kwargs):
         self.validate_unique()
-        self.validate_submission_date()
+        if self._state.adding:
+            self.validate_submission_date()
         super(ContestSubmission, self).save(*args, **kwargs)
 
     def add_vote(self, user):

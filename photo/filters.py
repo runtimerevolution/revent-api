@@ -50,3 +50,4 @@ class ContestSubmissionFilter:
     id: int
     picture: PictureFilter
     contest: ContestFilter
+    draw: bool = False

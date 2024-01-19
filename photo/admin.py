@@ -58,11 +58,11 @@ class ContestAdmin(admin.ModelAdmin):
 
     def close_contest(self, request, queryset):
         for contest in queryset:
-            if contest.voting_phase_end > timezone.now():
+            if contest.voting_phase_end and contest.voting_phase_end > timezone.now():
                 messages.info(request, VOTING_PHASE_NOT_OVER)
                 break
 
-            if contest.upload_phase_end > timezone.now():
+            if contest.upload_phase_end and contest.upload_phase_end > timezone.now():
                 messages.info(request, UPLOAD_PHASE_NOT_OVER)
                 break
 

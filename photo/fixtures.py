@@ -34,7 +34,11 @@ UPLOAD_PHASE_NOT_OVER = "Upload phase hasn't ended yet."
 
 VOTING_PHASE_OVER = "Voting phase is over"
 
-CANT_VOTE_SUBMISSION = "Can't vote on this submission."
+VOTING_DRAW_PHASE_OVER = "Draw voting phase is over"
+
+CANT_VOTE_SUBMISSION = (
+    "Can't vote on this submission. This submission was not tied for winner."
+)
 
 CONTEST_CLOSED = "Contest is closed."
 

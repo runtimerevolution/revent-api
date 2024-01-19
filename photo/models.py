@@ -200,6 +200,8 @@ class Contest(SoftDeleteModel):
             num_votes=Count("votes")
         ).filter(num_votes=max_votes, contest=self)
 
+        if self.internal_status == ContestInternalStates.DRAW:
+            self.winners.clear()
         for submission in submissions_with_highest_votes:
             self.winners.add(submission.picture.user)
 

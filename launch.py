@@ -10,6 +10,7 @@ application = get_wsgi_application()
 
 from integrations.aws.s3 import Client  # noqa: E402
 from photo.tests.factories import ContestFactory, ContestSubmissionFactory  # noqa: E402
+from utils.enums import ContestInternalStates  # noqa: E402
 
 client = Client()
 client.create_bucket()
@@ -37,4 +38,5 @@ closed = ContestFactory(
 ContestSubmissionFactory.create_batch(10, contest=closed)
 closed.upload_phase_end = time - timedelta(days=2)
 closed.voting_phase_end = time - timedelta(days=1)
+closed.internal_status = ContestInternalStates.CLOSED
 closed.save()

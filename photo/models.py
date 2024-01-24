@@ -117,7 +117,7 @@ class Picture(SoftDeleteModel):
         storage=PublicMediaStorage(),
         upload_to=picture_path,
     )
-    likes = models.ManyToManyField(User, related_name="picture_likes")
+    likes = models.ManyToManyField(User, related_name="picture_likes", blank=True)
 
     def like_picture(self, user):
         if user not in self.likes.filter(id=user):
@@ -139,7 +139,9 @@ class PictureComment(SoftDeleteModel):
 class Collection(SoftDeleteModel):
     name = models.TextField()
     user = models.ForeignKey("User", on_delete=models.CASCADE)
-    pictures = models.ManyToManyField(Picture, related_name="collection_pictures")
+    pictures = models.ManyToManyField(
+        Picture, related_name="collection_pictures", blank=True
+    )
 
     class Meta:
         constraints = [
@@ -162,7 +164,7 @@ class Contest(SoftDeleteModel):
         blank=True,
         null=True,
     )
-    prize = models.TextField()
+    prize = models.TextField(null=True, blank=True)
     automated_dates = models.BooleanField(default=True)
     upload_phase_start = models.DateTimeField(default=timezone.now)
     upload_phase_end = models.DateTimeField(null=True, blank=True)
@@ -179,6 +181,9 @@ class Contest(SoftDeleteModel):
         blank=True,
         null=True,
     )
+
+    def __str__(self):
+        return self.title
 
     def validate_user(self):
         if not (
@@ -230,7 +235,7 @@ class ContestSubmission(SoftDeleteModel):
         on_delete=models.CASCADE,
     )
     submission_date = models.DateTimeField(auto_now_add=True)
-    votes = models.ManyToManyField(User, related_name="submission_votes")
+    votes = models.ManyToManyField(User, related_name="submission_votes", blank=True)
 
     def validate_unique(self, *args, **kwargs):
         qs = ContestSubmission.objects.filter(

@@ -79,4 +79,8 @@ class PictureCommentAdmin(admin.ModelAdmin):
 
 @admin.register(ContestSubmission)
 class ContestSubmissionAdmin(admin.ModelAdmin):
-    list_display = ("contest", "picture", "submission_date")
+    list_display = ("contest", "picture", "submission_date", "contest_status")
+
+    @admin.display(ordering="-contest__internal_status")
+    def contest_status(self, obj):
+        return obj.contest.internal_status

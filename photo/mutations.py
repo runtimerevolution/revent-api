@@ -164,7 +164,7 @@ class Mutation:
     def create_picture(self, input: PictureInput) -> CreatePictureMutationResponse:
         return picture_creation(input=input)
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     def create_contest_submission(
         self, input: ContestSubmissionInput
     ) -> CreateContestSubmissiomMutationResponse:
@@ -204,7 +204,7 @@ class Mutation:
                 success=False, results={}, errors=CREATE_PICTURE_SUBMISSION_ERROR
             )
 
-    @strawberry.mutation
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
     def update_contest_submission(
         self, input: ContestSubmissionInputPartial
     ) -> CreateContestSubmissiomMutationResponse:

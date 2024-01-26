@@ -145,7 +145,12 @@ class ContestSubmissionTest(TestCase):
                 "contestSubmission": contest_submission.id,
                 "user": str(user_vote.id),
             },
+            context_value={
+                "test": True,
+                "authentication": self.hashed_password,
+            },
         )
+
         self.assertEqual(result.errors, None)
         self.assertEqual(
             result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],

@@ -14,7 +14,7 @@ class IsAuthenticated(BasePermission):
             and info.context["test"]
             and info.context["authentication"]
         ):
-            hashed_password = hashlib.sha1((settings.SECRET_KEY).encode("UTF-8"))
+            hashed_password = hashlib.sha256((settings.SECRET_KEY).encode("UTF-8"))
             return (
                 info.context["authentication"].hexdigest()
                 == hashed_password.hexdigest()

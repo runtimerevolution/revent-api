@@ -29,7 +29,7 @@ class ContestSubmissionTest(TestCase):
     def setUp(self):
         self.user = UserFactory()
         self.contest = ContestFactory()
-        self.hashed_password = hashlib.sha1((settings.SECRET_KEY).encode("UTF-8"))
+        self.hashed_password = hashlib.sha256((settings.SECRET_KEY).encode("UTF-8"))
 
     def test_create(self):
         image = Image.new(mode="RGB", size=(200, 200))

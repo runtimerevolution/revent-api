@@ -12,10 +12,13 @@ class IsAuthenticated(BasePermission):
         if (
             isinstance(info.context, dict)
             and info.context["test"]
-            and info.context["info"]
+            and info.context["authentication"]
         ):
             hashed_password = hashlib.sha1((settings.SECRET_KEY).encode("UTF-8"))
-            return info.context["info"].hexdigest() == hashed_password.hexdigest()
+            return (
+                info.context["authentication"].hexdigest()
+                == hashed_password.hexdigest()
+            )
         if not info.context.user():
             return False
         return True

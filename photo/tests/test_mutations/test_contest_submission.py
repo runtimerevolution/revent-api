@@ -47,7 +47,7 @@ class ContestSubmissionTest(TestCase):
             variable_values={"contestSubmission": contest_submission},
             context_value={
                 "test": True,
-                "info": self.hashed_password,
+                "authentication": self.hashed_password,
             },
         )
 
@@ -76,7 +76,7 @@ class ContestSubmissionTest(TestCase):
             },
             context_value={
                 "test": True,
-                "info": self.hashed_password,
+                "authentication": self.hashed_password,
             },
         )
         self.assertEqual(result.errors, None)
@@ -113,7 +113,7 @@ class ContestSubmissionTest(TestCase):
             },
             context_value={
                 "test": True,
-                "info": self.hashed_password,
+                "authentication": self.hashed_password,
             },
         )
 
@@ -135,7 +135,7 @@ class ContestSubmissionTest(TestCase):
             },
             context_value={
                 "test": True,
-                "info": self.hashed_password,
+                "authentication": self.hashed_password,
             },
         )
 

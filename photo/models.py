@@ -16,6 +16,7 @@ from photo.fixtures import (
     VALID_USER_ERROR_MESSAGE,
     VOTING_DRAW_PHASE_OVER,
     VOTING_PHASE_OVER,
+    VOTING_SELF,
 )
 from photo.manager import SoftDeleteManager
 from photo.storages_backend import PublicMediaStorage, picture_path
@@ -275,6 +276,9 @@ class ContestSubmission(SoftDeleteModel):
     def add_vote(self, user):
         contest_submissions = ContestSubmission.objects.filter(contest=self.contest)
         user_vote = User.objects.filter(id=user).first()
+
+        if self.picture.user.id == user_vote.id:
+            raise ValidationError(VOTING_SELF)
 
         if self.contest.internal_status == ContestInternalStates.CLOSED:
             raise ValidationError(CONTEST_CLOSED)

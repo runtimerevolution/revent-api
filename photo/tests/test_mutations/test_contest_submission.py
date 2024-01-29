@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.utils import timezone
 from PIL import Image
 
-from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE
+from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE, VOTING_SELF
 from photo.models import ContestSubmission
 from photo.schema import schema
 from photo.tests.factories import (
@@ -166,6 +166,25 @@ class ContestSubmissionTest(TestCase):
 
         exception = e.exception
         self.assertIn(OUTDATED_SUBMISSION_ERROR_MESSAGE, exception.messages)
+
+    def test_vote_own_subimission(self):
+        contest_submission = ContestSubmissionFactory()
+
+        result = schema.execute_sync(
+            contest_submission_vote_mutation,
+            variable_values={
+                "contestSubmission": contest_submission.id,
+                "user": str(contest_submission.picture.user.id),
+            },
+            context_value={
+                "test": True,
+                "authentication": self.hashed_password,
+            },
+        )
+        self.assertFalse(result.data["contest_submission_add_vote"]["success"])
+        self.assertEqual(
+            result.data["contest_submission_add_vote"]["errors"], VOTING_SELF
+        )
 
     def test_delete_success(self):
         contest_submission = ContestSubmissionFactory()

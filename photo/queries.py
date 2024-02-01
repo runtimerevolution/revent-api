@@ -94,7 +94,7 @@ class Query:
     def contest_submissions(
         self,
         filters: Optional[ContestSubmissionFilter] = strawberry.UNSET,
-        order=None,
+        order: List[int] = None,
     ) -> List[ContestSubmissionType]:
         queryset = ContestSubmission.objects.all()
 

@@ -1,4 +1,5 @@
 import uuid
+from random import shuffle
 from typing import List, Optional
 
 import strawberry
@@ -91,11 +92,20 @@ class Query:
 
     @strawberry.field
     def contest_submissions(
-        self, filters: Optional[ContestSubmissionFilter] = strawberry.UNSET
+        self,
+        filters: Optional[ContestSubmissionFilter] = strawberry.UNSET,
+        order=None,
     ) -> List[ContestSubmissionType]:
         queryset = ContestSubmission.objects.all()
 
-        if filters and filters.draw and filters.contest:
+        def set_order(element):
+            return order.index(element.id)
+
+        contest = None
+        if filters and filters.contest:
+            contest = Contest.objects.filter(id=filters.contest.id).first()
+
+        if filters and filters.draw:
             contest = Contest.objects.filter(
                 id=filters.contest.id, internal_status=ContestInternalStates.DRAW
             ).first()
@@ -103,4 +113,19 @@ class Query:
             queryset = ContestSubmission.objects.filter(
                 picture__user__id__in=contest_winners
             )
-        return strawberry_django.filters.apply(filters, queryset)
+
+        query_results = list(strawberry_django.filters.apply(filters, queryset))
+
+        if contest and contest.internal_status == ContestInternalStates.CLOSED:
+            winner = [user.id for user in contest.winners.all()][0]
+            winner_submission = ContestSubmission.objects.filter(
+                picture__user__id=winner
+            ).first()
+            query_results.remove(winner_submission)
+            shuffle(query_results)
+            query_results = [winner_submission] + query_results
+        elif not order:
+            shuffle(query_results)
+        else:
+            query_results.sort(key=set_order)
+        return query_results

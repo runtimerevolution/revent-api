@@ -94,7 +94,7 @@ class Query:
     def contest_submissions(
         self,
         filters: Optional[ContestSubmissionFilter] = strawberry.UNSET,
-        order: List[int] = None,
+        order: Optional[List[int]] = None,
     ) -> List[ContestSubmissionType]:
         queryset = ContestSubmission.objects.all()
 
@@ -122,7 +122,6 @@ class Query:
                 picture__user__id=winner
             ).first()
             query_results.remove(winner_submission)
-            shuffle(query_results)
             query_results = [winner_submission] + query_results
         elif not order:
             shuffle(query_results)

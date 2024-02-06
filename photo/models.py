@@ -214,9 +214,14 @@ class Contest(SoftDeleteModel):
         if self.winners.count() > 1:
             self.internal_status = ContestInternalStates.DRAW
             self.reset_votes()
+        elif self.winners.count() == 0:
+            self.internal_status = ContestInternalStates.DRAW
+            all_submissions = ContestSubmission.objects.filter(contest=self)
+            for submission in all_submissions:
+                self.winners.add(submission.picture.user)
+            self.reset_votes()
         else:
             self.internal_status = ContestInternalStates.CLOSED
-
         self.save()
         return self
 

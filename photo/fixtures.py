@@ -24,6 +24,8 @@ PICTURE_SIZE_ERROR = "Picture could not be uploaded"
 
 CREATE_PICTURE_ERROR = "Picture could not be uploaded"
 
+CREATE_PICTURE_SUBMISSION_ERROR = "Picture could not be uploaded"
+
 DRAW_PHASE_NOT_SET = "Draw phase end date needs to be set."
 
 VOTING_PHASE_NOT_OVER = "Voting phase hasn't ended yet."
@@ -32,8 +34,14 @@ UPLOAD_PHASE_NOT_OVER = "Upload phase hasn't ended yet."
 
 VOTING_PHASE_OVER = "Voting phase is over"
 
-CANT_VOTE_SUBMISSION = "Can't vote on this submission."
+VOTING_DRAW_PHASE_OVER = "Draw voting phase is over"
+
+CANT_VOTE_SUBMISSION = (
+    "Can't vote on this submission. This submission was not tied for winner."
+)
 
 CONTEST_CLOSED = "Contest is closed."
 
 UPLOAD_PHASE_NOT_OVER = "Can't vote while upload phase isn't over."
+
+VOTING_SELF = "Can't vote on your own submissions."

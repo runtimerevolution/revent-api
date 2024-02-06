@@ -2,10 +2,10 @@ from io import BytesIO
 
 import strawberry
 from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 from django.db import DatabaseError, transaction
 from django.forms import ValidationError
-from strawberry.file_uploads import Upload
+from PIL import Image
 from strawberry_django_plus import gql
 
 from photo.filters import (
@@ -18,6 +18,7 @@ from photo.filters import (
 )
 from photo.fixtures import (
     CREATE_PICTURE_ERROR,
+    CREATE_PICTURE_SUBMISSION_ERROR,
     NO_COLLECTION_FOUND,
     NO_CONTEST_FOUND,
     NO_PICTURE_FOUND,
@@ -52,6 +53,7 @@ from .types import (
     CollectionType,
     ContestSubmissionType,
     ContestType,
+    CreateContestSubmissiomMutationResponse,
     CreatePictureMutationResponse,
     PictureCommentType,
     PictureType,
@@ -71,6 +73,65 @@ def try_catch(function):
     return wrapper
 
 
+class PictureError(Exception):
+    def __init__(self, message) -> None:
+        super().__init__()
+        self.message = message
+
+
+class NotFoundError(Exception):
+    def __init__(self, message) -> None:
+        super().__init__()
+        self.message = message
+
+
+def picture_creation(input: PictureInput) -> CreatePictureMutationResponse:
+    try:
+        with transaction.atomic():
+            if not (user := User.objects.filter(id=input.user).first()):
+                raise ValidationError(message=NO_USER_FOUND)
+
+            picture_object = Picture(user=user)
+            picture_object.save()
+
+            image_bytes = BytesIO()
+            file = input.file
+            filename = None
+            if type(input.file) == InMemoryUploadedFile:
+                if input.file.size > int(settings.MAX_PICTURE_SIZE):
+                    raise ValidationError(message=PICTURE_SIZE_ERROR)
+                image = Image.open(input.file)
+                filename = str(input.file.name).rsplit(".", 1)[0]
+                image.save(image_bytes, format="webp", optimize=True)
+            else:
+                file.save(image_bytes, format="webp")
+                if image_bytes.tell() > int(settings.MAX_PICTURE_SIZE):
+                    raise ValidationError(message=PICTURE_SIZE_ERROR)
+            image_bytes.seek(0)
+
+            image_file = SimpleUploadedFile(
+                str(picture_object.id),
+                image_bytes.getvalue(),
+                content_type="image/webp",
+            )
+
+            picture_object.file = image_file
+            picture_object.name = filename if filename else picture_object.id
+            picture_object.save()
+
+            return CreatePictureMutationResponse(
+                success=True, results=picture_object, errors=""
+            )
+    except ValidationError as e:
+        return CreatePictureMutationResponse(
+            success=False, results={}, errors=e.message
+        )
+    except DatabaseError:
+        return CreatePictureMutationResponse(
+            success=False, results={}, errors=CREATE_PICTURE_ERROR
+        )
+
+
 @strawberry.type
 class Mutation:
     create_user: UserType = gql.django.create_mutation(UserInput)
@@ -79,9 +140,6 @@ class Mutation:
     )
     create_collection: CollectionType = gql.django.create_mutation(CollectionInput)
     create_contest: ContestType = gql.django.create_mutation(ContestInput)
-    create_contest_submission: ContestSubmissionType = gql.django.create_mutation(
-        ContestSubmissionInput
-    )
     update_user: UserType = gql.django.update_mutation(UserInputPartial)
     update_picture: PictureType = gql.django.update_mutation(PictureInputPartial)
     update_picture_comment: PictureCommentType = gql.django.update_mutation(
@@ -91,9 +149,6 @@ class Mutation:
         CollectionInputPartial
     )
     update_contest: ContestType = gql.django.update_mutation(ContestInputPartial)
-    update_contest_submission: ContestSubmissionType = gql.django.update_mutation(
-        ContestSubmissionInputPartial
-    )
     delete_user: UserType = gql.django.delete_mutation(UserFilter)
     delete_picture: PictureType = gql.django.delete_mutation(PictureFilter)
     delete_picture_comment: PictureCommentType = gql.django.delete_mutation(
@@ -106,42 +161,94 @@ class Mutation:
     )
 
     @strawberry.mutation
-    def create_picture(
-        self, input: PictureInput, picture: Upload
-    ) -> CreatePictureMutationResponse:
+    def create_picture(self, input: PictureInput) -> CreatePictureMutationResponse:
+        return picture_creation(input=input)
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def create_contest_submission(
+        self, input: ContestSubmissionInput
+    ) -> CreateContestSubmissiomMutationResponse:
         try:
             with transaction.atomic():
-                if not (user := User.objects.filter(id=input.user).first()):
-                    raise ValidationError(message=NO_USER_FOUND)
+                picture_response = picture_creation(input=input.picture)
+                if not picture_response.success:
+                    raise PictureError(picture_response.errors)
+                if not (contest := Contest.objects.filter(id=input.contest).first()):
+                    raise NotFoundError(NO_CONTEST_FOUND)
+                if not (
+                    picture := Picture.objects.filter(
+                        id=picture_response.results.id
+                    ).first()
+                ):
+                    raise NotFoundError(NO_PICTURE_FOUND)
+                contest_submission = ContestSubmission(contest=contest, picture=picture)
+                contest_submission.save()
 
-                picture_object = Picture(user=user)
-                picture_object.save()
-
-                image_bytes = BytesIO()
-                picture.save(image_bytes, format="webp")
-                if image_bytes.tell() > int(settings.MAX_PICTURE_SIZE):
-                    raise ValidationError(message=PICTURE_SIZE_ERROR)
-                image_bytes.seek(0)
-
-                image_file = SimpleUploadedFile(
-                    str(picture_object.id),
-                    image_bytes.getvalue(),
-                    content_type="image/webp",
+                return CreateContestSubmissiomMutationResponse(
+                    success=True, results=contest_submission, errors=""
                 )
-
-                picture_object.file = image_file
-                picture_object.save()
-
-                return CreatePictureMutationResponse(
-                    success=True, results=picture_object, errors=""
-                )
+        except PictureError as e:
+            return CreateContestSubmissiomMutationResponse(
+                success=False, results={}, errors=e.message
+            )
+        except NotFoundError as e:
+            return CreateContestSubmissiomMutationResponse(
+                success=False, results={}, errors=e.message
+            )
         except ValidationError as e:
-            return CreatePictureMutationResponse(
+            return CreateContestSubmissiomMutationResponse(
                 success=False, results={}, errors=e.message
             )
         except DatabaseError:
-            return CreatePictureMutationResponse(
-                success=False, results={}, errors=CREATE_PICTURE_ERROR
+            return CreateContestSubmissiomMutationResponse(
+                success=False, results={}, errors=CREATE_PICTURE_SUBMISSION_ERROR
+            )
+
+    @strawberry.mutation(permission_classes=[IsAuthenticated])
+    def update_contest_submission(
+        self, input: ContestSubmissionInputPartial
+    ) -> CreateContestSubmissiomMutationResponse:
+        try:
+            with transaction.atomic():
+                if not (
+                    contest_submission := ContestSubmission.objects.filter(
+                        id=input.id
+                    ).first()
+                ):
+                    raise NotFoundError(NO_SUBMISSION_FOUND)
+                old_picture = contest_submission.picture
+
+                picture_response = picture_creation(input=input.picture)
+                if not picture_response.success:
+                    raise PictureError(picture_response.errors)
+
+                if not (
+                    picture := Picture.objects.filter(
+                        id=picture_response.results.id
+                    ).first()
+                ):
+                    raise NotFoundError(NO_PICTURE_FOUND)
+
+                contest_submission.picture = picture
+                contest_submission.save()
+
+                old_picture.delete()
+
+                return CreateContestSubmissiomMutationResponse(
+                    success=True, results=contest_submission, errors=""
+                )
+
+        except NotFoundError as e:
+            return CreateContestSubmissiomMutationResponse(
+                success=False, results={}, errors=e.message
+            )
+        except ValidationError as e:
+            return CreateContestSubmissiomMutationResponse(
+                success=False, results={}, errors=e.message
+            )
+        except DatabaseError:
+            return CreateContestSubmissiomMutationResponse(
+                success=False, results={}, errors=CREATE_PICTURE_SUBMISSION_ERROR
             )
 
     @strawberry.mutation

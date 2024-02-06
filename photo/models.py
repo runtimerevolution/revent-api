@@ -1,7 +1,7 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Count, Max
 from django.forms import ValidationError
 from django.utils import timezone
@@ -14,7 +14,9 @@ from photo.fixtures import (
     UNIQUE_SUBMISSION_ERROR_MESSAGE,
     UPLOAD_PHASE_NOT_OVER,
     VALID_USER_ERROR_MESSAGE,
+    VOTING_DRAW_PHASE_OVER,
     VOTING_PHASE_OVER,
+    VOTING_SELF,
 )
 from photo.manager import SoftDeleteManager
 from photo.storages_backend import PublicMediaStorage, picture_path
@@ -49,6 +51,7 @@ class SoftDeleteModel(models.Model):
     objects = SoftDeleteManager()
     all_objects = models.Manager()
 
+    @transaction.atomic
     def delete(self):
         self.is_deleted = True
         self.save()
@@ -115,7 +118,7 @@ class Picture(SoftDeleteModel):
         storage=PublicMediaStorage(),
         upload_to=picture_path,
     )
-    likes = models.ManyToManyField(User, related_name="picture_likes")
+    likes = models.ManyToManyField(User, related_name="picture_likes", blank=True)
 
     def like_picture(self, user):
         if user not in self.likes.filter(id=user):
@@ -137,7 +140,9 @@ class PictureComment(SoftDeleteModel):
 class Collection(SoftDeleteModel):
     name = models.TextField()
     user = models.ForeignKey("User", on_delete=models.CASCADE)
-    pictures = models.ManyToManyField(Picture, related_name="collection_pictures")
+    pictures = models.ManyToManyField(
+        Picture, related_name="collection_pictures", blank=True
+    )
 
     class Meta:
         constraints = [
@@ -160,7 +165,7 @@ class Contest(SoftDeleteModel):
         blank=True,
         null=True,
     )
-    prize = models.TextField()
+    prize = models.TextField(null=True, blank=True)
     automated_dates = models.BooleanField(default=True)
     upload_phase_start = models.DateTimeField(default=timezone.now)
     upload_phase_end = models.DateTimeField(null=True, blank=True)
@@ -177,6 +182,9 @@ class Contest(SoftDeleteModel):
         blank=True,
         null=True,
     )
+
+    def __str__(self):
+        return self.title
 
     def validate_user(self):
         if not (
@@ -198,6 +206,8 @@ class Contest(SoftDeleteModel):
             num_votes=Count("votes")
         ).filter(num_votes=max_votes, contest=self)
 
+        if self.internal_status == ContestInternalStates.DRAW:
+            self.winners.clear()
         for submission in submissions_with_highest_votes:
             self.winners.add(submission.picture.user)
 
@@ -226,7 +236,7 @@ class ContestSubmission(SoftDeleteModel):
         on_delete=models.CASCADE,
     )
     submission_date = models.DateTimeField(auto_now_add=True)
-    votes = models.ManyToManyField(User, related_name="submission_votes")
+    votes = models.ManyToManyField(User, related_name="submission_votes", blank=True)
 
     def validate_unique(self, *args, **kwargs):
         qs = ContestSubmission.objects.filter(
@@ -245,10 +255,13 @@ class ContestSubmission(SoftDeleteModel):
             raise ValidationError(REPEATED_VOTE_ERROR_MESSAGE)
 
     def validate_submission_date(self):
+        submission_date = (
+            self.submission_date if self.submission_date else timezone.now()
+        )
         if self.contest.upload_phase_end is not None and (
             not (
                 self.contest.upload_phase_start
-                <= self.submission_date
+                <= submission_date
                 <= self.contest.upload_phase_end
             )
         ):
@@ -256,29 +269,37 @@ class ContestSubmission(SoftDeleteModel):
 
     def save(self, *args, **kwargs):
         self.validate_unique()
-        self.validate_submission_date()
+        if self._state.adding:
+            self.validate_submission_date()
         super(ContestSubmission, self).save(*args, **kwargs)
 
     def add_vote(self, user):
         contest_submissions = ContestSubmission.objects.filter(contest=self.contest)
         user_vote = User.objects.filter(id=user).first()
+
+        if self.picture.user.id == user_vote.id:
+            raise ValidationError(VOTING_SELF)
+
         if self.contest.internal_status == ContestInternalStates.CLOSED:
             raise ValidationError(CONTEST_CLOSED)
-        if (
-            self.contest.upload_phase_end
-            and self.contest.upload_phase_end > timezone.now()
-        ):
-            raise ValidationError(UPLOAD_PHASE_NOT_OVER)
-        if (
-            self.contest.voting_phase_end
-            and self.contest.voting_phase_end < timezone.now()
-        ):
-            raise ValidationError(VOTING_PHASE_OVER)
-        if (
-            self.contest.internal_status == ContestInternalStates.DRAW
-            and user_vote not in self.contest.winners.all()
-        ):
-            raise ValidationError(CANT_VOTE_SUBMISSION)
+
+        if self.contest.internal_status == ContestInternalStates.DRAW:
+            if self.contest.voting_draw_end < timezone.now():
+                raise ValidationError(VOTING_DRAW_PHASE_OVER)
+            if self.picture.user not in self.contest.winners.all():
+                raise ValidationError(CANT_VOTE_SUBMISSION)
+        else:
+            if (
+                self.contest.upload_phase_end
+                and self.contest.upload_phase_end > timezone.now()
+            ):
+                raise ValidationError(UPLOAD_PHASE_NOT_OVER)
+            if (
+                self.contest.voting_phase_end
+                and self.contest.voting_phase_end < timezone.now()
+            ):
+                raise ValidationError(VOTING_PHASE_OVER)
+
         for sub in contest_submissions:
             if user_vote in sub.votes.all():
                 sub.votes.remove(user_vote)

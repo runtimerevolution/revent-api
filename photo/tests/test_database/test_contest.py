@@ -29,8 +29,6 @@ class ContestTest(TransactionTestCase):
             ContestFactory(created_by=None)
         with self.assertRaises(IntegrityError):
             ContestFactory(title=None)
-        with self.assertRaises(IntegrityError):
-            ContestFactory(prize=None)
 
     def test_factory_pk(self):
         with self.assertRaises(IntegrityError):

@@ -1,11 +1,13 @@
-import factory
-import pytest
-import pytz
+import hashlib
+from datetime import timedelta
+
+from django.conf import settings
 from django.forms import ValidationError
 from django.test import TestCase
 from django.utils import timezone
+from PIL import Image
 
-from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE
+from photo.fixtures import OUTDATED_SUBMISSION_ERROR_MESSAGE, VOTING_SELF
 from photo.models import ContestSubmission
 from photo.schema import schema
 from photo.tests.factories import (
@@ -25,49 +27,63 @@ from .graphql_mutations import (
 
 class ContestSubmissionTest(TestCase):
     def setUp(self):
-        self.picture = PictureFactory()
+        self.user = UserFactory()
         self.contest = ContestFactory()
+        self.hashed_password = hashlib.sha256((settings.SECRET_KEY).encode("UTF-8"))
 
-    @pytest.mark.asyncio
-    async def test_create(self):
+    def test_create(self):
+        image = Image.new(mode="RGB", size=(200, 200))
+
         contest_submission = {
-            "picture": self.picture.id,
-            "contest": self.contest.id,
+            "picture": {
+                "user": str(self.user.id),
+                "file": image,
+            },
+            "contest": int(self.contest.id),
         }
 
-        result = await schema.execute(
+        result = schema.execute_sync(
             contest_submission_creation_mutation,
             variable_values={"contestSubmission": contest_submission},
+            context_value={
+                "test": True,
+                "authentication": self.hashed_password,
+            },
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["create_contest_submission"]["picture"]["user"]["email"],
-            self.picture.user.email,
-        )
-        self.assertEqual(
-            result.data["create_contest_submission"]["picture"]["id"],
-            self.picture.id,
-        )
-        self.assertEqual(
-            result.data["create_contest_submission"]["contest"]["id"], self.contest.id
+            result.data["create_contest_submission"]["results"]["picture"]["user"][
+                "email"
+            ],
+            self.user.email,
         )
 
-    # def test_vote(self):
-    #     contest_submission = ContestSubmissionFactory()
-    #     user_vote = UserFactory()
-    #     result = schema.execute_sync(
-    #         contest_submission_vote_mutation,
-    #         variable_values={
-    #             "contestSubmission": contest_submission.id,
-    #             "user": str(user_vote.id),
-    #         },
-    #     )
-    #     self.assertEqual(result.errors, None)
-    #     self.assertEqual(
-    #         result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
-    #         user_vote.email,
-    #     )s
+        self.assertEqual(
+            result.data["create_contest_submission"]["results"]["contest"]["id"],
+            self.contest.id,
+        )
+
+    def test_vote(self):
+        contest_submission = ContestSubmissionFactory()
+        user_vote = UserFactory()
+
+        result = schema.execute_sync(
+            contest_submission_vote_mutation,
+            variable_values={
+                "contestSubmission": contest_submission.id,
+                "user": str(user_vote.id),
+            },
+            context_value={
+                "test": True,
+                "authentication": self.hashed_password,
+            },
+        )
+        self.assertEqual(result.errors, None)
+        self.assertEqual(
+            result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
+            user_vote.email,
+        )
 
     def test_update(self):
         contest = ContestFactory()
@@ -80,12 +96,14 @@ class ContestSubmissionTest(TestCase):
 
         self.assertEqual(newContestSubmission.picture.file, original_picture.file)
 
-        newPicture = PictureFactory(user=user)
+        newPicture = {
+            "user": str(user.id),
+            "file": Image.new(mode="RGB", size=(200, 200)),
+        }
 
         updated_contest_submission = {
             "id": newContestSubmission.id,
-            "picture": newPicture.id,
-            "submission_date": str(timezone.now()),
+            "picture": newPicture,
         }
 
         result = schema.execute_sync(
@@ -93,54 +111,80 @@ class ContestSubmissionTest(TestCase):
             variable_values={
                 "contestSubmission": updated_contest_submission,
             },
+            context_value={
+                "test": True,
+                "authentication": self.hashed_password,
+            },
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertFalse(
+            result.data["update_contest_submission"]["results"]["picture"]["id"]
+            == str(original_picture.id)
+        )
+
+    def test_repeat_vote(self):
+        contest_submission = ContestSubmissionFactory()
+        user_vote = UserFactory()
+
+        result = schema.execute_sync(
+            contest_submission_vote_mutation,
+            variable_values={
+                "contestSubmission": contest_submission.id,
+                "user": str(user_vote.id),
+            },
+            context_value={
+                "test": True,
+                "authentication": self.hashed_password,
+            },
+        )
+
+        result_error = schema.execute_sync(
+            contest_submission_vote_mutation,
+            variable_values={
+                "contestSubmission": contest_submission.id,
+                "user": str(user_vote.id),
+            },
+            context_value={
+                "test": True,
+                "authentication": self.hashed_password,
+            },
         )
 
         self.assertEqual(result.errors, None)
         self.assertEqual(
-            result.data["update_contest_submission"]["picture"]["id"],
-            updated_contest_submission["picture"],
+            result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
+            user_vote.email,
         )
-        self.assertEqual(
-            result.data["update_contest_submission"]["submission_date"],
-            str(updated_contest_submission["submission_date"]).replace(" ", "T"),
-        )
-
-    # def test_repeat_vote(self):
-    #     contest_submission = ContestSubmissionFactory()
-    #     user_vote = UserFactory()
-
-    #     result = schema.execute_sync(
-    #         contest_submission_vote_mutation,
-    #         variable_values={
-    #             "contestSubmission": contest_submission.id,
-    #             "user": str(user_vote.id),
-    #         },
-    #     )
-
-    #     result_error = schema.execute_sync(
-    #         contest_submission_vote_mutation,
-    #         variable_values={
-    #             "contestSubmission": contest_submission.id,
-    #             "user": str(user_vote.id),
-    #         },
-    #     )
-    #     self.assertEqual(result.errors, None)
-    #     self.assertEqual(
-    #         result.data["contest_submission_add_vote"]["results"]["votes"][0]["email"],
-    #         user_vote.email,
-    #     )
-    #     self.assertEqual(result_error.errors, None)
-    #     self.assertEqual(len(contest_submission.votes.all()), 1)
+        self.assertEqual(result_error.errors, None)
+        self.assertEqual(len(contest_submission.votes.all()), 1)
 
     def test_outdate_submission(self):
-        contest = ContestFactory(
-            upload_phase_end=factory.Faker("date_time", tzinfo=pytz.UTC)
-        )
+        contest = ContestFactory(upload_phase_end=timezone.now() - timedelta(days=3))
         with self.assertRaises(ValidationError) as e:
             ContestSubmissionFactory(contest=contest)
 
         exception = e.exception
         self.assertIn(OUTDATED_SUBMISSION_ERROR_MESSAGE, exception.messages)
+
+    def test_vote_own_subimission(self):
+        contest_submission = ContestSubmissionFactory()
+
+        result = schema.execute_sync(
+            contest_submission_vote_mutation,
+            variable_values={
+                "contestSubmission": contest_submission.id,
+                "user": str(contest_submission.picture.user.id),
+            },
+            context_value={
+                "test": True,
+                "authentication": self.hashed_password,
+            },
+        )
+        self.assertFalse(result.data["contest_submission_add_vote"]["success"])
+        self.assertEqual(
+            result.data["contest_submission_add_vote"]["errors"], VOTING_SELF
+        )
 
     def test_delete_success(self):
         contest_submission = ContestSubmissionFactory()

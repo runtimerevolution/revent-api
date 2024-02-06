@@ -1,6 +1,7 @@
 from typing import List
 
 import strawberry
+from strawberry.file_uploads import Upload
 from strawberry_django_plus import gql
 
 from .models import (
@@ -36,6 +37,7 @@ class UserInputPartial:
 @strawberry.django.input(Picture)
 class PictureInput:
     user: str
+    file: Upload
 
 
 @gql.django.partial(Picture)
@@ -100,7 +102,7 @@ class ContestInputPartial:
 @strawberry.django.input(ContestSubmission)
 class ContestSubmissionInput:
     contest: int
-    picture: int
+    picture: PictureInput
     submission_date: strawberry.auto
     votes: List[str]
 
@@ -108,5 +110,5 @@ class ContestSubmissionInput:
 @gql.django.partial(ContestSubmission)
 class ContestSubmissionInputPartial:
     id: int
-    picture: int
+    picture: PictureInput
     submission_date: strawberry.auto

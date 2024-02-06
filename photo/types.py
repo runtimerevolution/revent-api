@@ -109,6 +109,13 @@ class CreatePictureMutationResponse:
 
 
 @strawberry.type
+class CreateContestSubmissiomMutationResponse:
+    success: bool
+    results: ContestSubmissionType
+    errors: str
+
+
+@strawberry.type
 class AddLikeMutationResponse:
     success: bool
     results: PictureType

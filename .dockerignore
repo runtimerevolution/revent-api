@@ -1,0 +1,17 @@
+*.env*
+
+.git/
+.github/
+.pytest_cache/
+.vscode/
+
+.flake8
+.gitignore
+.pre-commit-config.yaml
+docker-compose.yml
+Dockerfile
+Makefile
+README.md
+docs
+nginx
+terraform

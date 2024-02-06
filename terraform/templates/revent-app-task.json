@@ -1,0 +1,30 @@
+[
+  {
+    "name": "revent-app",
+    "image": "${docker_url_app}",
+    "essential": true,
+    "cpu": 10,
+    "memory": 512,
+    "portMappings": [
+      {
+        "name": "revent-app-service",
+        "containerPort": 3000,
+        "hostPort": 3000,
+        "protocol": "tcp",
+        "appProtocol": "http"
+      }
+    ],
+    "command": ["node", "server.js"],
+    "environment": [
+      { "name": "NEXT_PUBLIC_BACKEND_URL", "value": "${api_host}:${api_port}" }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/revent-app",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "revent-app-log-stream"
+      }
+    }
+  }
+]

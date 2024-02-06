@@ -52,3 +52,29 @@ shell:
 
 urls:
 	python manage.py show_urls
+
+$(local_commands):
+	$(eval include .env)
+	python manage.py $@
+
+# Dev-specific commands using .env
+build:
+	$(eval include .env)
+	aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_URL}
+	docker buildx build --platform=linux/amd64 -t ${TF_VAR_docker_url_api} . && docker push ${TF_VAR_docker_url_api}
+	cd ${APP_PATH} && docker buildx build --platform=linux/amd64 -t ${TF_VAR_docker_url_app} . && docker push ${TF_VAR_docker_url_app}
+	cd nginx && docker buildx build --platform=linux/amd64 -t ${TF_VAR_docker_url_nginx} . && docker push ${TF_VAR_docker_url_nginx}
+
+terraform_commands = init plan apply destroy
+
+$(terraform_commands):
+	$(eval include .env)
+	cd terraform && terraform $@
+
+update-ecs:
+	$(eval include .env)
+	cd deploy && python update-ecs.py \
+        --cluster=development-cluster \
+        --service=run-bot-api-service \
+        --image="${TF_VAR_docker_url_api}" \
+        --container-name=run-bot-api

@@ -17,3 +17,41 @@ services:
     ports:
       - "4566:4566"
       - "4510-4559:4510-4559"
+
+  revent-api:
+    build: .
+    command: uvicorn config.asgi:application --host 0.0.0.0 --port 8000
+    env_file:
+      - .env
+    volumes:
+      - .:/appqware()|_m|^_--_-------------------------------------------------------------------------
+      - efs:/efs
+    user: root
+    ports:
+      - "8000:8000"
+    depends_on:
+      - revent-db
+
+  revent-app:
+    build: ${APP_PATH}
+    command: node server.js
+    ports:
+      - "3000:3000"
+    depends_on:
+      - revent-api
+
+  revent-nginx:
+    build: ./nginx
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+    volumes:
+      - efs:/efs
+    depends_on:
+      - revent-api
+      - revent-app
+
+volumes:
+  postgres_data:
+  efs:

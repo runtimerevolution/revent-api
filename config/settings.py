@@ -21,9 +21,6 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-
-ALLOWED_HOSTS = ["*"]
-
 # AWS environment variables
 AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL")
 AWS_DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION")
@@ -57,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "utils.middleware.HealthCheckMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -68,25 +66,19 @@ MIDDLEWARE = [
     "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", default="").split(",")
+CORS_ALLOWED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", default="").split(",")
+CORS_ORIGIN_WHITELIST = os.getenv("CORS_ORIGIN_WHITELIST", default="").split(",")
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", default="").split(",")
 
 DJOSER = {
     "LOGIN_FIELD": "email",
     "SOCIAL_AUTH_TOKEN_STRATEGY": "config.strategy.TokenStrategy",
-    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [
-        "http://127.0.0.1:3000",
-        "http://localhost:3000",
-    ],
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": os.getenv(
+        "ALLOWED_REDIRECT_URIS", default=""
+    ).split(","),
 }
 
 REST_FRAMEWORK = {
@@ -184,7 +176,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
-
+STATIC_ROOT = "/efs/static/"
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 

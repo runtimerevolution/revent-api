@@ -42,6 +42,6 @@ CANT_VOTE_SUBMISSION = (
 
 CONTEST_CLOSED = "Contest is closed."
 
-UPLOAD_PHASE_NOT_OVER = "Can't vote while upload phase isn't over."
+VOTE_UPLOAD_PHASE_NOT_OVER = "Can't vote while upload phase isn't over."
 
 VOTING_SELF = "Can't vote on your own submissions."

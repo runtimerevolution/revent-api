@@ -62,7 +62,11 @@ class ContestAdmin(admin.ModelAdmin):
                 messages.info(request, VOTING_PHASE_NOT_OVER)
                 break
 
-            if contest.upload_phase_end and contest.upload_phase_end > timezone.now():
+            if (
+                contest.upload_phase_end
+                and contest.upload_phase_end > timezone.now()
+                or not contest.upload_phase_end
+            ):
                 messages.info(request, UPLOAD_PHASE_NOT_OVER)
                 break
 

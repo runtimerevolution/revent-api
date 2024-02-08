@@ -83,7 +83,9 @@ class Query:
     def contests(
         self, filters: Optional[ContestFilter] = strawberry.UNSET
     ) -> List[ContestType]:
-        queryset = Contest.objects.all()
+        queryset = Contest.objects.all().exclude(
+            internal_status=ContestInternalStates.DRAW, voting_draw_end=None
+        )
         if getattr(filters, "search", strawberry.UNSET):
             queryset = Contest.objects.annotate(
                 search=SearchVector("title", "description", "prize"),

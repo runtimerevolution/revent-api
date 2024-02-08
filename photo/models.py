@@ -12,8 +12,8 @@ from photo.fixtures import (
     OUTDATED_SUBMISSION_ERROR_MESSAGE,
     REPEATED_VOTE_ERROR_MESSAGE,
     UNIQUE_SUBMISSION_ERROR_MESSAGE,
-    UPLOAD_PHASE_NOT_OVER,
     VALID_USER_ERROR_MESSAGE,
+    VOTE_UPLOAD_PHASE_NOT_OVER,
     VOTING_DRAW_PHASE_OVER,
     VOTING_PHASE_OVER,
     VOTING_SELF,
@@ -214,9 +214,14 @@ class Contest(SoftDeleteModel):
         if self.winners.count() > 1:
             self.internal_status = ContestInternalStates.DRAW
             self.reset_votes()
+        elif self.winners.count() == 0:
+            self.internal_status = ContestInternalStates.DRAW
+            all_submissions = ContestSubmission.objects.filter(contest=self)
+            for submission in all_submissions:
+                self.winners.add(submission.picture.user)
+            self.reset_votes()
         else:
             self.internal_status = ContestInternalStates.CLOSED
-
         self.save()
         return self
 
@@ -293,7 +298,7 @@ class ContestSubmission(SoftDeleteModel):
                 self.contest.upload_phase_end
                 and self.contest.upload_phase_end > timezone.now()
             ):
-                raise ValidationError(UPLOAD_PHASE_NOT_OVER)
+                raise ValidationError(VOTE_UPLOAD_PHASE_NOT_OVER)
             if (
                 self.contest.voting_phase_end
                 and self.contest.voting_phase_end < timezone.now()

@@ -12,8 +12,8 @@ from photo.fixtures import (
     OUTDATED_SUBMISSION_ERROR_MESSAGE,
     REPEATED_VOTE_ERROR_MESSAGE,
     UNIQUE_SUBMISSION_ERROR_MESSAGE,
-    UPLOAD_PHASE_NOT_OVER,
     VALID_USER_ERROR_MESSAGE,
+    VOTE_UPLOAD_PHASE_NOT_OVER,
     VOTING_DRAW_PHASE_OVER,
     VOTING_PHASE_OVER,
     VOTING_SELF,
@@ -298,7 +298,7 @@ class ContestSubmission(SoftDeleteModel):
                 self.contest.upload_phase_end
                 and self.contest.upload_phase_end > timezone.now()
             ):
-                raise ValidationError(UPLOAD_PHASE_NOT_OVER)
+                raise ValidationError(VOTE_UPLOAD_PHASE_NOT_OVER)
             if (
                 self.contest.voting_phase_end
                 and self.contest.voting_phase_end < timezone.now()

@@ -38,7 +38,7 @@ pre: ## Run pre-commit
 
 # Admin
 superuser:
-	python manage.py createsuperuser --noinput --email=admin@example.com --first_name=admin --last_name=admin
+	python manage.py createsuperuser
 
 # Setup
 setup: up install migrate

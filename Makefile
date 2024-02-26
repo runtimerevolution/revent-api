@@ -60,7 +60,7 @@ $(local_commands):
 # Dev-specific commands using .env
 build:
 	$(eval include .env)
-	aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_URL}
+	aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_URL}
 	docker buildx build --platform=linux/amd64 -t ${TF_VAR_docker_url_api} . && docker push ${TF_VAR_docker_url_api}
 	cd ${APP_PATH} && docker buildx build --platform=linux/amd64 -t ${TF_VAR_docker_url_app} . && docker push ${TF_VAR_docker_url_app}
 	cd nginx && docker buildx build --platform=linux/amd64 -t ${TF_VAR_docker_url_nginx} . && docker push ${TF_VAR_docker_url_nginx}
@@ -76,7 +76,7 @@ update-ecs:
 	cd deploy && python update-ecs.py \
         --aws_access_key_id=${AWS_ACCESS_KEY_ID} \
         --aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} \
-        --region_name=${AWS_REGION} \
+        --region_name=${AWS_DEFAULT_REGION} \
         --cluster=development-cluster \
         --service=revent-api-service \
         --image="${TF_VAR_docker_url_api}" \

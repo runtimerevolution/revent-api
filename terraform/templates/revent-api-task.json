@@ -56,6 +56,10 @@
         "value": "${allowed_hosts}"
       },
       {
+        "name": "ALLOWED_REDIRECT_URIS",
+        "value": "${allowed_redirect_uris}"
+      },
+      {
         "name": "DEBUG",
         "value": "${debug}"
       },

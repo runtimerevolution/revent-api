@@ -1,0 +1,62 @@
+[
+  {
+    "name": "revent-api-create-superuser",
+    "image": "${docker_url_api}",
+    "portMappings": [
+      {
+        "containerPort": 8000
+      }
+    ],
+    "command": ["python", "manage.py", "createsuperuser", "--noinput"],
+    "environment": [
+      {
+        "name": "DJANGO_SUPERUSER_FIRST_NAME",
+        "value": "${django_superuser_first_name}"
+      },
+      {
+        "name": "DJANGO_SUPERUSER_LAST_NAME",
+        "value": "${django_superuser_last_name}"
+      },
+      {
+        "name": "DJANGO_SUPERUSER_EMAIL",
+        "value": "${django_superuser_email}"
+      },
+      {
+        "name": "DJANGO_SUPERUSER_PASSWORD",
+        "value": "${django_superuser_password}"
+      },
+      {
+        "name": "POSTGRES_DATABASE",
+        "value": "${rds_db_name}"
+      },
+      {
+        "name": "POSTGRES_SCHEMA",
+        "value": "${rds_db_schema}"
+      },
+      {
+        "name": "POSTGRES_USERNAME",
+        "value": "${rds_username}"
+      },
+      {
+        "name": "POSTGRES_PASSWORD",
+        "value": "${rds_password}"
+      },
+      {
+        "name": "POSTGRES_HOST",
+        "value": "${rds_hostname}"
+      },
+      {
+        "name": "POSTGRES_PORT",
+        "value": "${rds_port}"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/revent-api",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "ecs"
+      }
+    }
+  }
+]

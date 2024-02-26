@@ -116,3 +116,20 @@ variable "rds_instance_class" {
   description = "RDS instance type"
   default     = "db.t3.micro"
 }
+variable "django_superuser_first_name" {
+  description = "Django superuser first name"
+}
+variable "django_superuser_last_name" {
+  description = "Django superuser last name"
+}
+variable "django_superuser_email" {
+  description = "Django superuser email"
+}
+variable "django_superuser_password" {
+  description = "Django superuser password"
+}
+
+# s3
+variable "s3_bucket_name" {
+  description = "S3 bucket name"
+}

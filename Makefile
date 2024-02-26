@@ -38,7 +38,7 @@ pre: ## Run pre-commit
 
 # Admin
 superuser:
-	python manage.py createsuperuser
+	python manage.py createsuperuser --noinput --email=admin@example.com --first_name=admin --last_name=admin
 
 # Setup
 setup: up install migrate
@@ -74,7 +74,11 @@ $(terraform_commands):
 update-ecs:
 	$(eval include .env)
 	cd deploy && python update-ecs.py \
+        --aws_access_key_id=${AWS_ACCESS_KEY_ID} \
+        --aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} \
+        --region_name=${AWS_REGION} \
         --cluster=development-cluster \
-        --service=run-bot-api-service \
+        --service=revent-api-service \
         --image="${TF_VAR_docker_url_api}" \
-        --container-name=run-bot-api
+        --container-name=revent-api \
+		--collectstatic-task=revent-api-collectstatic-task

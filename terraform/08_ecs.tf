@@ -6,30 +6,31 @@ resource "aws_ecs_cluster" "revent_development" {
 # Data templates
 data "template_file" "revent_api" {
   template = file("templates/revent-api-task.json")
-  vars     = {
-    docker_url_api    = var.docker_url_api
-    region            = var.region
-    rds_db_name       = var.rds_db_name
-    rds_db_schema     = var.rds_db_schema
-    rds_username      = var.rds_username
-    rds_password      = var.rds_password
-    rds_port          = var.rds_port
-    rds_hostname      = aws_db_instance.revent_development.address
-    allowed_hosts     = aws_lb.revent_nginx_lb.dns_name
-    django_secret_key = var.django_secret_key
-    debug             = var.debug
+  vars = {
+    docker_url_api        = var.docker_url_api
+    region                = var.region
+    rds_db_name           = var.rds_db_name
+    rds_db_schema         = var.rds_db_schema
+    rds_username          = var.rds_username
+    rds_password          = var.rds_password
+    rds_port              = var.rds_port
+    rds_hostname          = aws_db_instance.revent_development.address
+    allowed_hosts         = aws_lb.revent_nginx_lb.dns_name
+    allowed_redirect_uris = "${lower(aws_alb_listener.revent_nginx_alb_listener.protocol)}://${aws_lb.revent_nginx_lb.dns_name}"
+    django_secret_key     = var.django_secret_key
+    debug                 = var.debug
   }
 }
 data "template_file" "revent_api_collectstatic" {
   template = file("templates/revent-api-collectstatic-task.json")
-  vars     = {
+  vars = {
     docker_url_api = var.docker_url_api
     region         = var.region
   }
 }
 data "template_file" "revent_api_migrate" {
   template = file("templates/revent-api-migrate-task.json")
-  vars     = {
+  vars = {
     docker_url_api = var.docker_url_api
     region         = var.region
     rds_db_name    = var.rds_db_name
@@ -40,18 +41,35 @@ data "template_file" "revent_api_migrate" {
     rds_hostname   = aws_db_instance.revent_development.address
   }
 }
+data "template_file" "revent_api_create_superuser" {
+  template = file("templates/revent-api-create-superuser-task.json")
+  vars = {
+    docker_url_api              = var.docker_url_api
+    region                      = var.region
+    django_superuser_first_name = var.django_superuser_first_name
+    django_superuser_last_name  = var.django_superuser_last_name
+    django_superuser_email      = var.django_superuser_email
+    django_superuser_password   = var.django_superuser_password
+    rds_db_name                 = var.rds_db_name
+    rds_db_schema               = var.rds_db_schema
+    rds_username                = var.rds_username
+    rds_password                = var.rds_password
+    rds_port                    = var.rds_port
+    rds_hostname                = aws_db_instance.revent_development.address
+  }
+}
 data "template_file" "revent_app" {
   template = file("templates/revent-app-task.json")
-  vars     = {
+  vars = {
     docker_url_app = var.docker_url_app
     region         = var.region
-    api_port         = 8000
-    api_host         = "${aws_service_discovery_service.revent_api_sd.name}.${aws_service_discovery_private_dns_namespace.revent_ns.name}"
+    api_port       = 8000
+    api_host       = "${aws_service_discovery_service.revent_api_sd.name}.${aws_service_discovery_private_dns_namespace.revent_ns.name}"
   }
 }
 data "template_file" "revent_nginx" {
   template = file("templates/revent-nginx-task.json")
-  vars     = {
+  vars = {
     docker_url_nginx = var.docker_url_nginx
     region           = var.region
     api_port         = 8000
@@ -96,6 +114,18 @@ resource "aws_ecs_task_definition" "revent_api_migrate" {
   task_role_arn            = aws_iam_role.revent_ecs_task_execution_role.arn
   container_definitions    = data.template_file.revent_api_migrate.rendered
 }
+
+resource "aws_ecs_task_definition" "revent_api_create_superuser" {
+  family                   = "revent-api-create-superuser-task"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.fargate_cpu
+  memory                   = var.fargate_memory
+  execution_role_arn       = aws_iam_role.revent_ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.revent_ecs_task_execution_role.arn
+  container_definitions    = data.template_file.revent_api_create_superuser.rendered
+}
+
 resource "aws_ecs_task_definition" "revent_api_collectstatic" {
   family                   = "revent-api-collectstatic-task"
   network_mode             = "awsvpc"
@@ -197,12 +227,12 @@ resource "aws_ecs_service" "revent_app" {
   }
 }
 resource "aws_ecs_service" "revent_nginx" {
-  name            = "revent-nginx-service"
-  depends_on      = [aws_ecs_service.revent_api]
-  cluster         = aws_ecs_cluster.revent_development.id
-  task_definition = aws_ecs_task_definition.revent_nginx.arn
-  launch_type     = "FARGATE"
-  desired_count   = 1
+  name                              = "revent-nginx-service"
+  depends_on                        = [aws_ecs_service.revent_api]
+  cluster                           = aws_ecs_cluster.revent_development.id
+  task_definition                   = aws_ecs_task_definition.revent_nginx.arn
+  launch_type                       = "FARGATE"
+  desired_count                     = 1
   health_check_grace_period_seconds = 30
   service_registries {
     registry_arn = aws_service_discovery_service.revent_nginx_sd.arn

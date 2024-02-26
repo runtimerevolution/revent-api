@@ -63,6 +63,9 @@ network_configuration = {
 
 
 @click.command()
+@click.option("--aws_access_key_id", help="AWS access key id", required=True)
+@click.option("--aws_secret_access_key", help="AWS secret access key", required=True)
+@click.option("--region_name", help="AWS region", required=True)
 @click.option("--cluster", help="Name of the ECS cluster", required=True)
 @click.option("--service", help="Name of the ECS service", required=True)
 @click.option(
@@ -74,8 +77,22 @@ network_configuration = {
     help="Name of the collectstatic task definition",
     default="revent-api-collectstatic-task",
 )
-def deploy(cluster, service, image, container_name, collectstatic_task):
-    client = boto3.client("ecs")
+def deploy(
+    aws_access_key_id,
+    aws_secret_access_key,
+    region_name,
+    cluster,
+    service,
+    image,
+    container_name,
+    collectstatic_task,
+):
+    client = boto3.client(
+        "ecs",
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        region_name=region_name,
+    )
 
     # Run the collectstatic task
     run_collectstatic_task(client, cluster, collectstatic_task)

@@ -1,0 +1,46 @@
+[
+  {
+    "name": "revent-api-migrate",
+    "image": "${docker_url_api}",
+    "portMappings": [
+      {
+        "containerPort": 8000
+      }
+    ],
+    "command": ["python", "manage.py", "migrate"],
+    "environment": [
+      {
+        "name": "POSTGRES_DATABASE",
+        "value": "${rds_db_name}"
+      },
+      {
+        "name": "POSTGRES_SCHEMA",
+        "value": "${rds_db_schema}"
+      },
+      {
+        "name": "POSTGRES_USERNAME",
+        "value": "${rds_username}"
+      },
+      {
+        "name": "POSTGRES_PASSWORD",
+        "value": "${rds_password}"
+      },
+      {
+        "name": "POSTGRES_HOST",
+        "value": "${rds_hostname}"
+      },
+      {
+        "name": "POSTGRES_PORT",
+        "value": "${rds_port}"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/revent-api",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "ecs"
+      }
+    }
+  }
+]

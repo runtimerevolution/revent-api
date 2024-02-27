@@ -120,6 +120,9 @@ class Picture(SoftDeleteModel):
     )
     likes = models.ManyToManyField(User, related_name="picture_likes", blank=True)
 
+    def __str__(self):
+        return self.name
+
     def like_picture(self, user):
         if user not in self.likes.filter(id=user):
             self.likes.add(user)

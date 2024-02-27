@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.utils import timezone
+from django.contrib.auth.admin import UserAdmin
 
 from photo.fixtures import (
     DRAW_PHASE_NOT_SET,
@@ -18,7 +19,7 @@ from utils.enums import ContestInternalStates
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(UserAdmin):
     list_display = (
         "email",
         "name_first",

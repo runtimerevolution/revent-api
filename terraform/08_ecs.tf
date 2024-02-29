@@ -41,25 +41,18 @@ data "template_file" "revent_api_create_superuser" {
     rds_hostname                = aws_db_instance.revent_development.address
   }
 }
-data "template_file" "revent_app" {
-  template = file("templates/revent-app-task.json")
-  vars = {
-    docker_url_app = var.docker_url_app
-    region         = var.region
-    api_port       = 8000
-    api_host       = "localhost"
-  }
-}
+
 data "template_file" "revent_nginx" {
   template = file("templates/revent-nginx-task.json")
   vars = {
     docker_url_api        = var.docker_url_api
+    docker_url_app        = var.docker_url_app
     docker_url_nginx      = var.docker_url_nginx
     region                = var.region
     api_port              = 8000
-    api_host              = "localhost"
+    api_host              = "${aws_service_discovery_service.revent_nginx_sd.name}.${aws_service_discovery_private_dns_namespace.revent_ns.name}"
     app_port              = 3000
-    app_host              = "${aws_service_discovery_service.revent_app_sd.name}.${aws_service_discovery_private_dns_namespace.revent_ns.name}"
+    app_host              = "${aws_service_discovery_service.revent_nginx_sd.name}.${aws_service_discovery_private_dns_namespace.revent_ns.name}"
     region                = var.region
     rds_db_name           = var.rds_db_name
     rds_db_schema         = var.rds_db_schema
@@ -120,17 +113,6 @@ resource "aws_ecs_task_definition" "revent_api_collectstatic" {
     }
   }
 }
-resource "aws_ecs_task_definition" "revent_app" {
-  family                   = "revent-app"
-  depends_on               = [aws_db_instance.revent_development]
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.fargate_cpu
-  memory                   = var.fargate_memory
-  execution_role_arn       = aws_iam_role.revent_ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.revent_ecs_task_execution_role.arn
-  container_definitions    = data.template_file.revent_app.rendered
-}
 resource "aws_ecs_task_definition" "revent_nginx" {
   family                   = "revent-nginx"
   network_mode             = "awsvpc"
@@ -156,26 +138,7 @@ resource "aws_ecs_task_definition" "revent_nginx" {
 }
 
 # Services
-resource "aws_ecs_service" "revent_app" {
-  name            = "revent-app-service"
-  cluster         = aws_ecs_cluster.revent_development.id
-  task_definition = aws_ecs_task_definition.revent_app.arn
-  launch_type     = "FARGATE"
-  desired_count   = 1
-  service_registries {
-    registry_arn = aws_service_discovery_service.revent_app_sd.arn
-  }
-  network_configuration {
-    subnets          = [aws_subnet.revent_public_subnet_1.id, aws_subnet.revent_public_subnet_2.id]
-    security_groups  = [aws_security_group.revent_tasks_sg.id]
-    assign_public_ip = true
-  }
-  load_balancer {
-    target_group_arn = aws_alb_target_group.revent_app_tg.arn
-    container_name   = "revent-app"
-    container_port   = 3000
-  }
-}
+
 resource "aws_ecs_service" "revent_nginx" {
   name                              = "revent-nginx-service"
   cluster                           = aws_ecs_cluster.revent_development.id

@@ -10,7 +10,7 @@ resource "aws_db_instance" "revent_development" {
   password                = var.rds_password
   port                    = var.rds_port
   engine                  = "postgres"
-  engine_version          = "15.4"
+  engine_version          = "15.5"
   instance_class          = var.rds_instance_class
   allocated_storage       = "20"
   storage_encrypted       = false

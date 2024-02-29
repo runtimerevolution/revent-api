@@ -47,7 +47,7 @@ data "template_file" "revent_app" {
     docker_url_app = var.docker_url_app
     region         = var.region
     api_port       = 8000
-    api_host       = "${aws_service_discovery_service.revent_api_sd.name}.${aws_service_discovery_private_dns_namespace.revent_ns.name}"
+    api_host       = "localhost"
   }
 }
 data "template_file" "revent_nginx" {

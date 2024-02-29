@@ -1,5 +1,86 @@
 [
   {
+    "name": "revent-api",
+    "image": "${docker_url_api}",
+    "essential": true,
+    "cpu": 10,
+    "memory": 512,
+    "portMappings": [
+      {
+        "containerPort": 8000,
+        "protocol": "tcp"
+      }
+    ],
+    "command": [
+      "uvicorn",
+      "config.asgi:application",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8000",
+      "--timeout-keep-alive",
+      "300",
+      "--timeout-graceful-shutdown",
+      "300"
+    ],
+    "environment": [
+      {
+        "name": "POSTGRES_DATABASE",
+        "value": "${rds_db_name}"
+      },
+      {
+        "name": "POSTGRES_SCHEMA",
+        "value": "${rds_db_schema}"
+      },
+      {
+        "name": "POSTGRES_USERNAME",
+        "value": "${rds_username}"
+      },
+      {
+        "name": "POSTGRES_PASSWORD",
+        "value": "${rds_password}"
+      },
+      {
+        "name": "POSTGRES_HOST",
+        "value": "${rds_hostname}"
+      },
+      {
+        "name": "POSTGRES_PORT",
+        "value": "${rds_port}"
+      },
+      {
+        "name": "ALLOWED_HOSTS",
+        "value": "${allowed_hosts}"
+      },
+      {
+        "name": "ALLOWED_REDIRECT_URIS",
+        "value": "${allowed_redirect_uris}"
+      },
+      {
+        "name": "DEBUG",
+        "value": "${debug}"
+      },
+      {
+        "name": "DJANGO_SECRET_KEY",
+        "value": "${django_secret_key}"
+      }
+    ],
+    "mountPoints": [
+      {
+        "containerPath": "/efs/staticfiles/",
+        "sourceVolume": "efs-volume",
+        "readOnly": false
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/revent-api",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "revent-api-log-stream"
+      }
+    }
+  }, {
     "name": "revent-nginx",
     "image": "${docker_url_nginx}",
     "essential": true,

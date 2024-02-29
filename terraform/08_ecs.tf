@@ -4,23 +4,6 @@ resource "aws_ecs_cluster" "revent_development" {
 }
 
 # Data templates
-data "template_file" "revent_api" {
-  template = file("templates/revent-api-task.json")
-  vars = {
-    docker_url_api        = var.docker_url_api
-    region                = var.region
-    rds_db_name           = var.rds_db_name
-    rds_db_schema         = var.rds_db_schema
-    rds_username          = var.rds_username
-    rds_password          = var.rds_password
-    rds_port              = var.rds_port
-    rds_hostname          = aws_db_instance.revent_development.address
-    allowed_hosts         = aws_lb.revent_nginx_lb.dns_name
-    allowed_redirect_uris = "${lower(aws_alb_listener.revent_nginx_alb_listener.protocol)}://${aws_lb.revent_nginx_lb.dns_name}"
-    django_secret_key     = var.django_secret_key
-    debug                 = var.debug
-  }
-}
 data "template_file" "revent_api_collectstatic" {
   template = file("templates/revent-api-collectstatic-task.json")
   vars = {
@@ -70,40 +53,28 @@ data "template_file" "revent_app" {
 data "template_file" "revent_nginx" {
   template = file("templates/revent-nginx-task.json")
   vars = {
-    docker_url_nginx = var.docker_url_nginx
-    region           = var.region
-    api_port         = 8000
-    api_host         = "${aws_service_discovery_service.revent_api_sd.name}.${aws_service_discovery_private_dns_namespace.revent_ns.name}"
-    app_port         = 3000
-    app_host         = "${aws_service_discovery_service.revent_app_sd.name}.${aws_service_discovery_private_dns_namespace.revent_ns.name}"
+    docker_url_api        = var.docker_url_api
+    docker_url_nginx      = var.docker_url_nginx
+    region                = var.region
+    api_port              = 8000
+    api_host              = "localhost"
+    app_port              = 3000
+    app_host              = "${aws_service_discovery_service.revent_app_sd.name}.${aws_service_discovery_private_dns_namespace.revent_ns.name}"
+    region                = var.region
+    rds_db_name           = var.rds_db_name
+    rds_db_schema         = var.rds_db_schema
+    rds_username          = var.rds_username
+    rds_password          = var.rds_password
+    rds_port              = var.rds_port
+    rds_hostname          = aws_db_instance.revent_development.address
+    allowed_hosts         = aws_lb.revent_nginx_lb.dns_name
+    allowed_redirect_uris = "${lower(aws_alb_listener.revent_nginx_alb_listener.protocol)}://${aws_lb.revent_nginx_lb.dns_name}"
+    django_secret_key     = var.django_secret_key
+    debug                 = var.debug
   }
 }
 
 # Task definitions
-resource "aws_ecs_task_definition" "revent_api" {
-  family                   = "revent-api"
-  depends_on               = [aws_db_instance.revent_development]
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.fargate_cpu
-  memory                   = var.fargate_memory
-  execution_role_arn       = aws_iam_role.revent_ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.revent_ecs_task_execution_role.arn
-  container_definitions    = data.template_file.revent_api.rendered
-  volume {
-    name = "efs-volume"
-    efs_volume_configuration {
-      file_system_id          = aws_efs_file_system.revent_efs.id
-      root_directory          = "/"
-      transit_encryption      = "ENABLED"
-      transit_encryption_port = 2049
-      authorization_config {
-        access_point_id = aws_efs_access_point.revent_app_access_point.id
-        iam             = "ENABLED"
-      }
-    }
-  }
-}
 resource "aws_ecs_task_definition" "revent_api_migrate" {
   family                   = "revent-api-migrate-task"
   network_mode             = "awsvpc"
@@ -162,7 +133,6 @@ resource "aws_ecs_task_definition" "revent_app" {
 }
 resource "aws_ecs_task_definition" "revent_nginx" {
   family                   = "revent-nginx"
-  depends_on               = [aws_ecs_task_definition.revent_api]
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
@@ -186,26 +156,6 @@ resource "aws_ecs_task_definition" "revent_nginx" {
 }
 
 # Services
-resource "aws_ecs_service" "revent_api" {
-  name            = "revent-api-service"
-  cluster         = aws_ecs_cluster.revent_development.id
-  task_definition = aws_ecs_task_definition.revent_api.arn
-  launch_type     = "FARGATE"
-  desired_count   = 1
-  service_registries {
-    registry_arn = aws_service_discovery_service.revent_api_sd.arn
-  }
-  network_configuration {
-    subnets          = [aws_subnet.revent_public_subnet_1.id, aws_subnet.revent_public_subnet_2.id]
-    security_groups  = [aws_security_group.revent_tasks_sg.id]
-    assign_public_ip = true
-  }
-  load_balancer {
-    target_group_arn = aws_alb_target_group.revent_api_tg.arn
-    container_name   = "revent-api"
-    container_port   = 8000
-  }
-}
 resource "aws_ecs_service" "revent_app" {
   name            = "revent-app-service"
   cluster         = aws_ecs_cluster.revent_development.id
@@ -228,7 +178,6 @@ resource "aws_ecs_service" "revent_app" {
 }
 resource "aws_ecs_service" "revent_nginx" {
   name                              = "revent-nginx-service"
-  depends_on                        = [aws_ecs_service.revent_api]
   cluster                           = aws_ecs_cluster.revent_development.id
   task_definition                   = aws_ecs_task_definition.revent_nginx.arn
   launch_type                       = "FARGATE"

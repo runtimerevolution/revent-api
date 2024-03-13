@@ -55,25 +55,6 @@ resource "aws_route_table_association" "revent_private_route_2_association" {
   subnet_id      = aws_subnet.revent_private_subnet_2.id
 }
 
-# Elastic IP
-resource "aws_eip" "revent_eip_nat_gw" {
-  domain                    = "vpc"
-  associate_with_private_ip = "10.0.0.5"
-  depends_on                = [aws_internet_gateway.revent_development_igw]
-}
-
-# NAT gateway
-resource "aws_nat_gateway" "revent_nat_gw" {
-  allocation_id = aws_eip.revent_eip_nat_gw.id
-  subnet_id     = aws_subnet.revent_public_subnet_1.id
-  depends_on    = [aws_eip.revent_eip_nat_gw]
-}
-resource "aws_route" "revent_route_nat_gw" {
-  route_table_id         = aws_route_table.revent_private_route_table.id
-  nat_gateway_id         = aws_nat_gateway.revent_nat_gw.id
-  destination_cidr_block = "0.0.0.0/0"
-}
-
 # Internet Gateway for the public subnet
 resource "aws_internet_gateway" "revent_development_igw" {
   vpc_id = aws_vpc.revent_development_vpc.id

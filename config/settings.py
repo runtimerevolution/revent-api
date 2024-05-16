@@ -16,13 +16,15 @@ SECRET_KEY = __env.str("SECRET_KEY")
 DEBUG = __env.bool("DEBUG", default=False)
 
 # AWS environment variables
-AWS_S3_ENDPOINT_URL = __env.url("AWS_S3_ENDPOINT_URL")
+AWS_S3_ENDPOINT_URL = __env.url("AWS_S3_ENDPOINT_URL").geturl()
 AWS_DEFAULT_REGION = __env.str("AWS_DEFAULT_REGION")
 AWS_STORAGE_BUCKET_NAME = __env.str("AWS_STORAGE_BUCKET_NAME")
 AWS_ACCESS_KEY_ID = __env.str("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = __env.str("AWS_SECRET_ACCESS_KEY")
 AWS_QUERYSTRING_AUTH = __env.bool("AWS_QUERYSTRING_AUTH")
 AWS_S3_SIGNATURE_VERSION = __env.str("AWS_S3_SIGNATURE_VERSION")  # "s3v4"
+
+print(AWS_S3_ENDPOINT_URL)
 
 # Other environment variables
 MAX_PICTURE_SIZE = __env.int("MAX_PICTURE_SIZE", default=80000000)
@@ -185,5 +187,5 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
-BASE_BACKEND_URL = __env.url("BASE_BACKEND_URL")
-BASE_APP_URL = __env.url("BASE_APP_URL")
+BASE_BACKEND_URL = __env.url("BASE_BACKEND_URL").geturl()
+BASE_APP_URL = __env.url("BASE_APP_URL").geturl()

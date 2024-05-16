@@ -21,19 +21,23 @@ down: # Stop the docker containers
 	docker compose down -t 1
 
 pre: # Run pre-commit
+	$(eval include .env/local/api.env)
 	pre-commit run --all-files
 
 
 setup: up install migrate # Setup
 
 coverage: # Get test coverage
+	$(eval include .env/local/api.env)
 	coverage erase && coverage run manage.py test && coverage html --skip-empty --skip-covered
 	open htmlcov/index.html
 
 test: # Test all django apps OR pass testing target like "smart_replenishment" or "planner_requests.tests.csv_file"
+	$(eval include .env/local/api.env)
 	poetry run python manage.py test --no-input $(TEST_ARGS)
 
 populate: # Generate dummy data
+	$(eval include .env/local/api.env)
 	poetry run python launch.py
 
 # Admin

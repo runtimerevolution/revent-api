@@ -88,10 +88,12 @@ jobs:
           DJANGO_SETTINGS_MODULE: config.settings
           AWS_S3_ENDPOINT_URL: http://localhost.localstack.cloud:4566/
           AWS_DEFAULT_REGION: us-west-1
+          AWS_S3_BUCKET_NAME: revent-storage
           AWS_STORAGE_BUCKET_NAME: revent-media
           AWS_ACCESS_KEY_ID: test
           AWS_SECRET_ACCESS_KEY: test
           AWS_QUERYSTRING_AUTH: False
+          AWS_S3_SIGNATURE_VERSION: s3v4
           ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0
           CSRF_TRUSTED_ORIGINS: http://localhost,http://localhost:3000,http://127.0.0.1:3000,http://127.0.0.1
           CORS_ALLOWED_ORIGINS: http://localhost,http://localhost:3000,http://127.0.0.1:3000,http://127.0.0.1,http://127.0.0.1:3001

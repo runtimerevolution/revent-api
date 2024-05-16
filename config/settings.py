@@ -1,37 +1,31 @@
 import os
 from pathlib import Path
 
-import environ
+from environ import Env
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
+__env = Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
-
 # SECURITY WARNING: keep the secret key used in production secret!
 # Raises Django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = __env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = __env.bool("DEBUG", default=False)
 
 # AWS environment variables
-AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL")
-AWS_DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION")
-AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
-AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-AWS_QUERYSTRING_AUTH = os.environ.get("AWS_QUERYSTRING_AUTH")
-AWS_S3_SIGNATURE_VERSION = os.environ.get("AWS_S3_SIGNATURE_VERSION")  # "s3v4"
+AWS_S3_ENDPOINT_URL = __env.url("AWS_S3_ENDPOINT_URL")
+AWS_DEFAULT_REGION = __env.str("AWS_DEFAULT_REGION")
+AWS_STORAGE_BUCKET_NAME = __env.str("AWS_STORAGE_BUCKET_NAME")
+AWS_ACCESS_KEY_ID = __env.str("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = __env.str("AWS_SECRET_ACCESS_KEY")
+AWS_QUERYSTRING_AUTH = __env.bool("AWS_QUERYSTRING_AUTH")
+AWS_S3_SIGNATURE_VERSION = __env.str("AWS_S3_SIGNATURE_VERSION")  # "s3v4"
 
 # Other environment variables
-MAX_PICTURE_SIZE = os.environ.get("MAX_PICTURE_SIZE", 80000000)
+MAX_PICTURE_SIZE = __env.int("MAX_PICTURE_SIZE", default=80000000)
 
 # Application definition
 
@@ -67,29 +61,23 @@ MIDDLEWARE = [
     "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", default="").split(",")
-CORS_ALLOWED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", default="").split(",")
-CORS_ORIGIN_WHITELIST = os.getenv("CORS_ORIGIN_WHITELIST", default="").split(",")
+ALLOWED_HOSTS = __env.list("ALLOWED_HOSTS", default=[])
+CORS_ALLOWED_ORIGINS = __env.list("CSRF_TRUSTED_ORIGINS", default=[])
+CORS_ORIGIN_WHITELIST = __env.list("CORS_ORIGIN_WHITELIST", default=[])
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", default="").split(",")
+CSRF_TRUSTED_ORIGINS = __env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 DJOSER = {
     "LOGIN_FIELD": "email",
     "SOCIAL_AUTH_TOKEN_STRATEGY": "config.strategy.TokenStrategy",
-    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": os.getenv(
-        "ALLOWED_REDIRECT_URIS", default=""
-    ).split(","),
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": __env.list("ALLOWED_REDIRECT_URIS", default=[]),
 }
 
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.TokenAuthentication",
-    )
-}
+REST_FRAMEWORK = {"DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.TokenAuthentication",)}
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("GOOGLE_CLIENT_ID")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = __env.str("GOOGLE_CLIENT_ID")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = __env.str("GOOGLE_CLIENT_SECRET")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
@@ -134,11 +122,11 @@ AUTH_USER_MODEL = "photo.User"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_HOST"),
-        "PORT": os.environ.get("POSTGRES_PORT"),
+        "NAME": __env.str("POSTGRES_DB"),
+        "USER": __env.str("POSTGRES_USER"),
+        "PASSWORD": __env.str("POSTGRES_PASSWORD"),
+        "HOST": __env.str("POSTGRES_HOST"),
+        "PORT": __env.int("POSTGRES_PORT", default=5432),
     }
 }
 
@@ -197,5 +185,5 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
-BASE_BACKEND_URL = os.environ.get("BASE_BACKEND_URL")
-BASE_APP_URL = os.environ.get("BASE_APP_URL")
+BASE_BACKEND_URL = __env.url("BASE_BACKEND_URL")
+BASE_APP_URL = __env.url("BASE_APP_URL")

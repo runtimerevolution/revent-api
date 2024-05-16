@@ -4,6 +4,12 @@
 .github/
 .pytest_cache/
 .vscode/
+.env-sample/
+
+deploy/
+docs/
+nginx/
+terraform/
 
 .flake8
 .gitignore
@@ -12,6 +18,3 @@ docker-compose.yml
 Dockerfile
 Makefile
 README.md
-docs
-nginx
-terraform

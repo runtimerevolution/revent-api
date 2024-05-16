@@ -46,7 +46,6 @@ Thumbs.db
 # env files
 .envrc
 .direnv
-.env.dev
 .env
 
 # Database

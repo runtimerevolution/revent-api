@@ -7,47 +7,32 @@
         "containerPort": 8000
       }
     ],
-    "command": ["python", "manage.py", "createsuperuser", "--noinput"],
+    "command": [
+      "python",
+      "manage.py",
+      "createsuperuser",
+      "--noinput"
+    ],
     "environment": [
       {
         "name": "DJANGO_SUPERUSER_FIRST_NAME",
-        "value": "${django_superuser_first_name}"
+        "value": ""
       },
       {
         "name": "DJANGO_SUPERUSER_LAST_NAME",
-        "value": "${django_superuser_last_name}"
+        "value": ""
       },
       {
         "name": "DJANGO_SUPERUSER_EMAIL",
-        "value": "${django_superuser_email}"
+        "value": ""
       },
       {
         "name": "DJANGO_SUPERUSER_PASSWORD",
-        "value": "${django_superuser_password}"
-      },
-      {
-        "name": "POSTGRES_DATABASE",
-        "value": "${rds_db_name}"
-      },
-      {
-        "name": "POSTGRES_SCHEMA",
-        "value": "${rds_db_schema}"
-      },
-      {
-        "name": "POSTGRES_USERNAME",
-        "value": "${rds_username}"
-      },
-      {
-        "name": "POSTGRES_PASSWORD",
-        "value": "${rds_password}"
+        "value": ""
       },
       {
         "name": "POSTGRES_HOST",
         "value": "${rds_hostname}"
-      },
-      {
-        "name": "POSTGRES_PORT",
-        "value": "${rds_port}"
       }
     ],
     "logConfiguration": {

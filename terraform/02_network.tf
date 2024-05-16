@@ -1,68 +1,9 @@
-# Development VPC
-resource "aws_vpc" "revent_development_vpc" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-}
+data "aws_availability_zones" "available_zones" {}
 
-# Public subnets
-resource "aws_subnet" "revent_public_subnet_1" {
-  cidr_block        = var.revent_public_subnet_1_cidr
-  vpc_id            = aws_vpc.revent_development_vpc.id
-  availability_zone = var.availability_zones[0]
-}
-resource "aws_subnet" "revent_public_subnet_2" {
-  cidr_block        = var.revent_public_subnet_2_cidr
-  vpc_id            = aws_vpc.revent_development_vpc.id
-  availability_zone = var.availability_zones[1]
-}
+resource "aws_default_vpc" "default_vpc" {}
 
-# Private subnets
-resource "aws_subnet" "revent_private_subnet_1" {
-  cidr_block        = var.revent_private_subnet_1_cidr
-  vpc_id            = aws_vpc.revent_development_vpc.id
-  availability_zone = var.availability_zones[0]
-}
-resource "aws_subnet" "revent_private_subnet_2" {
-  cidr_block        = var.revent_private_subnet_2_cidr
-  vpc_id            = aws_vpc.revent_development_vpc.id
-  availability_zone = var.availability_zones[1]
-}
+resource "aws_default_subnet" "default_subnets" {
+  count = length(data.aws_availability_zones.available_zones.names)
 
-# Route tables for the subnets
-resource "aws_route_table" "revent_public_route_table" {
-  vpc_id = aws_vpc.revent_development_vpc.id
-}
-resource "aws_route_table" "revent_private_route_table" {
-  vpc_id = aws_vpc.revent_development_vpc.id
-}
-
-# Associate the newly created route tables to the subnets
-resource "aws_route_table_association" "revent_public_route_1_association" {
-  route_table_id = aws_route_table.revent_public_route_table.id
-  subnet_id      = aws_subnet.revent_public_subnet_1.id
-}
-resource "aws_route_table_association" "revent_public_route_2_association" {
-  route_table_id = aws_route_table.revent_public_route_table.id
-  subnet_id      = aws_subnet.revent_public_subnet_2.id
-}
-resource "aws_route_table_association" "revent_private_route_1_association" {
-  route_table_id = aws_route_table.revent_private_route_table.id
-  subnet_id      = aws_subnet.revent_private_subnet_1.id
-}
-resource "aws_route_table_association" "revent_private_route_2_association" {
-  route_table_id = aws_route_table.revent_private_route_table.id
-  subnet_id      = aws_subnet.revent_private_subnet_2.id
-}
-
-# Internet Gateway for the public subnet
-resource "aws_internet_gateway" "revent_development_igw" {
-  vpc_id = aws_vpc.revent_development_vpc.id
-}
-
-# Route the public subnet traffic through the Internet Gateway
-resource "aws_route" "revent_public_internet_igw_route" {
-  route_table_id         = aws_route_table.revent_public_route_table.id
-  gateway_id             = aws_internet_gateway.revent_development_igw.id
-  destination_cidr_block = "0.0.0.0/0"
+  availability_zone = data.aws_availability_zones.available_zones.names[count.index]
 }

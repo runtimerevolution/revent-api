@@ -26,30 +26,16 @@
       "--timeout-graceful-shutdown",
       "300"
     ],
+    "environmentFiles": [
+      {
+        "value": "${api_env_file}",
+        "type": "s3"
+      }
+    ],
     "environment": [
-      {
-        "name": "POSTGRES_DATABASE",
-        "value": "${rds_db_name}"
-      },
-      {
-        "name": "POSTGRES_SCHEMA",
-        "value": "${rds_db_schema}"
-      },
-      {
-        "name": "POSTGRES_USERNAME",
-        "value": "${rds_username}"
-      },
-      {
-        "name": "POSTGRES_PASSWORD",
-        "value": "${rds_password}"
-      },
       {
         "name": "POSTGRES_HOST",
         "value": "${rds_hostname}"
-      },
-      {
-        "name": "POSTGRES_PORT",
-        "value": "${rds_port}"
       },
       {
         "name": "ALLOWED_HOSTS",
@@ -60,12 +46,8 @@
         "value": "${allowed_redirect_uris}"
       },
       {
-        "name": "DEBUG",
-        "value": "${debug}"
-      },
-      {
-        "name": "DJANGO_SECRET_KEY",
-        "value": "${django_secret_key}"
+        "name": "AWS_S3_ENDPOINT_URL",
+        "value": "${s3_endpoint_url}"
       }
     ],
     "mountPoints": [
@@ -99,9 +81,26 @@
         "appProtocol": "http"
       }
     ],
-    "command": ["node", "server.js"],
+    "command": [
+      "sh",
+      "-c",
+      "export HOSTNAME=0.0.0.0 && node server.js"
+    ],
+    "environmentFiles": [
+      {
+        "value": "${app_env_file}",
+        "type": "s3"
+      }
+    ],
     "environment": [
-      { "name": "NEXT_PUBLIC_BACKEND_URL", "value": "${api_host}:${api_port}" }
+      {
+        "name": "NEXT_PUBLIC_AWS_S3_ENDPOINT_URL",
+        "value": "${s3_endpoint_url}/${revent_media_dir}"
+      },
+      {
+        "name": "NEXT_PUBLIC_AWS_S3_BUCKET",
+        "value": "\"${revent_media_dir}\""
+      }
     ],
     "logConfiguration": {
       "logDriver": "awslogs",
@@ -109,6 +108,40 @@
         "awslogs-group": "/ecs/revent-app",
         "awslogs-region": "${region}",
         "awslogs-stream-prefix": "revent-app-log-stream"
+      }
+    }
+  },
+  {
+    "name": "revent-nginx",
+    "image": "${docker_url_nginx}",
+    "essential": true,
+    "cpu": 10,
+    "memory": 128,
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "protocol": "tcp"
+      }
+    ],
+    "environmentFiles": [
+      {
+        "value": "${nginx_env_file}",
+        "type": "s3"
+      }
+    ],
+    "mountPoints": [
+      {
+        "containerPath": "/efs/staticfiles/",
+        "sourceVolume": "efs-volume",
+        "readOnly": false
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/revent-nginx",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "revent-nginx-log-stream"
       }
     }
   }

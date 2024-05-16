@@ -1,8 +1,8 @@
 # ALB Security Group (Traffic Internet -> ALB)
-resource "aws_security_group" "revent_load_balancer_sg" {
+resource "aws_security_group" "lb_sg" {
   name        = "load_balancer_security_group"
   description = "Security group for external load balancer serving Nginx"
-  vpc_id      = aws_vpc.revent_development_vpc.id
+  vpc_id      = aws_default_vpc.default_vpc.id
 
   ingress {
     from_port   = 80
@@ -27,19 +27,18 @@ resource "aws_security_group" "revent_load_balancer_sg" {
 }
 
 # ECS Fargate Security group (traffic ALB -> ECS Fargate Tasks)
-resource "aws_security_group" "revent_tasks_sg" {
-  name        = "ecs_fargate_security_group"
+resource "aws_security_group" "tasks_sg" {
+  name        = "tasks_security_group"
   description = "Allows inbound access from the ALB and allows communication among tasks within the security group"
-  vpc_id      = aws_vpc.revent_development_vpc.id
+  vpc_id      = aws_default_vpc.default_vpc.id
 
   ingress {
     from_port       = 0
     to_port         = 0
     protocol        = "-1"
-    self            = true
-    security_groups = [aws_security_group.revent_load_balancer_sg.id]
+    security_groups = [aws_security_group.lb_sg.id]
   }
-  
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -49,35 +48,36 @@ resource "aws_security_group" "revent_tasks_sg" {
 }
 
 # RDS Security Group (traffic Fargate -> RDS)
-resource "aws_security_group" "revent_rds_sg" {
+resource "aws_security_group" "rds_sg" {
   name        = "rds-security-group"
   description = "Allows inbound access from Fargate only"
-  vpc_id      = aws_vpc.revent_development_vpc.id
+  vpc_id      = aws_default_vpc.default_vpc.id
 
   ingress {
+    from_port       = var.rds_port
+    to_port         = var.rds_port
     protocol        = "tcp"
-    from_port       = "5432"
-    to_port         = "5432"
-    security_groups = [aws_security_group.revent_tasks_sg.id]
+    security_groups = [aws_security_group.tasks_sg.id]
   }
 
   egress {
-    protocol    = "-1"
     from_port   = 0
     to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
-resource "aws_security_group" "revent_efs_sg" {
+# EFS Security Group (traffic Fargate -> EFS)
+resource "aws_security_group" "efs_sg" {
   name        = "EFS Security Group"
   description = "Allow ECS to EFS communication"
-  vpc_id      = aws_vpc.revent_development_vpc.id
+  vpc_id      = aws_default_vpc.default_vpc.id
 
   ingress {
-    from_port   = 2049  # NFS port
-    to_port     = 2049
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Modify this based on your security requirements
+    from_port       = 2049
+    to_port         = 2049
+    protocol        = "tcp"
+    security_groups = [aws_security_group.tasks_sg.id]
   }
 }

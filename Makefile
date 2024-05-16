@@ -63,9 +63,9 @@ endif
 build: # Build docker images and store them in ECR
 	$(eval include .env/terraform/main.env)
 	aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ECR_URL}
-#	docker buildx build --platform=linux/arm64 -t ${TF_VAR_docker_url_api} . && docker push ${TF_VAR_docker_url_api}
+	docker buildx build --platform=linux/arm64 -t ${TF_VAR_docker_url_api} . && docker push ${TF_VAR_docker_url_api}
 	cd ${APP_PATH} && docker buildx build --platform=linux/arm64 -t ${TF_VAR_docker_url_app} . && docker push ${TF_VAR_docker_url_app}
-#	cd nginx && docker buildx build --platform=linux/arm64 -t ${TF_VAR_docker_url_nginx} . && docker push ${TF_VAR_docker_url_nginx}
+	cd nginx && docker buildx build --platform=linux/arm64 -t ${TF_VAR_docker_url_nginx} . && docker push ${TF_VAR_docker_url_nginx}
 
 init: # Use terraform to initialize the project
 plan: # Use terraform to view changes made to the infrastructure

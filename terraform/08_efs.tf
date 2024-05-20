@@ -1,5 +1,6 @@
 # File system
 resource "aws_efs_file_system" "revent_efs" {
+  creation_token = "revent-efs"
   lifecycle_policy {
     transition_to_ia = "AFTER_30_DAYS"
   }

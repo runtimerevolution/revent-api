@@ -1,7 +1,7 @@
 # ALB Security Group (Traffic Internet -> ALB)
 resource "aws_security_group" "lb_sg" {
-  name        = "load_balancer_security_group"
-  description = "Security group for external load balancer serving Nginx"
+  name        = "lb-security-group"
+  description = "Allows external access to ALB"
   vpc_id      = aws_default_vpc.default_vpc.id
 
   ingress {
@@ -28,8 +28,8 @@ resource "aws_security_group" "lb_sg" {
 
 # ECS Fargate Security group (traffic ALB -> ECS Fargate Tasks)
 resource "aws_security_group" "tasks_sg" {
-  name        = "tasks_security_group"
-  description = "Allows inbound access from the ALB and allows communication among tasks within the security group"
+  name        = "tasks-security-group"
+  description = "Allows ALB to ECS communication"
   vpc_id      = aws_default_vpc.default_vpc.id
 
   ingress {
@@ -50,7 +50,7 @@ resource "aws_security_group" "tasks_sg" {
 # RDS Security Group (traffic Fargate -> RDS)
 resource "aws_security_group" "rds_sg" {
   name        = "rds-security-group"
-  description = "Allows inbound access from Fargate only"
+  description = "Allows ECS to RDS communication"
   vpc_id      = aws_default_vpc.default_vpc.id
 
   ingress {
@@ -70,8 +70,8 @@ resource "aws_security_group" "rds_sg" {
 
 # EFS Security Group (traffic Fargate -> EFS)
 resource "aws_security_group" "efs_sg" {
-  name        = "EFS Security Group"
-  description = "Allow ECS to EFS communication"
+  name        = "efs-security-group"
+  description = "Allows ECS to EFS communication"
   vpc_id      = aws_default_vpc.default_vpc.id
 
   ingress {

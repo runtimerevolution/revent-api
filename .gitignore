@@ -59,10 +59,6 @@ data/db
 
 # Local .terraform directories
 **/.terraform/*
-.terraform
-*.tfstate
-*.tfstate.*
-*.lock.hcl
 
 # Lock
 .terraform.lock.hcl

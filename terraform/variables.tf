@@ -29,6 +29,12 @@ variable "fargate_cpu_arch" {
   default     = "ARM64"
 }
 
+# domain
+variable "domain_name" {
+  description = "Certificate domain name"
+  default     = "revent.runtime-revolution.com"
+}
+
 # load balancer
 variable "health_check_path" {
   description = "Health check path for the default target group"

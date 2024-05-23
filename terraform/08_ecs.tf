@@ -14,9 +14,9 @@ data "template_file" "revent_api" {
     api_env_file          = "${aws_s3_bucket.revent_env_bucket.arn}/${aws_s3_object.revent_api_env.key}"
     app_env_file          = "${aws_s3_bucket.revent_env_bucket.arn}/${aws_s3_object.revent_app_env.key}"
     nginx_env_file        = "${aws_s3_bucket.revent_env_bucket.arn}/${aws_s3_object.revent_nginx_env.key}"
-    rds_hostname          = aws_db_instance.development.address
-    allowed_hosts         = aws_lb.revent_lb.dns_name
-    allowed_redirect_uris = "${lower(aws_alb_listener.revent_alb_listener.protocol)}://${aws_lb.revent_lb.dns_name}"
+    rds_hostname          = data.terraform_remote_state.shared.outputs.development_rds.address
+    allowed_hosts         = var.domain_name
+    allowed_redirect_uris = "${lower(aws_alb_listener.revent_alb_listener.protocol)}://${var.domain_name}"
     s3_endpoint_url       = "http://${aws_s3_bucket.revent_storage_bucket.bucket_regional_domain_name}"
     revent_media_dir      = "revent-media/"
   }
@@ -35,7 +35,7 @@ data "template_file" "revent_api_migrate" {
     region         = var.region
     docker_url_api = var.docker_url_api
     api_env_file   = "${aws_s3_bucket.revent_env_bucket.arn}/${aws_s3_object.revent_api_env.key}"
-    rds_hostname   = aws_db_instance.development.address
+    rds_hostname   = data.terraform_remote_state.shared.outputs.development_rds.address
   }
 }
 data "template_file" "revent_api_create_superuser" {
@@ -44,20 +44,19 @@ data "template_file" "revent_api_create_superuser" {
     region         = var.region
     docker_url_api = var.docker_url_api
     api_env_file   = "${aws_s3_bucket.revent_env_bucket.arn}/${aws_s3_object.revent_api_env.key}"
-    rds_hostname   = aws_db_instance.development.address
+    rds_hostname   = data.terraform_remote_state.shared.outputs.development_rds.address
   }
 }
 
 # Task definitions
 resource "aws_ecs_task_definition" "revent_api" {
   family                   = "revent-api"
-  depends_on               = [aws_db_instance.development]
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
+  task_role_arn            = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
   container_definitions    = data.template_file.revent_api.rendered
   runtime_platform {
     operating_system_family = var.fargate_os
@@ -83,8 +82,8 @@ resource "aws_ecs_task_definition" "revent_api_migrate" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
+  task_role_arn            = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
   container_definitions    = data.template_file.revent_api_migrate.rendered
   runtime_platform {
     operating_system_family = var.fargate_os
@@ -98,8 +97,8 @@ resource "aws_ecs_task_definition" "revent_api_create_superuser" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
+  task_role_arn            = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
   container_definitions    = data.template_file.revent_api_create_superuser.rendered
   runtime_platform {
     operating_system_family = var.fargate_os
@@ -113,8 +112,8 @@ resource "aws_ecs_task_definition" "revent_api_collectstatic" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
+  task_role_arn            = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
   container_definitions    = data.template_file.revent_api_collectstatic.rendered
   runtime_platform {
     operating_system_family = var.fargate_os
@@ -144,8 +143,8 @@ resource "aws_ecs_service" "revent" {
   desired_count          = 1
   enable_execute_command = true
   network_configuration {
-    subnets          = aws_default_subnet.default_subnets[*].id
-    security_groups  = [aws_security_group.tasks_sg.id]
+    subnets          = data.terraform_remote_state.shared.outputs.subnets[*].id
+    security_groups  = [data.terraform_remote_state.shared.outputs.tasks_sg.id]
     assign_public_ip = true
   }
   load_balancer {

@@ -21,8 +21,8 @@ resource "aws_efs_access_point" "revent_app_access_point" {
   }
 }
 resource "aws_efs_mount_target" "revent_efs_mount" {
-  count           = length(aws_default_subnet.default_subnets)
+  count           = length(data.terraform_remote_state.shared.outputs.subnets)
   file_system_id  = aws_efs_file_system.revent_efs.id
-  subnet_id       = aws_default_subnet.default_subnets[count.index].id
-  security_groups = [aws_security_group.efs_sg.id]
+  subnet_id       = data.terraform_remote_state.shared.outputs.subnets[count.index].id
+  security_groups = [data.terraform_remote_state.shared.outputs.efs_sg.id]
 }

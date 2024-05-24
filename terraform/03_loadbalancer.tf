@@ -14,16 +14,17 @@ resource "aws_alb_target_group" "revent_tg" {
   }
 }
 
-# Listener (redirects traffic from the load balancer to the target group)
-resource "aws_alb_listener" "revent_alb_listener" {
-  load_balancer_arn = data.terraform_remote_state.shared.outputs.development_lb.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  certificate_arn   = aws_acm_certificate.revent_certificate.arn
-  depends_on        = [aws_alb_target_group.revent_tg]
+resource "aws_lb_listener_rule" "revent_rule" {
+  listener_arn = data.terraform_remote_state.shared.outputs.development_lb_listener.arn
 
-  default_action {
+  action {
     type             = "forward"
     target_group_arn = aws_alb_target_group.revent_tg.arn
+  }
+
+  condition {
+    host_header {
+      values = [var.domain_name]
+    }
   }
 }

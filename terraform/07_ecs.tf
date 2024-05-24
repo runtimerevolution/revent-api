@@ -16,7 +16,7 @@ data "template_file" "revent_api" {
     nginx_env_file        = "${aws_s3_bucket.revent_env_bucket.arn}/${aws_s3_object.revent_nginx_env.key}"
     rds_hostname          = data.terraform_remote_state.shared.outputs.development_rds.address
     allowed_hosts         = var.domain_name
-    allowed_redirect_uris = "${lower(aws_alb_listener.revent_alb_listener.protocol)}://${var.domain_name}"
+    allowed_redirect_uris = "${lower(data.terraform_remote_state.shared.outputs.development_lb_listener.protocol)}://${var.domain_name}"
     s3_endpoint_url       = "http://${aws_s3_bucket.revent_storage_bucket.bucket_regional_domain_name}"
     revent_media_dir      = "revent-media/"
   }

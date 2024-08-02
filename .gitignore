@@ -46,7 +46,6 @@ Thumbs.db
 # env files
 .envrc
 .direnv
-.env.dev
 .env
 
 # Database
@@ -60,10 +59,6 @@ data/db
 
 # Local .terraform directories
 **/.terraform/*
-.terraform
-*.tfstate
-*.tfstate.*
-*.lock.hcl
 
 # Lock
 .terraform.lock.hcl

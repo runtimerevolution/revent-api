@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-DIRS = docker
+DIRS = docker local
 
 .PHONY: $(DIRS)
 
@@ -13,4 +13,7 @@ ifneq ($(filter $(firstword $(MAKECMDGOALS)),$(DIRS)),)
 endif
 
 docker: # Run Makefile from docker directory
+	$(MAKE) -C $(ARGS)
+
+local: # Run Makefile from local directory
 	$(MAKE) -C $(ARGS)

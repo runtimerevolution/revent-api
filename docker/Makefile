@@ -1,5 +1,4 @@
 # Makefile used to manage docker containers
-
 .DEFAULT_GOAL := help
 
 help:

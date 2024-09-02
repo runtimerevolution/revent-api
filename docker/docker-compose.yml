@@ -15,7 +15,9 @@ services:
       - "4510-4559:4510-4559"
 
   revent-api:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     command: uvicorn config.asgi:application --host 0.0.0.0 --port 8000
     env_file:
       - api.env
@@ -37,7 +39,7 @@ services:
       - revent-api
 
   revent-nginx:
-    build: ./nginx
+    build: ../nginx
     env_file:
       - nginx.env
     ports:

@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-DIRS = docker local
+DIRS = docker local terraform
 
 .PHONY: $(DIRS)
 
@@ -19,4 +19,7 @@ docker: # Run Makefile from the docker directory
 	$(MAKE) -C $(COMMAND) $(COMMAND_ARGS)
 
 local: # Run Makefile from the local directory
+	$(MAKE) -C $(COMMAND) $(COMMAND_ARGS)
+
+terraform: # Run Makefile from the terraform directory
 	$(MAKE) -C $(COMMAND) $(COMMAND_ARGS)

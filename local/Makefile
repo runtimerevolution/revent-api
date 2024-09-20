@@ -1,4 +1,4 @@
-# Makefile used for local development
+# Makefile to manage local development commands
 .DEFAULT_GOAL := help
 CWD:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 MOVE_TO_ROOT = cd "$(CWD)/.."

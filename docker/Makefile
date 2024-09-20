@@ -1,4 +1,4 @@
-# Makefile used to manage docker containers
+# Makefile to manage Docker containers
 .DEFAULT_GOAL := help
 
 include main.env

@@ -47,6 +47,7 @@ Thumbs.db
 .envrc
 .direnv
 *.env
+!*.sample.env
 
 # Database
 db.sqlite3

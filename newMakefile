@@ -23,3 +23,8 @@ local: # Run Makefile from the local directory
 
 terraform: # Run Makefile from the terraform directory
 	$(MAKE) -C $(COMMAND) $(COMMAND_ARGS)
+
+setup: # Run the project's setup
+	$(MAKE) -C docker up-local
+	poetry install --no-root
+	$(MAKE) -C local migrate

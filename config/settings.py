@@ -186,7 +186,7 @@ STORAGES = {
         },
     },
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 BASE_BACKEND_URL = __env.url("BASE_BACKEND_URL").geturl()

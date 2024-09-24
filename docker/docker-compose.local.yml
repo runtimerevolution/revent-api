@@ -1,0 +1,18 @@
+services:
+  revent-db:
+    container_name: revent-db
+    image: postgres:14.1-alpine
+    env_file:
+      - db.env
+    ports:
+      - "5432:5432"
+
+  revent-s3:
+    container_name: revent-s3
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+
+volumes:
+  postgres_data:

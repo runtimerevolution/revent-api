@@ -47,7 +47,7 @@ class PictureFactory(factory.django.DjangoModelFactory):
     name = factory.Faker("file_name")
     file = factory.LazyAttributeSequence(
         lambda _, n: ContentFile(
-            factory.django.ImageField()._make_data({"width": 1024, "height": 768}),
+            factory.django.ImageField()._make_data({"width": 1024, "height": 768, "color": "orange"}),
             "picture{0}.jpg".format(n),
         )
     )

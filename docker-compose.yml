@@ -21,7 +21,6 @@ services:
       - .env/docker/api.env
     volumes:
       - .:/appqware()|_m|^_--_-------------------------------------------------------------------------
-      - efs:/efs
     user: root
     ports:
       - "8000:8000"
@@ -42,12 +41,9 @@ services:
       - .env/docker/nginx.env
     ports:
       - "80:80"
-    volumes:
-      - efs:/efs
     depends_on:
       - revent-api
       - revent-app
 
 volumes:
   postgres_data:
-  efs:

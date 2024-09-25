@@ -50,13 +50,6 @@
         "value": "${s3_endpoint_url}"
       }
     ],
-    "mountPoints": [
-      {
-        "containerPath": "/efs/staticfiles/",
-        "sourceVolume": "efs-volume",
-        "readOnly": false
-      }
-    ],
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
@@ -127,13 +120,6 @@
       {
         "value": "${nginx_env_file}",
         "type": "s3"
-      }
-    ],
-    "mountPoints": [
-      {
-        "containerPath": "/efs/staticfiles/",
-        "sourceVolume": "efs-volume",
-        "readOnly": false
       }
     ],
     "logConfiguration": {

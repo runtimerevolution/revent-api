@@ -10,26 +10,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Raises Django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
-SECRET_KEY = __env.str("SECRET_KEY")
+SECRET_KEY = __env.str("SECRET_KEY", default="SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = __env.bool("DEBUG", default=False)
 
 # AWS environment variables
-AWS_S3_ENDPOINT_URL = __env.url("AWS_S3_ENDPOINT_URL").geturl()
-AWS_DEFAULT_REGION = __env.str("AWS_DEFAULT_REGION")
-AWS_STORAGE_BUCKET_NAME = __env.str("AWS_STORAGE_BUCKET_NAME")
-AWS_ACCESS_KEY_ID = __env.str("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = __env.str("AWS_SECRET_ACCESS_KEY")
-AWS_QUERYSTRING_AUTH = __env.bool("AWS_QUERYSTRING_AUTH")
-AWS_S3_SIGNATURE_VERSION = __env.str("AWS_S3_SIGNATURE_VERSION")  # "s3v4"
-
-print(AWS_S3_ENDPOINT_URL)
+AWS_S3_ENDPOINT_URL = __env.url("AWS_S3_ENDPOINT_URL", default="AWS_S3_ENDPOINT_URL").geturl()
+AWS_DEFAULT_REGION = __env.str("AWS_DEFAULT_REGION", default="AWS_DEFAULT_REGION")
+AWS_STORAGE_BUCKET_NAME = __env.str("AWS_STORAGE_BUCKET_NAME", default="AWS_STORAGE_BUCKET_NAME")
+AWS_ACCESS_KEY_ID = __env.str("AWS_ACCESS_KEY_ID", default="AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = __env.str("AWS_SECRET_ACCESS_KEY", default="AWS_SECRET_ACCESS_KEY")
+AWS_QUERYSTRING_AUTH = __env.bool("AWS_QUERYSTRING_AUTH", default="AWS_QUERYSTRING_AUTH")
+AWS_S3_SIGNATURE_VERSION = __env.str("AWS_S3_SIGNATURE_VERSION", default="AWS_S3_SIGNATURE_VERSION")
 
 # Other environment variables
 MAX_PICTURE_SIZE = __env.int("MAX_PICTURE_SIZE", default=80000000)
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -80,8 +76,8 @@ DJOSER = {
 
 REST_FRAMEWORK = {"DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.TokenAuthentication",)}
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = __env.str("GOOGLE_CLIENT_ID")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = __env.str("GOOGLE_CLIENT_SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = __env.str("GOOGLE_CLIENT_ID", default="GOOGLE_CLIENT_ID")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = __env.str("GOOGLE_CLIENT_SECRET", default="GOOGLE_CLIENT_SECRET")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
@@ -126,10 +122,10 @@ AUTH_USER_MODEL = "photo.User"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": __env.str("POSTGRES_DB"),
-        "USER": __env.str("POSTGRES_USER"),
-        "PASSWORD": __env.str("POSTGRES_PASSWORD"),
-        "HOST": __env.str("POSTGRES_HOST"),
+        "NAME": __env.str("POSTGRES_DB", default="postgres"),
+        "USER": __env.str("POSTGRES_USER", default="postgres"),
+        "PASSWORD": __env.str("POSTGRES_PASSWORD", default="postgres"),
+        "HOST": __env.str("POSTGRES_HOST", default="postgres"),
         "PORT": __env.int("POSTGRES_PORT", default=5432),
     }
 }
@@ -189,5 +185,5 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-BASE_BACKEND_URL = __env.url("BASE_BACKEND_URL").geturl()
-BASE_APP_URL = __env.url("BASE_APP_URL").geturl()
+BASE_BACKEND_URL = __env.url("BASE_BACKEND_URL", default="BASE_BACKEND_URL").geturl()
+BASE_APP_URL = __env.url("BASE_APP_URL", default="BASE_APP_URL").geturl()

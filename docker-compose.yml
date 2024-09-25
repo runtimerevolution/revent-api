@@ -19,8 +19,6 @@ services:
     command: uvicorn config.asgi:application --host 0.0.0.0 --port 8000
     env_file:
       - .env/docker/api.env
-    volumes:
-      - .:/appqware()|_m|^_--_-------------------------------------------------------------------------
     user: root
     ports:
       - "8000:8000"

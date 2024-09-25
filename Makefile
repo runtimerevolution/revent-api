@@ -79,18 +79,6 @@ $(terraform_commands):
 	$(eval include .env/terraform/$(or $(env),dev)/main.env)
 	cd terraform && terraform $@
 
-update-ecs: # Run collectstatic task on ECS
-	$(eval include .env/terraform/main.env)
-	cd deploy && python update-ecs.py \
-        --aws_access_key_id=${AWS_ACCESS_KEY_ID} \
-        --aws_secret_access_key=${AWS_SECRET_ACCESS_KEY} \
-        --region_name=${AWS_DEFAULT_REGION} \
-        --cluster=development-cluster \
-        --service=revent-api-service \
-        --image="${TF_VAR_docker_url_api}" \
-        --container-name=revent-api \
-		--collectstatic-task=revent-api-collectstatic-task
-
 bash: # Open a shell on the container running the API on ECS
 ifdef task
 	$(eval include .env/terraform/main.env)

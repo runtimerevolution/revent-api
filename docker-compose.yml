@@ -44,6 +44,3 @@ services:
     depends_on:
       - revent-api
       - revent-app
-
-volumes:
-  postgres_data:

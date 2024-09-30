@@ -29,7 +29,7 @@ WORKDIR /code/
 COPY . /code/
 
 RUN mkdir static
-# RUN python manage.py collectstatic --noinput
+RUN SECRET_KEY=build_random_secret python manage.py collectstatic
 
 # Create a user with UID 1000 and GID 1000
 RUN groupadd -g 1000 appgroup && \

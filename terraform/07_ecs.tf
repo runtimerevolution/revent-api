@@ -21,14 +21,6 @@ data "template_file" "revent_api" {
     revent_media_dir      = "revent-media/"
   }
 }
-data "template_file" "revent_api_collectstatic" {
-  template = file("templates/revent-api-collectstatic-task.json")
-  vars = {
-    region         = var.region
-    docker_url_api = var.docker_url_api
-    api_env_file   = "${aws_s3_bucket.revent_env_bucket.arn}/${aws_s3_object.revent_api_env.key}"
-  }
-}
 data "template_file" "revent_api_migrate" {
   template = file("templates/revent-api-migrate-task.json")
   vars = {
@@ -62,19 +54,6 @@ resource "aws_ecs_task_definition" "revent_api" {
     operating_system_family = var.fargate_os
     cpu_architecture        = var.fargate_cpu_arch
   }
-  volume {
-    name = "efs-volume"
-    efs_volume_configuration {
-      file_system_id          = aws_efs_file_system.revent_efs.id
-      root_directory          = "/"
-      transit_encryption      = "ENABLED"
-      transit_encryption_port = 2049
-      authorization_config {
-        access_point_id = aws_efs_access_point.revent_app_access_point.id
-        iam             = "ENABLED"
-      }
-    }
-  }
 }
 resource "aws_ecs_task_definition" "revent_api_migrate" {
   family                   = "revent-api-migrate-task"
@@ -103,34 +82,6 @@ resource "aws_ecs_task_definition" "revent_api_create_superuser" {
   runtime_platform {
     operating_system_family = var.fargate_os
     cpu_architecture        = var.fargate_cpu_arch
-  }
-}
-
-resource "aws_ecs_task_definition" "revent_api_collectstatic" {
-  family                   = "revent-api-collectstatic-task"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.fargate_cpu
-  memory                   = var.fargate_memory
-  execution_role_arn       = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
-  task_role_arn            = data.terraform_remote_state.shared.outputs.ecs_task_execution_role.arn
-  container_definitions    = data.template_file.revent_api_collectstatic.rendered
-  runtime_platform {
-    operating_system_family = var.fargate_os
-    cpu_architecture        = var.fargate_cpu_arch
-  }
-  volume {
-    name = "efs-volume"
-    efs_volume_configuration {
-      file_system_id          = aws_efs_file_system.revent_efs.id
-      root_directory          = "/"
-      transit_encryption      = "ENABLED"
-      transit_encryption_port = 2049
-      authorization_config {
-        access_point_id = aws_efs_access_point.revent_app_access_point.id
-        iam             = "ENABLED"
-      }
-    }
   }
 }
 

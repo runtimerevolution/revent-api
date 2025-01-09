@@ -1,0 +1,28 @@
+# OpenHands Instructions
+
+## Overview
+This repository is designed to use OpenHands to create and evolve simple Python applications. 
+
+## Instructions for OpenHands AI Agent
+1. **Understand the Problem Statement**: Carefully read the problem statement provided in the issue description.
+2. **Identify the Files to Modify**: Determine which files need to be created or modified to address the issue.
+3. **Implement the Solution**: Make the necessary code changes to solve the problem.
+4. **Describe Changes**: Clearly describe the changes made to solve each step of the issue.
+5. **Testing**: Ensure that all changes are covered by appropriate tests. Run the tests to verify that the solution works as expected.
+6. **Documentation**: Update any relevant documentation to reflect the changes made.
+7. **Completion**: Once the issue is resolved and tests pass, mark the task as complete.
+8. **Provide Evidence**: Include the file path and content of the created or modified files in the completion message to provide evidence of the changes made.
+
+## Best Practices
+- Maintain clear and concise code.
+- Follow Python coding standards and best practices.
+- Ensure all code is well-documented.
+- Write meaningful commit messages.
+
+## Testing
+- All code changes should be accompanied by tests located in the `testing` directory.
+- Run tests to ensure that the application behaves as expected after changes.
+
+## Final Steps
+- After completing the changes and ensuring all tests pass, finalize the task by marking it as complete.
+- Provide evidence of the changes by including the file path and content of the created or modified files in the completion message.

@@ -1,7 +1,7 @@
 # OpenHands Instructions
 
 ## Overview
-This repository is designed to use OpenHands to create and evolve simple Python applications. 
+This is a Python repo for revent, a photo contest API for a photo contest that takes place every month and aims to allow a fair and easy voting for all participants.
 
 ## Instructions for OpenHands AI Agent
 1. **Understand the Problem Statement**: Carefully read the problem statement provided in the issue description.

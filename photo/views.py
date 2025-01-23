@@ -1,4 +1,4 @@
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from strawberry.django.views import GraphQLView
 
 from photo.queries import Context

@@ -16,13 +16,23 @@ SECRET_KEY = __env.str("SECRET_KEY", default="SECRET_KEY")
 DEBUG = __env.bool("DEBUG", default=False)
 
 # AWS environment variables
-AWS_S3_ENDPOINT_URL = __env.url("AWS_S3_ENDPOINT_URL", default="AWS_S3_ENDPOINT_URL").geturl()
+AWS_S3_ENDPOINT_URL = __env.url(
+    "AWS_S3_ENDPOINT_URL", default="AWS_S3_ENDPOINT_URL"
+).geturl()
 AWS_DEFAULT_REGION = __env.str("AWS_DEFAULT_REGION", default="AWS_DEFAULT_REGION")
-AWS_STORAGE_BUCKET_NAME = __env.str("AWS_STORAGE_BUCKET_NAME", default="AWS_STORAGE_BUCKET_NAME")
+AWS_STORAGE_BUCKET_NAME = __env.str(
+    "AWS_STORAGE_BUCKET_NAME", default="AWS_STORAGE_BUCKET_NAME"
+)
 AWS_ACCESS_KEY_ID = __env.str("AWS_ACCESS_KEY_ID", default="AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = __env.str("AWS_SECRET_ACCESS_KEY", default="AWS_SECRET_ACCESS_KEY")
-AWS_QUERYSTRING_AUTH = __env.bool("AWS_QUERYSTRING_AUTH", default="AWS_QUERYSTRING_AUTH")
-AWS_S3_SIGNATURE_VERSION = __env.str("AWS_S3_SIGNATURE_VERSION", default="AWS_S3_SIGNATURE_VERSION")
+AWS_SECRET_ACCESS_KEY = __env.str(
+    "AWS_SECRET_ACCESS_KEY", default="AWS_SECRET_ACCESS_KEY"
+)
+AWS_QUERYSTRING_AUTH = __env.bool(
+    "AWS_QUERYSTRING_AUTH", default="AWS_QUERYSTRING_AUTH"
+)
+AWS_S3_SIGNATURE_VERSION = __env.str(
+    "AWS_S3_SIGNATURE_VERSION", default="AWS_S3_SIGNATURE_VERSION"
+)
 
 # Other environment variables
 MAX_PICTURE_SIZE = __env.int("MAX_PICTURE_SIZE", default=80000000)
@@ -71,13 +81,23 @@ CSRF_TRUSTED_ORIGINS = __env.list("CSRF_TRUSTED_ORIGINS", default=[])
 DJOSER = {
     "LOGIN_FIELD": "email",
     "SOCIAL_AUTH_TOKEN_STRATEGY": "config.strategy.TokenStrategy",
-    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": __env.list("ALLOWED_REDIRECT_URIS", default=[]),
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": __env.list(
+        "ALLOWED_REDIRECT_URIS", default=[]
+    ),
 }
 
-REST_FRAMEWORK = {"DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.TokenAuthentication",)}
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+    )
+}
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = __env.str("GOOGLE_CLIENT_ID", default="GOOGLE_CLIENT_ID")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = __env.str("GOOGLE_CLIENT_SECRET", default="GOOGLE_CLIENT_SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = __env.str(
+    "GOOGLE_CLIENT_ID", default="GOOGLE_CLIENT_ID"
+)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = __env.str(
+    "GOOGLE_CLIENT_SECRET", default="GOOGLE_CLIENT_SECRET"
+)
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",

@@ -20,6 +20,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
         skip_postgeneration_save = True
+        django_get_or_create = ("email",)
 
     user_handle = factory.Faker("name")
     email = factory.Sequence(lambda n: "user{0}@email.com".format(n))

@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
-from django.utils import timezone
 from django.contrib.auth.admin import UserAdmin
+from django.utils import timezone
 
 from photo.fixtures import (
     DRAW_PHASE_NOT_SET,

@@ -1,4 +1,3 @@
-import pytest
 from django.test import TestCase
 from django.utils import timezone
 
@@ -6,11 +5,7 @@ from photo.models import User
 from photo.schema import schema
 from photo.tests.factories import PictureFactory, UserFactory
 
-from .graphql_mutations import (
-    user_creation_mutation,
-    user_delete_mutation,
-    user_update_mutation,
-)
+from .graphql_mutations import user_delete_mutation, user_update_mutation
 
 
 class UserTest(TestCase):

@@ -1,17 +1,18 @@
 # OpenHands Instructions
 
 ## Overview
-This repository is designed to use OpenHands to create and evolve simple Python applications.
+This is a Python repository for revent, a photo contest API built using Django framework.
 
 ## Instructions for OpenHands AI Agent
-1. **Understand the Problem Statement**: Carefully read the problem statement provided in the issue description.
-2. **Identify the Files to Modify**: Determine which files need to be created or modified to address the issue.
-3. **Implement the Solution**: Make the necessary code changes to solve the problem.
-4. **Describe Changes**: Clearly describe the changes made to solve each step of the issue.
-5. **Testing**: Ensure that all changes are covered by appropriate tests.
-6. **Documentation**: Update any relevant documentation to reflect the changes made.
-7. **Completion**: Once the issue is resolved, mark the task as complete.
-8. **Provide Evidence**: Include the file path and content of the created or modified files in the completion message to provide evidence of the changes made.
+1. **Setup Development Environment**: Run `poetry install --no-root` to install the required packages for the project before making any changes. Ensure all dependencies are properly installed.
+2. **Understand the Problem Statement**: Carefully read the problem statement provided in the issue description.
+3. **Identify the Files to Modify**: Determine which files need to be created or modified to address the issue.
+4. **Implement the Solution**: Make the necessary code changes to solve the problem. Run the command `make migrations` to create the necessary database migration files.
+5. **Describe Changes**: Clearly describe the changes made to solve each step of the issue.
+6. **Testing**: Ensure that all changes are covered by appropriate tests.
+7. **Documentation**: Update any relevant documentation to reflect the changes made.
+8. **Completion**: Once the issue is resolved, mark the task as complete.
+9. **Provide Evidence**: Include the file path and content of the created or modified files in the completion message to provide evidence of the changes made.
 
 ## Best Practices
 - Maintain clear and concise code.
@@ -20,8 +21,7 @@ This repository is designed to use OpenHands to create and evolve simple Python 
 - Write meaningful commit messages.
 
 ## Testing
-- All code changes should be accompanied by tests located in the `testing` directory.
-- Do not run tests in this workflow.
+- All code changes should be accompanied by tests located in the `photo/tests` directory.
 
 ## Final Steps
 - After completing the changes, finalize the task by marking it as complete.

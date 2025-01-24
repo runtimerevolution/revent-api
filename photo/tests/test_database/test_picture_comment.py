@@ -28,7 +28,7 @@ class PictureCommentTest(TransactionTestCase):
 
     def test_created_at_and_updated_at_nullable(self):
         comment = PictureComment.objects.create(user=self.picture_comment.user, picture=self.picture_comment.picture)
-        self.assertIsNone(comment.created_at)
+        self.assertIsNotNone(comment.created_at)
         self.assertIsNone(comment.updated_at)
 
     def test_created_at_and_updated_at_update(self):

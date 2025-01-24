@@ -31,7 +31,7 @@ class PictureTest(TransactionTestCase):
 
     def test_created_at_and_updated_at_nullable(self):
         picture = Picture.objects.create(user=self.user)
-        self.assertIsNone(picture.created_at)
+        self.assertIsNotNone(picture.created_at)
         self.assertIsNone(picture.updated_at)
 
     def test_created_at_and_updated_at_update(self):

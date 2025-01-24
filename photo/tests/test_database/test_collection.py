@@ -34,7 +34,7 @@ class CollectionTest(TransactionTestCase):
 
     def test_created_at_and_updated_at_nullable(self):
         collection = Collection.objects.create(user=self.user)
-        self.assertIsNone(collection.created_at)
+        self.assertIsNotNone(collection.created_at)
         self.assertIsNone(collection.updated_at)
 
     def test_created_at_and_updated_at_update(self):

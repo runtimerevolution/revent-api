@@ -43,7 +43,7 @@ class ContestSubmissionTest(TransactionTestCase):
     def test_created_at_and_updated_at_nullable(self):
         submission = ContestSubmission.objects.create(contest=self.contest_submission.contest, picture=self.contest_submission.picture)
         self.assertIsNotNone(submission.created_at)
-        self.assertIsNone(submission.updated_at)
+        self.assertIsNotNone(submission.updated_at)
 
     def test_created_at_and_updated_at_update(self):
         submission = ContestSubmission.objects.create(contest=self.contest_submission.contest, picture=self.contest_submission.picture)

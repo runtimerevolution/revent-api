@@ -29,6 +29,15 @@ class PictureTest(TransactionTestCase):
         for like in self.picture.likes.all():
             self.assertTrue(User.objects.filter(email=like.email).exists())
 
+    def test_created_at_and_updated_at_nullable(self):
+        picture = Picture.objects.create(user=self.user)
+        self.assertIsNone(picture.created_at)
+        self.assertIsNone(picture.updated_at)
+
+    def test_created_at_and_updated_at_update(self):
+        picture = Picture.objects.create(user=self.user)
+        picture.save()
+        self.assertIsNotNone(picture.updated_at)
 
 class PictureUploadTest(TestCase):
     def setUp(self):

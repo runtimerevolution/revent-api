@@ -29,7 +29,7 @@ class PictureTest(TestCase):
         self.assertEqual(len(result.data["pictures"]), self.batch_size)
         self.assertEqual(len(result.data["pictures"][0]["likes"]), 2)
         self.assertEqual(
-            sorted([key for key in result.data["pictures"][0].keys()] + ["is_deleted", "created_at", "updated_at"]),
+            sorted([key for key in result.data["pictures"][0].keys()] + ["is_deleted"]),
             sorted(
                 [
                     field.name

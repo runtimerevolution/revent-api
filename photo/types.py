@@ -32,6 +32,8 @@ class PictureType:
     name: str
     file: str
     likes: List[UserType]
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.django.type(PictureComment)

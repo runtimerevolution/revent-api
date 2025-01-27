@@ -249,12 +249,12 @@ class ContestSubmission(SoftDeleteModel):
     votes = models.ManyToManyField(User, related_name="submission_votes", blank=True)
 
     def validate_unique(self, *args, **kwargs):
-        qs = ContestSubmission.objects.filter(
-            contest=self.contest, picture__user=self.picture.user
-        )
-
-        if qs.exists() and self._state.adding:
-            raise ValidationError(UNIQUE_SUBMISSION_ERROR_MESSAGE)
+        if self._state.adding:
+            qs = ContestSubmission.objects.filter(
+                contest=self.contest, picture__user=self.picture.user
+            )
+            if qs.exists():
+                raise ValidationError(UNIQUE_SUBMISSION_ERROR_MESSAGE)
 
     def validate_vote(self):
         user_vote = ContestSubmission.objects.filter(

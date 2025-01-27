@@ -23,6 +23,8 @@ class UserType:
     profile_picture: "PictureType"
     profile_picture_updated_at: strawberry.auto
     user_handle: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.django.type(Picture)

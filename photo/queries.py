@@ -52,7 +52,7 @@ Info = _Info[Context, RootValueType]
 class Query:
     @strawberry.field
     def users(self, user: uuid.UUID = None) -> List[UserType]:
-        return User.objects.filter(id=user).values('id', 'username', 'email', 'created_at', 'updated_at')
+        return User.objects.filter(id=user)
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     def get_authenticated_user(self, info: Info) -> UserType | None:
@@ -62,28 +62,28 @@ class Query:
     def pictures(
         self, filters: Optional[PictureFilter] = strawberry.UNSET
     ) -> List[PictureType]:
-        queryset = Picture.objects.all().values('id', 'title', 'description', 'created_at', 'updated_at')
+        queryset = Picture.objects.all()
         return strawberry_django.filters.apply(filters, queryset)
 
     @strawberry.field
     def picture_comments(
         self, filters: Optional[PictureCommentFilter] = strawberry.UNSET
     ) -> List[PictureCommentType]:
-        queryset = PictureComment.objects.all().values('id', 'comment', 'created_at', 'updated_at')
+        queryset = PictureComment.objects.all()
         return strawberry_django.filters.apply(filters, queryset)
 
     @strawberry.field
     def collections(
         self, filters: Optional[CollectionFilter] = strawberry.UNSET
     ) -> List[CollectionType]:
-        queryset = Collection.objects.all().values('id', 'name', 'description', 'created_at', 'updated_at')
+        queryset = Collection.objects.all()
         return strawberry_django.filters.apply(filters, queryset)
 
     @strawberry.field
     def contests(
         self, filters: Optional[ContestFilter] = strawberry.UNSET
     ) -> List[ContestType]:
-        queryset = Contest.objects.all().values('id', 'title', 'description', 'created_at', 'updated_at').exclude(
+        queryset = Contest.objects.all().exclude(
             internal_status=ContestInternalStates.DRAW, voting_draw_end=None
         )
         if getattr(filters, "search", strawberry.UNSET):
@@ -98,7 +98,7 @@ class Query:
         filters: Optional[ContestSubmissionFilter] = strawberry.UNSET,
         order: Optional[List[int]] = None,
     ) -> List[ContestSubmissionType]:
-        queryset = ContestSubmission.objects.all().values('id', 'submission_text', 'created_at', 'updated_at')
+        queryset = ContestSubmission.objects.all()
 
         def set_order(element):
             return order.index(element.id)

@@ -8,6 +8,8 @@ collections_query_all = """
                                     user {
                                         id
                                     }
+                                    created_at
+                                    updated_at
                                     pictures {
                                         id
                                     }
@@ -24,6 +26,8 @@ collections_query_filter = """
                             user {
                                 id
                             }
+                            created_at
+                            updated_at
                             pictures {
                                 id
                             }

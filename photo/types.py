@@ -23,6 +23,8 @@ class UserType:
     profile_picture: "PictureType"
     profile_picture_updated_at: strawberry.auto
     user_handle: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.django.type(Picture)
@@ -51,6 +53,8 @@ class CollectionType:
     name: str
     user: "UserType"
     pictures: List[PictureType]
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.django.type(Contest)
@@ -69,6 +73,8 @@ class ContestType:
     winners: List[UserType]
     created_by: "UserType"
     status: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
     @strawberry.field
     def status(self) -> str:
@@ -94,6 +100,8 @@ class ContestSubmissionType:
     picture: PictureType
     submission_date: strawberry.auto
     votes: List[UserType]
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.type

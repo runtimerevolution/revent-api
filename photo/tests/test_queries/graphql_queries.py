@@ -11,6 +11,8 @@ collections_query_all = """
                                     pictures {
                                         id
                                     }
+                                    created_at
+                                    updated_at
                                 }
                             }
                         """
@@ -55,6 +57,8 @@ contest_query_all = """
                                 id
                             }
                             status
+                            created_at
+                            updated_at
                         }
                     }
                 """
@@ -131,6 +135,8 @@ contest_submission_query_all = """
                             votes {
                                 email
                             }
+                            created_at
+                            updated_at
                         }
                     }
                 """
@@ -169,6 +175,8 @@ picture_query_all = """
                             likes {
                                 email
                             }
+                            created_at
+                            updated_at
                         }
                     }
                 """

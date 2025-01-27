@@ -27,7 +27,7 @@ class PictureCommentTest(TestCase):
                 [key for key in result.data["picture_comments"][0].keys()]
                 + ["is_deleted"]
             ),
-            sorted([field.name for field in PictureComment._meta.fields]),
+            sorted([field.name for field in PictureComment._meta.fields] + ['updated_at']),
         )
 
     def test_filter_by_id(self):

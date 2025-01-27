@@ -27,6 +27,8 @@ class UserFactory(factory.django.DjangoModelFactory):
     name_last = factory.Faker("last_name")
     username = factory.Sequence(lambda n: "user{0}".format(n))
     password = factory.Sequence(lambda n: "user{0}password".format(n))
+    created_at = factory.Faker("date_time", tzinfo=pytz.UTC)
+    updated_at = factory.Faker("date_time", tzinfo=pytz.UTC)
     profile_picture_updated_at = timezone.now()
 
     @factory.post_generation

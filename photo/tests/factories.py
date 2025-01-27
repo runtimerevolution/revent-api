@@ -149,6 +149,7 @@ class ContestSubmissionFactory(factory.django.DjangoModelFactory):
         model = ContestSubmission
         skip_postgeneration_save = True
 
+        django_get_or_create = ('contest', 'picture')
     contest = factory.SubFactory(ContestFactory)
     picture = factory.SubFactory(
         PictureFactory, user=factory.SubFactory(UserFactory, user_profile_picture=True)

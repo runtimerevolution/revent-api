@@ -46,6 +46,7 @@ class PictureCommentType:
     text: str
     created_at: strawberry.auto
 
+    updated_at: strawberry.auto
 
 @strawberry.django.type(Collection)
 class CollectionType:

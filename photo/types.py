@@ -56,12 +56,6 @@ class ContestType:
     id: int
     title: str
     description: str
-    prize: str
-    voting_draw_end: str
-    winners: List[WinnerType]
-    id: int
-    title: str
-    description: str
     cover_picture: "PictureType"
     prize: str
     automated_dates: bool

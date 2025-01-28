@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.test import TestCase
 from django.utils import timezone
+from photo.models import ContestSubmission, Picture
 
 from photo.models import Contest
 from photo.schema import schema

@@ -64,7 +64,15 @@ class SoftDeleteModel(models.Model):
         abstract = True
 
 
-class User(AbstractUser, SoftDeleteModel):
+class TimestampedModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
+class User(AbstractUser, SoftDeleteModel, TimestampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     email = models.TextField(unique=True)
     username = models.CharField("username", max_length=150, null=True)
@@ -109,7 +117,7 @@ class User(AbstractUser, SoftDeleteModel):
         super(User, self).save(*args, **kwargs)
 
 
-class Picture(SoftDeleteModel):
+class Picture(SoftDeleteModel, TimestampedModel):
     user = models.ForeignKey(
         "User", on_delete=models.CASCADE, related_name="picture_user"
     )
@@ -130,7 +138,7 @@ class Picture(SoftDeleteModel):
         return self
 
 
-class PictureComment(SoftDeleteModel):
+class PictureComment(SoftDeleteModel, TimestampedModel):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     picture = models.ForeignKey(
         "Picture",
@@ -140,7 +148,7 @@ class PictureComment(SoftDeleteModel):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Collection(SoftDeleteModel):
+class Collection(SoftDeleteModel, TimestampedModel):
     name = models.TextField()
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     pictures = models.ManyToManyField(
@@ -159,7 +167,7 @@ class Collection(SoftDeleteModel):
         return self
 
 
-class Contest(SoftDeleteModel):
+class Contest(SoftDeleteModel, TimestampedModel):
     title = models.TextField()
     description = models.TextField()
     cover_picture = models.ForeignKey(
@@ -234,7 +242,7 @@ class Contest(SoftDeleteModel):
         super(Contest, self).save(*args, **kwargs)
 
 
-class ContestSubmission(SoftDeleteModel):
+class ContestSubmission(SoftDeleteModel, TimestampedModel):
     contest = models.ForeignKey(
         "Contest",
         on_delete=models.CASCADE,

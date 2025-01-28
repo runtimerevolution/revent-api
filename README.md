@@ -29,6 +29,38 @@ Photo contest API is an API for the Runtime Revolution photo contest that takes 
     - [Macos m1](#macos-m1)
       - [gdal related error](#gdal-related-error)
 
+## GraphQL API
+
+The application provides a GraphQL API endpoint that can be accessed at `/graphql/`. This API allows you to query various data models, including contests and their winners.
+
+### Example Query
+
+To fetch the winners of each contest, you can use the following GraphQL query:
+
+```graphql
+{
+  winners {
+    title
+    description
+    prize
+    voting_draw_end
+    winners {
+      name_first
+      name_last
+      submission {
+        picture {
+          name
+          file
+        }
+        number_votes
+      }
+    }
+  }
+}
+```
+
+This query will return a list of contests with their respective winners, including details about the winning submission.
+
 ## Setup Time
 
 ### Prerequisites -

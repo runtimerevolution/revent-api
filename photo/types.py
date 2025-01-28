@@ -84,6 +84,19 @@ class ContestType:
         else:
             return "closed"
 
+@strawberry.django.type
+class WinnerType:
+    name_first: str
+    name_last: str
+    submission: "ContestSubmissionType"
+
+@strawberry.django.type
+class ContestWinnerType:
+    title: str
+    description: str
+    prize: str
+    voting_draw_end: str
+    winners: List[WinnerType]
 
 @strawberry.django.type(ContestSubmission)
 class ContestSubmissionType:

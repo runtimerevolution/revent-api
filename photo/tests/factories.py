@@ -1,4 +1,6 @@
 from datetime import timedelta
+from django.conf import settings
+settings.configure(AWS_S3_ENDPOINT_URL='http://localhost:4566')
 
 import factory
 import pytz

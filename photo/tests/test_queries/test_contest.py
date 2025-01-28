@@ -1,4 +1,10 @@
 from datetime import timedelta
+import django
+from django.conf import settings
+
+if not settings.configured:
+    settings.configure(AWS_S3_ENDPOINT_URL='http://localhost:4566')
+    django.setup()
 
 from django.test import TestCase
 from django.utils import timezone
@@ -221,3 +227,41 @@ class ContestTestWithoutData(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["contests"]), 0)
+
+def test_winners_query(self):
+        user1 = UserFactory(name_first="John", name_last="Doe")
+        user2 = UserFactory(name_first="Jane", name_last="Smith")
+        contest = ContestFactory(title="Photo Contest", description="A fun photo contest", prize="Gift Card", voting_draw_end=timezone.now())
+        contest.winners.add(user1, user2)
+        submission1 = ContestSubmissionFactory(contest=contest, picture__user=user1)
+        submission2 = ContestSubmissionFactory(contest=contest, picture__user=user2)
+
+        result = schema.execute_sync(
+            """
+            query {
+                winners {
+                    title
+                    description
+                    prize
+                    voting_draw_end
+                    winners {
+                        name_first
+                        name_last
+                        submission {
+                            picture {
+                                name
+                                file
+                            }
+                            number_votes
+                        }
+                    }
+                }
+            }
+            """,
+            variable_values={},
+        )
+
+        self.assertEqual(result.errors, None)
+        self.assertEqual(len(result.data["winners"]), 1)
+        self.assertEqual(result.data["winners"][0]["title"], "Photo Contest")
+        self.assertEqual(len(result.data["winners"][0]["winners"]), 2)

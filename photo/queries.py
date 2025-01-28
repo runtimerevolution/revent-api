@@ -131,7 +131,7 @@ class Query:
             query_results.sort(key=set_order)
         return query_results
 
-@strawberry.field
+    @strawberry.field
     def winners(self) -> List[ContestType]:
         contests = Contest.objects.filter(winners__isnull=False).order_by('-voting_draw_end')
         result = []

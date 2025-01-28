@@ -1,7 +1,7 @@
 # OpenHands Instructions
 
 ## Overview
-This is a Python repository for Revent, a photo contest API built using the Django framework. The API leverages GraphQL to provide a flexible and efficient way to query and interact with the data.
+This is a Python repository for Revent, a photo contest API built using the Django framework and the strawberry GraphQL library.
 
 ## Instructions for OpenHands AI Agent
 1. **Setup Development Environment**: Run `poetry install --no-root` to install the required packages for the project before making any changes. Ensure all dependencies are properly installed.
@@ -9,10 +9,9 @@ This is a Python repository for Revent, a photo contest API built using the Djan
 3. **Identify the Files to Modify**: Determine which files need to be created or modified to address the issue.
 4. **Implement the Solution**: Make the necessary code changes to solve the problem. Run the command `make migrations` to create the necessary database migration files.
 5. **Describe Changes**: Clearly describe the changes made to solve each step of the issue.
-6. **Testing**: Ensure that all changes are covered by appropriate tests.
-7. **Documentation**: Update any relevant documentation to reflect the changes made.
-8. **Completion**: Once the issue is resolved, mark the task as complete.
-9. **Provide Evidence**: Include the file path and content of the created or modified files in the completion message to provide evidence of the changes made.
+6. **Documentation**: Update any relevant documentation to reflect the changes made.
+7. **Completion**: Once the issue is resolved, mark the task as complete.
+8. **Provide Evidence**: Include the file path and content of the created or modified files in the completion message to provide evidence of the changes made.
 
 ## Best Practices
 - Maintain clear and concise code.
@@ -21,7 +20,8 @@ This is a Python repository for Revent, a photo contest API built using the Djan
 - Write meaningful commit messages.
 
 ## Testing
-- All code changes should be accompanied by tests located in the `photo/tests` directory.
+- Write appropriate tests to ensure the applied changes are covered. Place these tests in the photo/tests directory.
+- Testing is not required as part of the workflow. Write the tests but skip executing them.
 
 ## Final Steps
 - After completing the changes, finalize the task by marking it as complete.

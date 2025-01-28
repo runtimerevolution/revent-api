@@ -101,23 +101,6 @@ class WinnerType:
     submission: WinnerSubmissionType
 
 
-@strawberry.django.type
-class WinnerPictureType:
-    name: str
-    file: str
-
-@strawberry.django.type
-class WinnerSubmissionType:
-    picture: "WinnerPictureType"
-    number_votes: int
-
-@strawberry.django.type
-class WinnerType:
-    name_first: str
-    name_last: str
-    submission: WinnerSubmissionType
-
-
 @strawberry.django.type(ContestSubmission)
 class ContestSubmissionType:
     id: int

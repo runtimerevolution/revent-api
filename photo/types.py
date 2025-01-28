@@ -98,7 +98,7 @@ class WinnerSubmissionType:
 class WinnerType:
     name_first: str
     name_last: str
-    submission: "WinnerSubmissionType"
+    submission: WinnerSubmissionType
 
 
 @strawberry.django.type(ContestSubmission)

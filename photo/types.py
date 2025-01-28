@@ -85,10 +85,9 @@ class ContestType:
             return "closed"
 
 @strawberry.django.type
-class WinnerType:
-    name_first: str
-    name_last: str
-    submission: "WinnerSubmissionType"
+class WinnerPictureType:
+    name: str
+    file: str
 
 @strawberry.django.type
 class WinnerSubmissionType:
@@ -96,9 +95,10 @@ class WinnerSubmissionType:
     number_votes: int
 
 @strawberry.django.type
-class WinnerPictureType:
-    name: str
-    file: str
+class WinnerType:
+    name_first: str
+    name_last: str
+    submission: "WinnerSubmissionType"
 
 
 @strawberry.django.type(ContestSubmission)

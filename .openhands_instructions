@@ -1,7 +1,7 @@
 # OpenHands Instructions
 
 ## Overview
-This is a Python repository for revent, a photo contest API built using Django framework.
+This is a Python repository for Revent, a photo contest API built using the Django framework. The API leverages GraphQL to provide a flexible and efficient way to query and interact with the data.
 
 ## Instructions for OpenHands AI Agent
 1. **Setup Development Environment**: Run `poetry install --no-root` to install the required packages for the project before making any changes. Ensure all dependencies are properly installed.

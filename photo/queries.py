@@ -34,7 +34,7 @@ from photo.types import (
     PictureType,
     UserType,
 )
-from photo.types import WinnerType, WinnerSubmissionType, WinnerPictureType
+from photo.types import WinnerType
 from utils.enums import ContestInternalStates
 
 
@@ -58,6 +58,44 @@ class Query:
     @strawberry.field(permission_classes=[IsAuthenticated])
     def get_authenticated_user(self, info: Info) -> UserType | None:
         return info.context.user()
+@strawberry.field
+    def contest_winners(self) -> List[ContestType]:
+        contests = Contest.objects.filter(
+            contestsubmission__isnull=False
+        ).distinct().order_by('-voting_draw_end')
+
+        result = []
+        for contest in contests:
+            winners = []
+            submissions = ContestSubmission.objects.filter(contest=contest)
+            max_votes = max(submissions, key=lambda s: s.number_votes).number_votes
+            winning_submissions = submissions.filter(number_votes=max_votes)
+
+            for submission in winning_submissions:
+                winner = WinnerType(
+                    id=submission.user.id,
+                    name_first=submission.user.name_first,
+                    name_last=submission.user.name_last,
+                    submission=ContestSubmissionType(
+                        id=submission.id,
+                        picture=submission.picture,
+                        number_votes=submission.number_votes
+                    )
+                )
+                winners.append(winner)
+
+            contest_type = ContestType(
+                id=contest.id,
+                title=contest.title,
+                description=contest.description,
+                prize=contest.prize,
+                voting_draw_end=contest.voting_draw_end,
+                winners=winners
+            )
+            result.append(contest_type)
+
+        return result
+
 
     @strawberry.field
     def pictures(

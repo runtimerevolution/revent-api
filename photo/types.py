@@ -52,6 +52,19 @@ class CollectionType:
 
 
 @strawberry.django.type(Contest)
+@strawberry.django.type(ContestSubmission)
+class ContestSubmissionType:
+    id: int
+    picture: PictureType
+    number_votes: int
+
+@strawberry.django.type(User)
+class WinnerType:
+    id: uuid.UUID
+    name_first: str
+    name_last: str
+    submission: ContestSubmissionType
+
 class ContestType:
     id: int
     title: str

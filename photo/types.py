@@ -51,38 +51,9 @@ class CollectionType:
     pictures: List[PictureType]
 
 
-@strawberry.django.type(Contest)
-class ContestType:
-    id: int
-    title: str
-    description: str
-    cover_picture: "PictureType"
-    prize: str
-    automated_dates: bool
-    upload_phase_start: strawberry.auto
-    upload_phase_end: strawberry.auto
-    voting_phase_end: strawberry.auto
-    voting_draw_end: strawberry.auto
-    internal_status: str
-    winners: List[WinnerType]
-    created_by: "UserType"
-    status: str
 
-    @strawberry.field
-    def status(self) -> str:
-        currentTime = timezone.now()
-        if self.upload_phase_start > currentTime:
-            return "scheduled"
-        elif self.upload_phase_end is None:
-            return "open"
-        elif self.upload_phase_end > currentTime:
-            return "open"
-        elif self.voting_phase_end is None:
-            return "voting"
-        elif self.voting_phase_end > currentTime:
-            return "voting"
-        else:
-            return "closed"
+
+
 
 @strawberry.django.type
 class WinnerPictureType:
@@ -129,6 +100,39 @@ class CreateContestSubmissiomMutationResponse:
     success: bool
     results: ContestSubmissionType
     errors: str
+@strawberry.django.type(Contest)
+class ContestType:
+    id: int
+    title: str
+    description: str
+    cover_picture: "PictureType"
+    prize: str
+    automated_dates: bool
+    upload_phase_start: strawberry.auto
+    upload_phase_end: strawberry.auto
+    voting_phase_end: strawberry.auto
+    voting_draw_end: strawberry.auto
+    internal_status: str
+    winners: List[WinnerType]
+    created_by: "UserType"
+    status: str
+
+    @strawberry.field
+    def status(self) -> str:
+        currentTime = timezone.now()
+        if self.upload_phase_start > currentTime:
+            return "scheduled"
+        elif self.upload_phase_end is None:
+            return "open"
+        elif self.upload_phase_end > currentTime:
+            return "open"
+        elif self.voting_phase_end is None:
+            return "voting"
+        elif self.voting_phase_end > currentTime:
+            return "voting"
+        else:
+            return "closed"
+
 
 
 @strawberry.type

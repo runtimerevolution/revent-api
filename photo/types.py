@@ -72,34 +72,6 @@ class WinnerType:
     submission: WinnerSubmissionType
 
 
-@strawberry.django.type(ContestSubmission)
-class ContestSubmissionType:
-    id: int
-    contest: ContestType
-    picture: PictureType
-    submission_date: strawberry.auto
-    votes: List[UserType]
-
-
-@strawberry.type
-class AddVoteMutationResponse:
-    success: bool
-    results: ContestSubmissionType | None
-    errors: str
-
-
-@strawberry.type
-class CreatePictureMutationResponse:
-    success: bool
-    results: PictureType
-    errors: str
-
-
-@strawberry.type
-class CreateContestSubmissiomMutationResponse:
-    success: bool
-    results: ContestSubmissionType
-    errors: str
 @strawberry.django.type(Contest)
 class ContestType:
     id: int
@@ -128,6 +100,35 @@ class ContestType:
             return "open"
         elif self.voting_phase_end is None:
             return "voting"
+
+@strawberry.django.type(ContestSubmission)
+class ContestSubmissionType:
+    id: int
+    contest: ContestType
+    picture: PictureType
+    submission_date: strawberry.auto
+    votes: List[UserType]
+
+
+@strawberry.type
+class AddVoteMutationResponse:
+    success: bool
+    results: ContestSubmissionType | None
+    errors: str
+
+
+@strawberry.type
+class CreatePictureMutationResponse:
+    success: bool
+    results: PictureType
+    errors: str
+
+
+@strawberry.type
+class CreateContestSubmissiomMutationResponse:
+    success: bool
+    results: ContestSubmissionType
+    errors: str
         elif self.voting_phase_end > currentTime:
             return "voting"
         else:

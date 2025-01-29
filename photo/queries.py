@@ -38,6 +38,39 @@ from photo.types import WinnerType, WinnerSubmissionType, WinnerPictureType
 from utils.enums import ContestInternalStates
 
 
+@strawberry.field
+def contests_with_winners(self) -> List[ContestType]:
+    contests = Contest.objects.filter(contestsubmission__isnull=False).distinct()
+    contests = contests.order_by('-voting_draw_end')
+    result = []
+    for contest in contests:
+        winners = []
+        submissions = contest.contestsubmission_set.all()
+        for submission in submissions:
+            if submission.is_winner:
+                winner = {
+                    "name_first": submission.user.first_name,
+                    "name_last": submission.user.last_name,
+                    "submission": {
+                        "picture": {
+                            "name": submission.picture.name,
+                            "file": submission.picture.file.url,
+                        },
+                        "number_votes": submission.number_votes
+                    }
+                }
+                winners.append(winner)
+        if winners:
+            contest_data = {
+                "title": contest.title,
+                "description": contest.description,
+                "prize": contest.prize,
+                "voting_draw_end": contest.voting_draw_end,
+                "winners": winners
+            }
+            result.append(contest_data)
+    return result
+
 class Context(BaseContext):
     def user(self) -> User | None:
         if not self.request:
@@ -79,12 +112,6 @@ class Query:
     ) -> List[CollectionType]:
         queryset = Collection.objects.all()
 @strawberry.field
-    def contests_with_winners(self) -> List[ContestType]:
-        contests = Contest.objects.filter(contestsubmission__isnull=False).distinct()
-        contests = contests.order_by('-voting_draw_end')
-        return contests
-
-        return strawberry_django.filters.apply(filters, queryset)
 
     @strawberry.field
     def contests(

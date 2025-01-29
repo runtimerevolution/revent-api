@@ -78,6 +78,12 @@ class Query:
         self, filters: Optional[CollectionFilter] = strawberry.UNSET
     ) -> List[CollectionType]:
         queryset = Collection.objects.all()
+@strawberry.field
+    def contests_with_winners(self) -> List[ContestType]:
+        contests = Contest.objects.filter(contestsubmission__isnull=False).distinct()
+        contests = contests.order_by('-voting_draw_end')
+        return contests
+
         return strawberry_django.filters.apply(filters, queryset)
 
     @strawberry.field

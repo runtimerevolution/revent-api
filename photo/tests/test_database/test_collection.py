@@ -31,3 +31,14 @@ class CollectionTest(TransactionTestCase):
     def test_factory_pk(self):
         with self.assertRaises(IntegrityError):
             CollectionFactory(user=self.collection.user, name=self.collection.name)
+
+    def test_created_at_and_updated_at_nullable(self):
+        collection = Collection.objects.create(user=self.user)
+        self.assertIsNotNone(collection.created_at)
+        self.assertIsNotNone(collection.updated_at)
+
+    def test_created_at_and_updated_at_update(self):
+        collection = Collection.objects.create(user=self.user)
+        collection.name = "New Name"
+        collection.save()
+        self.assertIsNotNone(collection.updated_at)

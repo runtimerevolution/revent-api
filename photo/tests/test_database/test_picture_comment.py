@@ -25,3 +25,13 @@ class PictureCommentTest(TransactionTestCase):
     def test_factory_pk(self):
         with self.assertRaises(IntegrityError):
             PictureCommentFactory(id=self.picture_comment.id)
+
+    def test_created_at_and_updated_at_nullable(self):
+        comment = PictureComment.objects.create(user=self.picture_comment.user, picture=self.picture_comment.picture)
+        self.assertIsNotNone(comment.created_at)
+        self.assertIsNotNone(comment.updated_at)
+
+    def test_created_at_and_updated_at_update(self):
+        comment = PictureComment.objects.create(user=self.picture_comment.user, picture=self.picture_comment.picture)
+        comment.save()
+        self.assertIsNotNone(comment.updated_at)

@@ -73,7 +73,7 @@ class WinnerContestType:
     description: str
     prize: str
     voting_draw_end: str
-    winners: List[UserType]
+    winners: List[WinnerType]
 
 @strawberry.django.type(Contest)
 class ContestType:
@@ -88,6 +88,7 @@ class ContestType:
     voting_phase_end: strawberry.auto
     voting_draw_end: strawberry.auto
     internal_status: str
+    winners: List[WinnerType]
     created_by: "UserType"
     status: str
 

@@ -72,9 +72,7 @@ class ContestType:
     id: int
     title: str
     description: str
-    prize: str
-    voting_draw_end: strawberry.auto
-    winners: List[WinnerType]
+    cover_picture: "PictureType"
     prize: str
     automated_dates: bool
     upload_phase_start: strawberry.auto

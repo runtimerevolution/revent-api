@@ -14,18 +14,18 @@ from .models import (
 )
 
 
-@strawberry.type
+@strawberry.django.type(User)
 class UserType:
     id: uuid.UUID
     email: str
     name_first: str
     name_last: str
     profile_picture: "PictureType"
-    profile_picture_updated_at: str
+    profile_picture_updated_at: strawberry.auto
     user_handle: str
 
 
-@strawberry.type
+@strawberry.django.type(Picture)
 class PictureType:
     id: int
     user: "UserType"
@@ -34,16 +34,16 @@ class PictureType:
     likes: List[UserType]
 
 
-@strawberry.type
+@strawberry.django.type(PictureComment)
 class PictureCommentType:
     id: int
     user: "UserType"
     picture: "PictureType"
     text: str
-    created_at: str
+    created_at: strawberry.auto
 
 
-@strawberry.type
+@strawberry.django.type(Collection)
 class CollectionType:
     id: int
     name: str
@@ -67,7 +67,7 @@ class WinnerType:
     name_last: str
     submission: WinnerSubmissionType
 
-@strawberry.type
+@strawberry.django.type(Contest)
 class ContestType:
     id: int
     title: str
@@ -75,10 +75,10 @@ class ContestType:
     cover_picture: "PictureType"
     prize: str
     automated_dates: bool
-    upload_phase_start: str
-    upload_phase_end: str
-    voting_phase_end: str
-    voting_draw_end: str
+    upload_phase_start: strawberry.auto
+    upload_phase_end: strawberry.auto
+    voting_phase_end: strawberry.auto
+    voting_draw_end: strawberry.auto
     internal_status: str
     winners: List[WinnerType]
     created_by: "UserType"
@@ -101,7 +101,7 @@ class ContestType:
             return "closed"
 
 
-@strawberry.type
+@strawberry.django.type(ContestSubmission)
 class ContestSubmissionType:
     id: int
     contest: ContestType

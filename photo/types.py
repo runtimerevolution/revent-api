@@ -67,6 +67,14 @@ class WinnerType:
     name_last: str
     submission: WinnerSubmissionType
 
+@strawberry.type
+class WinnerContestType:
+    title: str
+    description: str
+    prize: str
+    voting_draw_end: str
+    winners: List[WinnerType]
+
 @strawberry.django.type(Contest)
 class ContestType:
     id: int

@@ -133,7 +133,7 @@ class Query:
         return query_results
 
     @strawberry.field
-    def winners(self) -> List[ContestType]:
+    def winners(self) -> List[WinnerContestType]:
         contests = Contest.objects.filter(winners__isnull=False).order_by('-voting_draw_end')
         result = []
         for contest in contests:
@@ -154,7 +154,7 @@ class Query:
                     )
                 )
             result.append(
-                ContestType(
+                WinnerContestType(
                     title=contest.title,
                     description=contest.description,
                     prize=contest.prize,

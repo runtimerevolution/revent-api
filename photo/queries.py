@@ -140,28 +140,26 @@ class Query:
             winners = []
             for winner in contest.winners.all():
                 submission = ContestSubmission.objects.filter(contest=contest, picture__user=winner).first()
-                if submission:
-                    winners.append(
-                        WinnerType(
-                            name_first=winner.name_first,
-                            name_last=winner.name_last,
-                            submission=WinnerSubmissionType(
-                                picture=WinnerPictureType(
-                                    name=submission.picture.name,
-                                    file=submission.picture.file.url
-                                ),
-                                number_votes=submission.votes.count()
-                            )
+                winners.append(
+                    WinnerType(
+                        name_first=winner.name_first,
+                        name_last=winner.name_last,
+                        submission=WinnerSubmissionType(
+                            picture=WinnerPictureType(
+                                name=submission.picture.name,
+                                file=submission.picture.file.url
+                            ),
+                            number_votes=submission.votes.count()
                         )
                     )
-            if winners:
-                result.append(
-                    ContestType(
-                        title=contest.title,
-                        description=contest.description,
-                        prize=contest.prize,
-                        voting_draw_end=contest.voting_draw_end,
-                        winners=winners
-                    )
                 )
+            result.append(
+                ContestType(
+                    title=contest.title,
+                    description=contest.description,
+                    prize=contest.prize,
+                    voting_draw_end=contest.voting_draw_end,
+                    winners=winners
+                )
+            )
         return result

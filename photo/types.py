@@ -51,17 +51,17 @@ class CollectionType:
     pictures: List[PictureType]
 
 
-@strawberry.django.type
+@strawberry.type
 class WinnerPictureType:
     name: str
     file: str
 
-@strawberry.django.type
+@strawberry.type
 class WinnerSubmissionType:
     picture: "WinnerPictureType"
     number_votes: int
 
-@strawberry.django.type
+@strawberry.type
 class WinnerType:
     name_first: str
     name_last: str

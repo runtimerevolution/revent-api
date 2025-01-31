@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.test import TestCase
 from django.utils import timezone
+from photo.models import ContestSubmission, Picture
 
 from photo.models import Contest
 from photo.schema import schema
@@ -109,6 +110,27 @@ class ContestTest(TestCase):
             self.assertEqual(contest["status"], status[str(contest["id"])])
 
 
+    def test_winners_query(self):
+        # Create a contest with winners
+        contest = ContestFactory.create(voting_draw_end=timezone.now())
+        user = UserFactory.create()
+        contest.winners.add(user)
+        submission = ContestSubmission.objects.create(contest=contest, picture=Picture.objects.create(user=user, name='Test Picture', file='test.jpg'))
+
+        # Execute the winners query
+        result = schema.execute_sync(
+            '{ winners { title description prize voting_draw_end winners { name_first name_last submission { picture { name file } number_votes } } } }'
+        )
+
+        # Check for errors
+        self.assertIsNone(result.errors)
+
+        # Validate the response
+        self.assertEqual(len(result.data['winners']), 1)
+        self.assertEqual(result.data['winners'][0]['title'], contest.title)
+        self.assertEqual(result.data['winners'][0]['winners'][0]['name_first'], user.name_first)
+        self.assertEqual(result.data['winners'][0]['winners'][0]['submission']['picture']['name'], 'Test Picture')
+
 class ContestFilterTest(TestCase):
     def test_filter_by_search(self):
         test_text = "This is a text with a weird word 1234Test1234."
@@ -139,7 +161,7 @@ class ContestFilterTest(TestCase):
             self.assertTrue(contest["id"] in contest_IDs)
 
     def test_filter_by_time(self):
-        time = timezone.now().replace(year=2020, month=4)
+        time = timezone.now().replace(year=2020, month=4, day=1)
 
         ContestFactory(
             upload_phase_start=time,

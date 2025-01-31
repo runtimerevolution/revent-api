@@ -51,6 +51,30 @@ class CollectionType:
     pictures: List[PictureType]
 
 
+@strawberry.type
+class WinnerPictureType:
+    name: str
+    file: str
+
+@strawberry.type
+class WinnerSubmissionType:
+    picture: "WinnerPictureType"
+    number_votes: int
+
+@strawberry.type
+class WinnerType:
+    name_first: str
+    name_last: str
+    submission: WinnerSubmissionType
+
+@strawberry.type
+class WinnerContestType:
+    title: str
+    description: str
+    prize: str
+    voting_draw_end: str
+    winners: List[WinnerType]
+
 @strawberry.django.type(Contest)
 class ContestType:
     id: int

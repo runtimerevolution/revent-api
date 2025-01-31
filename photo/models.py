@@ -46,7 +46,15 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **kwargs)
 
 
-class SoftDeleteModel(models.Model):
+class TimestampedModel(models.Model):
+    created_at = models.DateTimeField(null=True, auto_now_add=True)
+    updated_at = models.DateTimeField(null=True, auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class SoftDeleteModel(TimestampedModel):
     is_deleted = models.BooleanField(default=False)
     objects = SoftDeleteManager()
     all_objects = models.Manager()
@@ -137,7 +145,6 @@ class PictureComment(SoftDeleteModel):
         on_delete=models.CASCADE,
     )
     text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Collection(SoftDeleteModel):

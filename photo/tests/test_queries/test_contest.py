@@ -29,11 +29,12 @@ class ContestTest(TestCase):
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["contests"]), self.batch_size)
         self.assertEqual(
-            sorted([key for key in result.data["contests"][0].keys()] + ["is_deleted"]),
+            sorted([key for key in result.data["contests"][0].keys()]),
             sorted(
                 [
                     field.name
                     for field in (Contest._meta.fields + Contest._meta.many_to_many)
+                    if field.name != "is_deleted"
                 ]
                 + ["status"]
             ),
@@ -139,7 +140,7 @@ class ContestFilterTest(TestCase):
             self.assertTrue(contest["id"] in contest_IDs)
 
     def test_filter_by_time(self):
-        time = timezone.now().replace(year=2020, month=4)
+        time = timezone.now().replace(year=2020, month=4, day=1)
 
         ContestFactory(
             upload_phase_start=time,

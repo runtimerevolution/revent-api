@@ -31,7 +31,7 @@ class CollectionTest(TestCase):
         )
         self.assertEqual(
             sorted(
-                [key for key in result.data["collections"][0].keys()] + ["is_deleted"]
+                [key for key in result.data["collections"][0].keys()]
             ),
             sorted(
                 [
@@ -39,6 +39,7 @@ class CollectionTest(TestCase):
                     for field in (
                         Collection._meta.fields + Collection._meta.many_to_many
                     )
+                    if field.name != "is_deleted"
                 ]
             ),
         )

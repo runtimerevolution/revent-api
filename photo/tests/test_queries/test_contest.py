@@ -112,7 +112,7 @@ class ContestTest(TestCase):
 
     def test_winners_query(self):
         # Create a contest with winners
-        contest = ContestFactory.create()
+        contest = ContestFactory.create(voting_draw_end=timezone.now())
         user = UserFactory.create()
         contest.winners.add(user)
         submission = ContestSubmission.objects.create(contest=contest, picture=Picture.objects.create(user=user, name='Test Picture', file='test.jpg'))
@@ -161,7 +161,7 @@ class ContestFilterTest(TestCase):
             self.assertTrue(contest["id"] in contest_IDs)
 
     def test_filter_by_time(self):
-        time = timezone.now().replace(year=2020, month=4)
+        time = timezone.now().replace(year=2020, month=4, day=1)
 
         ContestFactory(
             upload_phase_start=time,

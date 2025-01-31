@@ -33,8 +33,11 @@ from photo.types import (
     PictureCommentType,
     PictureType,
     UserType,
+    WinnerType,
+    WinnerSubmissionType,
+    WinnerPictureType,
+    WinnerContestType,
 )
-from photo.types import WinnerType, WinnerSubmissionType, WinnerPictureType
 from utils.enums import ContestInternalStates
 
 

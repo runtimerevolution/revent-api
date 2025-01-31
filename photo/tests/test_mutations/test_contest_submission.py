@@ -160,7 +160,7 @@ class ContestSubmissionTest(TestCase):
         self.assertEqual(len(contest_submission.votes.all()), 1)
 
     def test_outdate_submission(self):
-        contest = ContestFactory(upload_phase_end=timezone.now() - timedelta(days=3))
+        contest = ContestFactory(upload_phase_end=timezone.datetime(2020, 4, 1, tzinfo=timezone.utc) - timedelta(days=3))
         with self.assertRaises(ValidationError) as e:
             ContestSubmissionFactory(contest=contest)
 

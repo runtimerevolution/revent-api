@@ -29,12 +29,11 @@ class ContestTest(TestCase):
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["contests"]), self.batch_size)
         self.assertEqual(
-            sorted([key for key in result.data["contests"][0].keys()]),
+            sorted([key for key in result.data["contests"][0].keys()] + ["is_deleted"]),
             sorted(
                 [
                     field.name
                     for field in (Contest._meta.fields + Contest._meta.many_to_many)
-                    if field.name != "is_deleted"
                 ]
                 + ["status"]
             ),
@@ -67,7 +66,7 @@ class ContestTest(TestCase):
 
     def test_query_status(self):
         user = UserFactory()
-        time = timezone.now()
+        time = timezone.datetime(2020, 4, 1, tzinfo=timezone.utc)
 
         contest_schedule = ContestFactory(
             created_by=user,
@@ -140,7 +139,7 @@ class ContestFilterTest(TestCase):
             self.assertTrue(contest["id"] in contest_IDs)
 
     def test_filter_by_time(self):
-        time = timezone.now().replace(year=2020, month=4, day=1)
+        time = timezone.datetime(2020, 4, 1, tzinfo=timezone.utc)
 
         ContestFactory(
             upload_phase_start=time,
@@ -194,7 +193,7 @@ class ContestFilterTest(TestCase):
         self.assertEqual(len(result_year.data["contests"]), 2)
 
     def test_filter_by_status(self):
-        time = timezone.now()
+        time = timezone.datetime(2020, 4, 1, tzinfo=timezone.utc)
 
         contest_voting = ContestFactory(
             upload_phase_start=time - timedelta(days=3),

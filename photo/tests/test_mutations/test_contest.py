@@ -71,8 +71,8 @@ class ContestTest(TestCase):
             "description": "Description test",
             "cover_picture": picture.id,
             "prize": "Prize test",
-            "upload_phase_end": str(timezone.now() + timedelta(1)),
-            "voting_phase_end": str(timezone.now() + timedelta(2)),
+            "upload_phase_end": str(timezone.datetime(2020, 4, 1, tzinfo=timezone.utc) + timedelta(1)),
+            "voting_phase_end": str(timezone.datetime(2020, 4, 1, tzinfo=timezone.utc) + timedelta(2)),
         }
 
         result = schema.execute_sync(

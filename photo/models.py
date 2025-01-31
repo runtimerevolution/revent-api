@@ -47,15 +47,8 @@ class UserManager(BaseUserManager):
 
 
 class TimestampedModel(models.Model):
-    created_at = models.DateTimeField(null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if not self.created_at and not self._state.adding:
-            self.created_at = self.updated_at
-        if not self.updated_at:
-            self.updated_at = timezone.now()
-        super().save(*args, **kwargs)
+    created_at = models.DateTimeField(null=True, auto_now_add=True)
+    updated_at = models.DateTimeField(null=True, auto_now=True)
 
     class Meta:
         abstract = True

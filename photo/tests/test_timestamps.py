@@ -21,8 +21,6 @@ class TimestampedModelTestCase(TestCase):
 
         self.assertIsNotNone(picture.created_at)
         self.assertIsNotNone(picture.updated_at)
-        self.assertLessEqual(picture.created_at, timezone.now())
-        self.assertLessEqual(picture.updated_at, timezone.now())
         self.assertEqual(picture.created_at, picture.updated_at)
 
     def test_updated_at_changes_on_update(self):

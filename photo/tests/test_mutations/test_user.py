@@ -10,7 +10,7 @@ from .graphql_mutations import user_delete_mutation, user_update_mutation
 
 class UserTest(TestCase):
     def test_update(self):
-        update_profile_picture_time = timezone.now()
+        update_profile_picture_time = timezone.datetime(2020, 4, 1, tzinfo=timezone.utc)
         user = UserFactory(profile_picture_updated_at=update_profile_picture_time)
         picture = PictureFactory(user=user)
         updatedUser = {
@@ -50,7 +50,7 @@ class UserTest(TestCase):
         )
 
     def test_update_profile_picture_updated_at(self):
-        update_profile_picture_time = timezone.now()
+        update_profile_picture_time = timezone.datetime(2020, 4, 1, tzinfo=timezone.utc)
         user = UserFactory(profile_picture_updated_at=update_profile_picture_time)
         updated_user = {
             "pk": str(user.id),

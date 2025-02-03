@@ -30,9 +30,12 @@ from photo.types import (
     CollectionType,
     ContestSubmissionType,
     ContestType,
+    ContestWinnersType,
+    ContestWinnerType,
     PictureCommentType,
     PictureType,
     UserType,
+    WinnerSubmissionType,
 )
 from utils.enums import ContestInternalStates
 
@@ -130,3 +133,39 @@ class Query:
         else:
             query_results.sort(key=set_order)
         return query_results
+
+    @strawberry.field
+    def contest_winners(self) -> List[ContestWinnersType]:
+        contests = Contest.objects.exclude(winners=None).order_by('voting_draw_end')
+        result = []
+
+        for contest in contests:
+            winners_data = []
+            for winner in contest.winners.all():
+                submission = ContestSubmission.objects.filter(
+                    contest=contest,
+                    picture__user=winner
+                ).first()
+
+                if submission:
+                    winner_data = ContestWinnerType(
+                        name_first=winner.name_first,
+                        name_last=winner.name_last,
+                        submission=WinnerSubmissionType(
+                            picture=submission.picture,
+                            number_votes=submission.votes.count()
+                        )
+                    )
+                    winners_data.append(winner_data)
+
+            if winners_data:
+                contest_data = ContestWinnersType(
+                    title=contest.title,
+                    description=contest.description,
+                    prize=contest.prize,
+                    voting_draw_end=contest.voting_draw_end.isoformat() if contest.voting_draw_end else None,
+                    winners=winners_data
+                )
+                result.append(contest_data)
+
+        return result

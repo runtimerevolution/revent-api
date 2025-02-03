@@ -134,3 +134,31 @@ class CloseContestMutationResponse:
     success: bool
     results: ContestType
     errors: str
+
+
+@strawberry.type
+class WinnerSubmissionPictureType:
+    name: str
+    file: str
+
+
+@strawberry.type
+class WinnerSubmissionType:
+    picture: WinnerSubmissionPictureType
+    number_votes: int
+
+
+@strawberry.type
+class ContestWinnerType:
+    name_first: str
+    name_last: str
+    submission: WinnerSubmissionType
+
+
+@strawberry.type
+class ContestWithWinnersType:
+    title: str
+    description: str
+    prize: str
+    voting_draw_end: str
+    winners: List[ContestWinnerType]

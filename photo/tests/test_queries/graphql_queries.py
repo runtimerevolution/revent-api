@@ -228,3 +228,25 @@ user_query_one = """
                         }
                     }
                 """
+
+CONTEST_WINNERS_QUERY = """
+    query {
+        contestWinners {
+            title
+            description
+            prize
+            voting_draw_end
+            winners {
+                name_first
+                name_last
+                submission {
+                    picture {
+                        name
+                        file
+                    }
+                    number_votes
+                }
+            }
+        }
+    }
+"""

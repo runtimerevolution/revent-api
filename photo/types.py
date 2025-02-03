@@ -23,6 +23,8 @@ class UserType:
     profile_picture: "PictureType"
     profile_picture_updated_at: strawberry.auto
     user_handle: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.django.type(Picture)
@@ -32,6 +34,8 @@ class PictureType:
     name: str
     file: str
     likes: List[UserType]
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.django.type(PictureComment)
@@ -50,6 +54,8 @@ class CollectionType:
     name: str
     user: "UserType"
     pictures: List[PictureType]
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.django.type(Contest)
@@ -68,6 +74,8 @@ class ContestType:
     winners: List[UserType]
     created_by: "UserType"
     status: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
     @strawberry.field
     def status(self) -> str:
@@ -93,6 +101,8 @@ class ContestSubmissionType:
     picture: PictureType
     submission_date: strawberry.auto
     votes: List[UserType]
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -100,6 +110,8 @@ class AddVoteMutationResponse:
     success: bool
     results: ContestSubmissionType | None
     errors: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -107,6 +119,8 @@ class CreatePictureMutationResponse:
     success: bool
     results: PictureType
     errors: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -114,6 +128,8 @@ class CreateContestSubmissiomMutationResponse:
     success: bool
     results: ContestSubmissionType
     errors: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -121,6 +137,8 @@ class AddLikeMutationResponse:
     success: bool
     results: PictureType
     errors: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -128,6 +146,8 @@ class CollectionAddPictureMutationResponse:
     success: bool
     results: CollectionType
     errors: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -135,3 +155,5 @@ class CloseContestMutationResponse:
     success: bool
     results: ContestType
     errors: str
+    created_at: strawberry.auto
+    updated_at: strawberry.auto

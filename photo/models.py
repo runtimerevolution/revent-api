@@ -48,6 +48,8 @@ class UserManager(BaseUserManager):
 
 class SoftDeleteModel(models.Model):
     is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
     objects = SoftDeleteManager()
     all_objects = models.Manager()
 
@@ -59,6 +61,12 @@ class SoftDeleteModel(models.Model):
     def restore(self):
         self.is_deleted = False
         self.save()
+
+    def save(self, *args, **kwargs):
+        if not self.created_at:
+            self.created_at = timezone.now()
+        self.updated_at = timezone.now()
+        super().save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -106,6 +114,9 @@ class User(AbstractUser, SoftDeleteModel):
 
     def save(self, *args, **kwargs):
         self.validate_profile_picture()
+        if not self.created_at:
+            self.created_at = timezone.now()
+        self.updated_at = timezone.now()
         super(User, self).save(*args, **kwargs)
 
 

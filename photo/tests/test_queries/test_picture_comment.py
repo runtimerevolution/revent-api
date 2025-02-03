@@ -22,13 +22,9 @@ class PictureCommentTest(TestCase):
 
         self.assertEqual(result.errors, None)
         self.assertEqual(len(result.data["picture_comments"]), self.batch_size)
-        self.assertEqual(
-            sorted(
-                [key for key in result.data["picture_comments"][0].keys()]
-                + ["is_deleted"]
-            ),
-            sorted([field.name for field in PictureComment._meta.fields]),
-        )
+        expected_fields = sorted([field.name for field in PictureComment._meta.fields])
+        actual_fields = sorted([key for key in result.data["picture_comments"][0].keys()] + ["is_deleted"])
+        self.assertEqual(actual_fields, expected_fields)
 
     def test_filter_by_id(self):
         picture_comment = PictureCommentFactory.create()

@@ -110,8 +110,6 @@ class AddVoteMutationResponse:
     success: bool
     results: ContestSubmissionType | None
     errors: str
-    created_at: strawberry.auto
-    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -119,8 +117,6 @@ class CreatePictureMutationResponse:
     success: bool
     results: PictureType
     errors: str
-    created_at: strawberry.auto
-    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -128,8 +124,6 @@ class CreateContestSubmissiomMutationResponse:
     success: bool
     results: ContestSubmissionType
     errors: str
-    created_at: strawberry.auto
-    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -137,8 +131,6 @@ class AddLikeMutationResponse:
     success: bool
     results: PictureType
     errors: str
-    created_at: strawberry.auto
-    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -146,8 +138,6 @@ class CollectionAddPictureMutationResponse:
     success: bool
     results: CollectionType
     errors: str
-    created_at: strawberry.auto
-    updated_at: strawberry.auto
 
 
 @strawberry.type
@@ -155,5 +145,3 @@ class CloseContestMutationResponse:
     success: bool
     results: ContestType
     errors: str
-    created_at: strawberry.auto
-    updated_at: strawberry.auto

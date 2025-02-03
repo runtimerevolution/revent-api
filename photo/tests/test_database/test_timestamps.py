@@ -1,6 +1,7 @@
 from django.test import TransactionTestCase
 from django.utils import timezone
 from datetime import timedelta
+import time
 
 from photo.models import Collection, Contest, ContestSubmission, Picture, PictureComment, User
 from photo.tests.factories import (
@@ -85,7 +86,7 @@ class TimestampFieldsTest(TransactionTestCase):
         comment_updated = self.comment.updated_at
 
         # Wait a bit to ensure timestamps will be different
-        timezone.sleep(timedelta(milliseconds=10))
+        time.sleep(0.01)  # 10 milliseconds
 
         # Update each object
         self.user.name_first = "Updated"

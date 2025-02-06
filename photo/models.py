@@ -64,6 +64,38 @@ class SoftDeleteModel(models.Model):
         abstract = True
 
 
+class Group(SoftDeleteModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    name = models.TextField()
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    members = models.ManyToManyField(
+        "User",
+        through="UserGroup",
+        related_name="user_groups",
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class UserGroup(SoftDeleteModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    group = models.ForeignKey("Group", on_delete=models.CASCADE)
+    role = models.TextField()
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "group"],
+                condition=models.Q(is_deleted=False),
+                name="unique_user_group",
+            )
+        ]
+
+
 class User(AbstractUser, SoftDeleteModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     email = models.TextField(unique=True)

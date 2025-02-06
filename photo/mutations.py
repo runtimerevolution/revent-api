@@ -85,39 +85,55 @@ class NotFoundError(Exception):
         self.message = message
 
 
+def _get_user(user_id: str) -> User:
+    """Get user by ID or raise ValidationError if not found."""
+    if not (user := User.objects.filter(id=user_id).first()):
+        raise ValidationError(message=NO_USER_FOUND)
+    return user
+
+def _process_image_file(file, max_size: int) -> tuple[BytesIO, str | None]:
+    """Process image file, convert to webp format and validate size."""
+    image_bytes = BytesIO()
+    filename = None
+
+    if isinstance(file, InMemoryUploadedFile):
+        if file.size > max_size:
+            raise ValidationError(message=PICTURE_SIZE_ERROR)
+        image = Image.open(file)
+        filename = str(file.name).rsplit(".", 1)[0]
+        image.save(image_bytes, format="webp", optimize=True)
+    else:
+        file.save(image_bytes, format="webp")
+        if image_bytes.tell() > max_size:
+            raise ValidationError(message=PICTURE_SIZE_ERROR)
+
+    image_bytes.seek(0)
+    return image_bytes, filename
+
+def _create_picture_object(user: User, image_bytes: BytesIO, filename: str | None) -> Picture:
+    """Create and save Picture object with the processed image."""
+    picture_object = Picture(user=user)
+    picture_object.save()
+
+    image_file = SimpleUploadedFile(
+        str(picture_object.id),
+        image_bytes.getvalue(),
+        content_type="image/webp",
+    )
+
+    picture_object.file = image_file
+    picture_object.name = filename if filename else picture_object.id
+    picture_object.save()
+
+    return picture_object
+
 def picture_creation(input: PictureInput) -> CreatePictureMutationResponse:
+    """Create a new picture from the provided input."""
     try:
         with transaction.atomic():
-            if not (user := User.objects.filter(id=input.user).first()):
-                raise ValidationError(message=NO_USER_FOUND)
-
-            picture_object = Picture(user=user)
-            picture_object.save()
-
-            image_bytes = BytesIO()
-            file = input.file
-            filename = None
-            if type(input.file) == InMemoryUploadedFile:
-                if input.file.size > int(settings.MAX_PICTURE_SIZE):
-                    raise ValidationError(message=PICTURE_SIZE_ERROR)
-                image = Image.open(input.file)
-                filename = str(input.file.name).rsplit(".", 1)[0]
-                image.save(image_bytes, format="webp", optimize=True)
-            else:
-                file.save(image_bytes, format="webp")
-                if image_bytes.tell() > int(settings.MAX_PICTURE_SIZE):
-                    raise ValidationError(message=PICTURE_SIZE_ERROR)
-            image_bytes.seek(0)
-
-            image_file = SimpleUploadedFile(
-                str(picture_object.id),
-                image_bytes.getvalue(),
-                content_type="image/webp",
-            )
-
-            picture_object.file = image_file
-            picture_object.name = filename if filename else picture_object.id
-            picture_object.save()
+            user = _get_user(input.user)
+            image_bytes, filename = _process_image_file(input.file, int(settings.MAX_PICTURE_SIZE))
+            picture_object = _create_picture_object(user, image_bytes, filename)
 
             return CreatePictureMutationResponse(
                 success=True, results=picture_object, errors=""

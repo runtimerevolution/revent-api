@@ -23,6 +23,15 @@ from photo.storages_backend import PublicMediaStorage, picture_path
 from utils.enums import ContestInternalStates
 
 
+class NamedUserManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(
+            models.Q(name_first__isnull=True) |
+            models.Q(name_first="") |
+            models.Q(name_last__isnull=True) |
+            models.Q(name_last="")
+        )
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
         if not email:
@@ -84,6 +93,7 @@ class User(AbstractUser, SoftDeleteModel):
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
     objects = UserManager()
+    named_users = NamedUserManager()
 
     class Meta:
         constraints = [

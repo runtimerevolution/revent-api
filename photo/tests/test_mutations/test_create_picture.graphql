@@ -1,0 +1,14 @@
+mutation {
+  create_picture(input: {
+    name: "Test Picture"
+    description: "Test Description"
+    userId: 1
+    file: "test_file.jpg"
+  }) {
+    picture {
+      id
+      name
+      description
+    }
+  }
+}
